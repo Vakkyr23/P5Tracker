@@ -1,5 +1,7 @@
 # P5 Tracker
 
+**[👉 Open the Live Tracker](https://zucram.github.io/P5Tracker/)**
+
 A modern, mobile-first companion app for **Persona 5 Royal**. 
 
 This interactive tracker helps you optimize your playthrough with a "Soft-Guide" approach. Instead of a rigid day-by-day checklist, it provides monthly strategic objectives, ensuring you never miss a deadline while giving you the freedom to play your way.
