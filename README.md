@@ -82,7 +82,7 @@ This project is currently in **Public Beta (v2.0)**.
 
 If you find this tracker helpful for your heist, consider supporting the maintenance and future updates:
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/zucram)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K11RWTSL)
 
 Feedback, bug reports, and strategy corrections are welcome via GitHub Issues.
 
