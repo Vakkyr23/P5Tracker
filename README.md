@@ -73,5 +73,8 @@ This interactive tracker helps you optimize your playthrough with a "Soft-Guide"
 Based on the comprehensive strategic analysis of Persona 5 Royal's mechanics.
 Data sourced from community experts (GameFAQs, Samurai Gamers, RPG Site) and cross-referenced for the "Royal" edition.
 
+### Transparency
+This project was built with the assistance of AI (Google Gemini) to handle architectural refactoring and data synthesis. The strategy content itself was compiled by browsing public guides and walkthroughs to curate the most "essential" optimization path for players.
+
 ---
 *Take your time.*
