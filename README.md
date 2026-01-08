@@ -76,5 +76,15 @@ Data sourced from community experts (GameFAQs, Samurai Gamers, RPG Site) and cro
 ### Transparency
 This project was built with the assistance of AI (Google Gemini) to handle architectural refactoring and data synthesis. The strategy content itself was compiled by browsing public guides and walkthroughs to curate the most "essential" optimization path for players.
 
+## Support & Feedback
+
+This project is currently in **Public Beta (v2.0)**. 
+
+If you find this tracker helpful for your heist, consider supporting the maintenance and future updates:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/zucram)
+
+Feedback, bug reports, and strategy corrections are welcome via GitHub Issues.
+
 ---
 *Take your time.*

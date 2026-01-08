@@ -944,6 +944,22 @@ export default function App() {
           </div>
         )}
 
+        {/* Footer */}
+        <div className="mt-20 pt-10 border-t border-neutral-800 text-center opacity-60 hover:opacity-100 transition-opacity">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
+            Public Beta v2.0 • Feedback Welcome
+          </p>
+          <a 
+            href="https://ko-fi.com/zucram" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-[#FF5E5B] hover:bg-[#FF5E5B]/90 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-transform hover:scale-105 shadow-lg"
+          >
+            <Heart className="w-3 h-3 fill-current" />
+            Support on Ko-fi
+          </a>
+        </div>
+
       </main>
 
       {/* SAVE/LOAD MODAL */}
