@@ -16,6 +16,18 @@ If you find this tracker helpful for your heist, consider supporting the mainten
 
 Feedback, bug reports, and strategy corrections are welcome via GitHub Issues.
 
+## Gallery
+
+### Mobile Experience
+<p float="left">
+  <img src="docs/assets/mobile-home.png" width="30%" />
+  <img src="docs/assets/mobile-confidants.png" width="30%" /> 
+  <img src="docs/assets/mobile-tasks.png" width="30%" />
+</p>
+
+### Desktop Command Center
+![Desktop Home](docs/assets/desktop-home.png)
+
 ## Features
 
 ### 📅 Phantom Calendar
