@@ -36,7 +36,7 @@ import {
 import { APP_DATA } from './data/gameData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
-import pkg from '../package.json';
+import { APP_VERSION } from './data/version';
 
 const STAT_ICONS = {
   Knowledge: Book,
@@ -116,9 +116,9 @@ export default function App() {
   // Check version for changelog
   useEffect(() => {
     const lastSeen = localStorage.getItem('p5r_lastSeenVersion');
-    if (lastSeen !== pkg.version) {
+    if (lastSeen !== APP_VERSION) {
       setShowChangelog(true);
-      localStorage.setItem('p5r_lastSeenVersion', pkg.version);
+      localStorage.setItem('p5r_lastSeenVersion', APP_VERSION);
     }
   }, []);
 
@@ -322,7 +322,7 @@ export default function App() {
             <span>P5</span>
             <span className="text-white not-italic text-lg md:text-2xl font-bold tracking-normal uppercase">Tracker</span>
             <span className="bg-red-600 text-black px-1.5 py-0.5 md:px-2 md:py-0.5 rounded not-italic text-[10px] md:text-[11px] font-black tracking-tighter align-middle ml-1 md:ml-2 border border-red-900 shadow-sm">
-              v{pkg.version}{import.meta.env.DEV ? ` [${__BRANCH__}]` : ''}
+              v{APP_VERSION}
             </span>
           </h1>
           <p className="text-neutral-500 mt-1 md:mt-2 font-mono uppercase text-[8px] md:text-[10px] tracking-[0.4em] hidden md:block">Integrated Strategy Compendium</p>
@@ -1093,7 +1093,7 @@ export default function App() {
         {/* Footer */}
         <div className="mt-20 pt-10 border-t border-neutral-800 text-center opacity-60 hover:opacity-100 transition-opacity">
           <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4 flex items-center justify-center gap-2">
-            <span>v{pkg.version}</span>
+            <span>v{APP_VERSION}</span>
             <span>•</span>
             <button onClick={() => setShowChangelog(true)} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
             <span>•</span>
