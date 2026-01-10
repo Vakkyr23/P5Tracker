@@ -56,8 +56,8 @@ const trackEvent = (eventName, eventData = {}) => {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('p5r_activeTab') || 'cheatsheet');
-  const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'july');
-  const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'july');
+  const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
+  const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
   
   // Data State
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -118,6 +118,8 @@ export default function App() {
   const [saveModal, setSaveModal] = useState(false);
   const [showChangelog, setShowChangelog] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(0);
   const [importText, setImportText] = useState('');
   const [copied, setCopied] = useState(false);
   const hiddenInputRef = useRef(null);
@@ -134,6 +136,19 @@ export default function App() {
       localStorage.setItem('p5r_lastSeenVersion', APP_VERSION);
     }
   }, []);
+
+  // Show onboarding for new users
+  useEffect(() => {
+    if (!localStorage.getItem('p5r_onboardingComplete')) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const completeOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('p5r_onboardingComplete', 'true');
+    trackEvent('onboarding-complete');
+  };
 
 
   const updateRank = (arcana, val) => {
@@ -1111,7 +1126,9 @@ export default function App() {
             <span>•</span>
             <button onClick={() => { setShowChangelog(true); trackEvent('changelog-open'); }} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
             <span>•</span>
-            <button onClick={() => { setShowRoadmap(true); trackEvent('roadmap-open'); }} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
+            <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
+            <span>•</span>
+            <button onClick={() => { setShowOnboarding(true); setOnboardingStep(0); trackEvent('help-open'); }} className="hover:text-white underline decoration-yellow-500 underline-offset-4 transition-colors">Help</button>
             <span>•</span>
             <a 
               href="https://github.com/zucram/P5Tracker#support--feedback" 
@@ -1234,6 +1251,80 @@ export default function App() {
               <button onClick={() => setShowRoadmap(false)} className="w-full mt-8 bg-blue-600 text-white p-4 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
                 Close Roadmap
               </button>
+           </div>
+        </div>
+      )}
+
+      {/* ONBOARDING MODAL */}
+      {showOnboarding && (
+        <div className="fixed inset-0 bg-black/98 backdrop-blur-3xl flex items-center justify-center p-4 z-[60] animate-in fade-in duration-500">
+           <div className="bg-neutral-900 border-2 border-red-600 rounded-[2.5rem] w-full max-w-md p-8 shadow-[0_0_60px_rgba(220,38,38,0.3)] relative overflow-hidden">
+              {/* Progress Dots */}
+              <div className="flex gap-1.5 mb-8 justify-center">
+                {[0, 1, 2, 3].map(i => (
+                  <div key={i} className={`h-1 rounded-full transition-all duration-300 ${onboardingStep === i ? 'w-8 bg-red-600' : 'w-2 bg-neutral-800'}`} />
+                ))}
+              </div>
+
+              <div className="min-h-[300px] flex flex-col items-center text-center">
+                {onboardingStep === 0 && (
+                  <div className="animate-in slide-in-from-right duration-300">
+                    <div className="w-20 h-20 bg-red-600 rounded-2xl flex items-center justify-center mb-6 rotate-3 shadow-xl shadow-red-900/40">
+                      <Zap className="w-10 h-10 text-white fill-current" />
+                    </div>
+                    <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">Welcome, Joker</h2>
+                    <p className="text-sm text-neutral-400 leading-relaxed">This is a <span className="text-red-500 font-bold italic">Soft-Guide</span> designed for optimization without the stress of rigid day-to-day checklists.</p>
+                  </div>
+                )}
+
+                {onboardingStep === 1 && (
+                  <div className="animate-in slide-in-from-right duration-300">
+                    <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 -rotate-3 shadow-xl shadow-blue-900/40">
+                      <Target className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">The Anchor</h2>
+                    <p className="text-sm text-neutral-400 leading-relaxed">Use the <span className="text-blue-500 font-bold italic">Set as Active</span> button in the Roadmap tab. The tracker will adapt its focus to your current in-game month.</p>
+                  </div>
+                )}
+
+                {onboardingStep === 2 && (
+                  <div className="animate-in slide-in-from-right duration-300">
+                    <div className="w-20 h-20 bg-red-600 rounded-2xl flex items-center justify-center mb-6 rotate-6 shadow-xl shadow-red-900/40">
+                      <Clock className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">Smart Backlog</h2>
+                    <p className="text-sm text-neutral-400 leading-relaxed">Important tasks carry over to your current month if missed. Missable content (exams, classroom) stays in the past to keep your view clean.</p>
+                  </div>
+                )}
+
+                {onboardingStep === 3 && (
+                  <div className="animate-in slide-in-from-right duration-300">
+                    <div className="w-20 h-20 bg-neutral-100 rounded-2xl flex items-center justify-center mb-6 -rotate-6 shadow-xl shadow-white/10">
+                      <Save className="w-10 h-10 text-black" />
+                    </div>
+                    <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">Sync Terminal</h2>
+                    <p className="text-sm text-neutral-400 leading-relaxed">Your data lives strictly on your device. Use the <span className="text-white font-bold italic">Sync Terminal</span> to manually backup or import your tactical progress.</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-10 flex gap-3">
+                {onboardingStep > 0 && (
+                  <button 
+                    onClick={() => setOnboardingStep(onboardingStep - 1)}
+                    className="flex-1 py-4 rounded-2xl border border-neutral-800 text-neutral-500 font-black uppercase text-xs hover:bg-neutral-800 transition-colors"
+                  >Back</button>
+                )}
+                <button 
+                  onClick={() => {
+                    if (onboardingStep < 3) setOnboardingStep(onboardingStep + 1);
+                    else completeOnboarding();
+                  }}
+                  className="flex-[2] py-4 rounded-2xl bg-red-600 text-black font-black uppercase text-xs hover:bg-white transition-all shadow-lg shadow-red-900/20"
+                >
+                  {onboardingStep === 3 ? "Let's Go" : "Next"}
+                </button>
+              </div>
            </div>
         </div>
       )}
