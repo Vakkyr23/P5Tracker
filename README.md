@@ -104,6 +104,9 @@ Feedback, bug reports, and strategy corrections are welcome via [GitHub Issues](
 Based on the comprehensive strategic analysis of Persona 5 Royal's mechanics.
 Data sourced from community experts (GameFAQs, Samurai Gamers, RPG Site) and cross-referenced for the "Royal" edition.
 
+### Changelog
+View the full history of updates in [CHANGELOG.md](CHANGELOG.md).
+
 ### Transparency
 This project was built with the assistance of AI (Google Gemini) to handle architectural refactoring and data synthesis. The strategy content itself was compiled by browsing public guides and walkthroughs to curate the most "essential" optimization path for players.
 
