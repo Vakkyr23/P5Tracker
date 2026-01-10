@@ -264,39 +264,39 @@ export default function App() {
   }, [anchoredMonth]);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans p-4 md:p-8">
-      <header className="max-w-6xl mx-auto mb-8 border-b-8 border-red-600 pb-8 flex flex-col lg:flex-row items-center justify-between gap-6">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans p-2 md:p-8">
+      <header className="max-w-6xl mx-auto mb-4 md:mb-8 border-b-4 md:border-b-8 border-red-600 pb-4 md:pb-8 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
         <div className="text-center lg:text-left">
-          <h1 className="text-4xl md:text-6xl font-black text-red-600 tracking-tighter italic uppercase flex items-baseline justify-center lg:justify-start flex-wrap gap-2">
+          <h1 className="text-2xl md:text-6xl font-black text-red-600 tracking-tighter italic uppercase flex items-baseline justify-center lg:justify-start flex-wrap gap-2">
             <span>P5</span>
-            <span className="text-white not-italic text-2xl font-bold tracking-normal uppercase">Tracker</span>
-            <span className="bg-red-600 text-black px-2 py-0.5 rounded not-italic text-[11px] font-black tracking-tighter align-middle ml-2 border border-red-900 shadow-sm">
+            <span className="text-white not-italic text-lg md:text-2xl font-bold tracking-normal uppercase">Tracker</span>
+            <span className="bg-red-600 text-black px-1.5 py-0.5 md:px-2 md:py-0.5 rounded not-italic text-[10px] md:text-[11px] font-black tracking-tighter align-middle ml-1 md:ml-2 border border-red-900 shadow-sm">
               v{pkg.version}{import.meta.env.DEV ? ` [${__BRANCH__}]` : ''}
             </span>
           </h1>
-          <p className="text-neutral-500 mt-2 font-mono uppercase text-[10px] tracking-[0.4em]">Integrated Strategy Compendium</p>
+          <p className="text-neutral-500 mt-1 md:mt-2 font-mono uppercase text-[8px] md:text-[10px] tracking-[0.4em] hidden md:block">Integrated Strategy Compendium</p>
         </div>
-        <div className="flex gap-4 flex-wrap justify-center items-center">
+        <div className="flex gap-2 md:gap-4 flex-wrap justify-center items-center">
             <a 
               href="https://ko-fi.com/K3K11RWTSL" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-4 py-2 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-4 border-[#c44040] hover:border-neutral-300 group"
+              className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-2 md:border-b-4 border-[#c44040] hover:border-neutral-300 group"
               title="Support the Dev"
             >
-              <Heart className="w-4 h-4 fill-current group-hover:text-red-500 transition-colors" /> 
+              <Heart className="w-3 md:w-4 h-3 md:h-4 fill-current group-hover:text-red-500 transition-colors" /> 
               <span className="hidden md:inline">Support</span>
             </a>
             <button 
               onClick={() => setSaveModal(true)} 
-              className="flex items-center gap-2 bg-red-600 hover:bg-white text-black px-4 py-2 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 active:scale-95 border-b-4 border-red-900"
+              className="flex items-center gap-2 bg-red-600 hover:bg-white text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 active:scale-95 border-b-2 md:border-b-4 border-red-900"
             >
-              <Save className="w-4 h-4" /> Sync Terminal
+              <Save className="w-3 md:w-4 h-3 md:h-4" /> <span className="hidden md:inline">Sync Terminal</span><span className="md:hidden">Sync</span>
             </button>
         </div>
       </header>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 md:relative md:bottom-auto md:left-auto md:right-auto md:mb-8 flex justify-between gap-1 bg-neutral-900/90 backdrop-blur-xl p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] border-t border-neutral-800 md:bg-neutral-900 md:p-1 md:border md:rounded-2xl md:shadow-2xl">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:relative md:bottom-auto md:left-auto md:right-auto md:mb-8 flex justify-between gap-1 bg-neutral-900/90 backdrop-blur-xl p-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))] border-t border-neutral-800 md:bg-neutral-900 md:p-1 md:border md:rounded-2xl md:shadow-2xl">
         <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Guide" icon={BookOpen} />
         <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Roadmap" icon={Calendar} />
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
@@ -466,41 +466,41 @@ export default function App() {
 
         {/* Calendar Header Navigation (Applicable to Roadmap) */}
         {activeTab === 'months' && (
-          <div className="mb-8 bg-neutral-900 border border-neutral-800 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+          <div className="mb-4 md:mb-8 bg-neutral-900 border border-neutral-800 rounded-3xl p-3 md:p-6 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-              <Calendar className="w-32 h-32" />
+              <Calendar className="w-20 h-20 md:w-32 md:h-32" />
             </div>
 
-            <div className="flex items-center gap-6 z-10 w-full md:w-auto justify-between">
+            <div className="flex items-center gap-4 md:gap-6 z-10 w-full md:w-auto justify-between">
               <button 
                 onClick={() => {
                   const idx = APP_DATA.months.findIndex(m => m.id === currentMonth);
                   if (idx > 0) setCurrentMonth(APP_DATA.months[idx - 1].id);
                 }}
                 disabled={APP_DATA.months.findIndex(m => m.id === currentMonth) === 0}
-                className="p-3 rounded-full hover:bg-neutral-800 disabled:opacity-30 transition-colors"
+                className="p-2 md:p-3 rounded-full hover:bg-neutral-800 disabled:opacity-30 transition-colors"
               >
-                <ChevronDown className="w-6 h-6 rotate-90" />
+                <ChevronDown className="w-5 h-5 md:w-6 md:h-6 rotate-90" />
               </button>
 
               <div className="text-center">
-                <h2 className="text-4xl font-black italic text-white uppercase tracking-tighter">{activeMonthData?.name}</h2>
+                <h2 className="text-2xl md:text-4xl font-black italic text-white uppercase tracking-tighter">{activeMonthData?.name}</h2>
                 {anchoredMonth === currentMonth ? (
-                  <div className="flex items-center justify-center gap-2 mt-1 text-red-500 animate-pulse">
-                    <Zap className="w-3 h-3 fill-current" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em]">Current Location</span>
+                  <div className="flex items-center justify-center gap-1.5 md:gap-2 mt-1 text-red-500 animate-pulse">
+                    <Zap className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
+                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">Current Location</span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-2 mt-2">
+                  <div className="flex flex-col items-center gap-1.5 md:gap-2 mt-1 md:mt-2">
                     <button 
                       onClick={() => setAnchoredMonth(currentMonth)}
-                      className="text-[10px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 transition-colors flex items-center justify-center gap-2 px-4 py-1.5 rounded-full shadow-lg shadow-red-900/20"
+                      className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 transition-colors flex items-center justify-center gap-1.5 md:gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full shadow-lg shadow-red-900/20"
                     >
-                      <Target className="w-3 h-3" /> Set as Active
+                      <Target className="w-2.5 h-2.5 md:w-3 md:h-3" /> Set as Active
                     </button>
                     <button 
                       onClick={() => setCurrentMonth(anchoredMonth)}
-                      className="text-[9px] font-bold uppercase tracking-wider text-neutral-500 hover:text-neutral-300 transition-colors flex items-center gap-1"
+                      className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-neutral-500 hover:text-neutral-300 transition-colors flex items-center gap-1"
                     >
                       <Zap className="w-2 h-2" /> Return to {anchoredMonth}
                     </button>
@@ -514,9 +514,9 @@ export default function App() {
                   if (idx < APP_DATA.months.length - 1) setCurrentMonth(APP_DATA.months[idx + 1].id);
                 }}
                 disabled={APP_DATA.months.findIndex(m => m.id === currentMonth) === APP_DATA.months.length - 1}
-                className="p-3 rounded-full hover:bg-neutral-800 disabled:opacity-30 transition-colors"
+                className="p-2 md:p-3 rounded-full hover:bg-neutral-800 disabled:opacity-30 transition-colors"
               >
-                <ChevronDown className="w-6 h-6 -rotate-90" />
+                <ChevronDown className="w-5 h-5 md:w-6 md:h-6 -rotate-90" />
               </button>
             </div>
 
@@ -998,12 +998,12 @@ export default function App() {
 function TabButton({ active, onClick, label, icon: Icon }) {
   const isSpecial = label.includes('✨');
   return (
-    <button onClick={onClick} className={`flex-1 py-3 md:py-4 px-1 md:px-2 rounded-xl font-black uppercase italic text-[9px] md:text-xs tracking-tighter transition-all duration-300 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 ${
+    <button onClick={onClick} className={`flex-1 py-2 md:py-4 px-1 md:px-2 rounded-xl font-black uppercase italic text-[8px] md:text-xs tracking-tighter transition-all duration-300 flex flex-col md:flex-row items-center justify-center gap-0.5 md:gap-2 ${
       active 
         ? (isSpecial ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'bg-red-600 text-black shadow-lg shadow-red-900/40') 
         : (isSpecial ? 'text-blue-500 hover:text-blue-400' : 'text-neutral-500 hover:text-white')
     }`}>
-      {Icon && <Icon className="w-5 h-5 md:w-4 md:h-4" />}
+      {Icon && <Icon className="w-4 h-4 md:w-4 md:h-4" />}
       <span className="scale-90 md:scale-100">{label.replace(' ✨', '')}</span>
       {isSpecial && <span className="md:hidden">✨</span>}
     </button>
