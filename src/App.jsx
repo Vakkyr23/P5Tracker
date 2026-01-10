@@ -267,10 +267,10 @@ export default function App() {
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans p-4 md:p-8">
       <header className="max-w-6xl mx-auto mb-8 border-b-8 border-red-600 pb-8 flex flex-col lg:flex-row items-center justify-between gap-6">
         <div className="text-center lg:text-left">
-          <h1 className="text-4xl md:text-6xl font-black text-red-600 tracking-tighter italic uppercase flex items-center justify-center lg:justify-start flex-wrap gap-2">
+          <h1 className="text-4xl md:text-6xl font-black text-red-600 tracking-tighter italic uppercase flex items-baseline justify-center lg:justify-start flex-wrap gap-2">
             <span>P5</span>
             <span className="text-white not-italic text-2xl font-bold tracking-normal uppercase">Tracker</span>
-            <span className="bg-red-600 text-black px-3 py-1 rounded-full not-italic text-xs md:text-sm font-black tracking-widest align-middle shadow-lg transform -skew-x-12 ml-2 border border-red-900">
+            <span className="bg-red-600 text-black px-2 py-0.5 rounded not-italic text-[11px] font-black tracking-tighter align-middle ml-2 border border-red-900 shadow-sm">
               v{pkg.version}
             </span>
           </h1>
