@@ -308,19 +308,19 @@ export default function App() {
         
         {/* CHEATSHEET VIEW */}
         {activeTab === 'cheatsheet' && (
-          <div className="space-y-12 animate-in fade-in duration-500">
+          <div className="space-y-6 md:space-y-12 animate-in fade-in duration-500">
             {/* Protagonist Dashboard */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-xl">
-                <h3 className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+              <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-3xl p-4 md:p-6 shadow-xl">
+                <h3 className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.3em] mb-4 md:mb-6 flex items-center gap-2">
                   <Zap className="w-3 h-3 text-red-500" /> Protagonist Social Stats
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
                   {SOCIAL_STATS.map(stat => {
                     const Icon = STAT_ICONS[stat.id];
                     const currentLvl = socialStats[stat.id];
                     return (
-                      <div key={stat.id} className="flex flex-col gap-3">
+                      <div key={stat.id} className="flex flex-col gap-2 md:gap-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Icon className="w-3 h-3 text-neutral-400" />
@@ -345,7 +345,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-red-600 border border-red-500 rounded-3xl p-6 shadow-xl shadow-red-900/20 text-black flex flex-col justify-between">
+              <div className="bg-red-600 border border-red-500 rounded-3xl p-4 md:p-6 shadow-xl shadow-red-900/20 text-black flex flex-col justify-between">
                 <div>
                   <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
                     <Trophy className="w-3 h-3" /> Royal Readiness
@@ -380,40 +380,40 @@ export default function App() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <div className="space-y-8">
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-6">
-                   <h3 className="text-2xl font-black italic text-red-600 uppercase mb-6 flex items-center gap-2">
-                     <Clock className="w-6 h-6" /> Daily Routine
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+             <div className="space-y-4 md:space-y-8">
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
+                   <h3 className="text-xl md:text-2xl font-black italic text-red-600 uppercase mb-4 md:mb-6 flex items-center gap-2">
+                     <Clock className="w-5 h-5 md:w-6 md:h-6" /> Daily Routine
                    </h3>
-                   <div className="space-y-4">
+                   <div className="space-y-3 md:space-y-4">
                      {APP_DATA.tips.daily.map((tip, i) => (
-                       <div key={i} className="flex gap-4 p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <CheckCircle2 className="w-5 h-5 text-red-500" />
+                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
+                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
+                             <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight">{tip.text}</div>
-                             <div className="text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
+                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
                    </div>
                 </div>
 
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-6">
-                   <h3 className="text-2xl font-black italic text-blue-500 uppercase mb-6 flex items-center gap-2">
-                     <Calendar className="w-6 h-6" /> Weekly / Time Specific
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
+                   <h3 className="text-xl md:text-2xl font-black italic text-blue-500 uppercase mb-4 md:mb-6 flex items-center gap-2">
+                     <Calendar className="w-5 h-5 md:w-6 md:h-6" /> Weekly / Time Specific
                    </h3>
-                   <div className="space-y-4">
+                   <div className="space-y-3 md:space-y-4">
                      {APP_DATA.tips.weekly.map((tip, i) => (
-                       <div key={i} className="flex gap-4 p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <Calendar className="w-5 h-5 text-blue-500" />
+                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
+                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
+                             <Calendar className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight">{tip.text}</div>
-                             <div className="text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
+                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -421,39 +421,39 @@ export default function App() {
                 </div>
              </div>
 
-             <div className="space-y-8">
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-6">
-                   <h3 className="text-2xl font-black italic text-yellow-500 uppercase mb-6 flex items-center gap-2">
-                     <Sword className="w-6 h-6" /> Combat & Systems
+             <div className="space-y-4 md:space-y-8">
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
+                   <h3 className="text-xl md:text-2xl font-black italic text-yellow-500 uppercase mb-4 md:mb-6 flex items-center gap-2">
+                     <Sword className="w-5 h-5 md:w-6 md:h-6" /> Combat & Systems
                    </h3>
-                   <div className="space-y-4">
+                   <div className="space-y-3 md:space-y-4">
                      {APP_DATA.tips.combat.map((tip, i) => (
-                       <div key={i} className="flex gap-4 p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <Sword className="w-5 h-5 text-yellow-500" />
+                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
+                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
+                             <Sword className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight">{tip.text}</div>
-                             <div className="text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
+                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
                    </div>
                 </div>
 
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-6">
-                   <h3 className="text-2xl font-black italic text-neutral-400 uppercase mb-6 flex items-center gap-2">
-                     <Users className="w-6 h-6" /> Weather & Environment
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
+                   <h3 className="text-xl md:text-2xl font-black italic text-neutral-400 uppercase mb-4 md:mb-6 flex items-center gap-2">
+                     <Users className="w-5 h-5 md:w-6 md:h-6" /> Weather & Environment
                    </h3>
-                   <div className="space-y-4">
+                   <div className="space-y-3 md:space-y-4">
                      {APP_DATA.tips.weather.map((tip, i) => (
-                       <div key={i} className="flex gap-4 p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <Users className="w-5 h-5 text-neutral-400" />
+                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
+                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
+                             <Users className="w-4 h-4 md:w-5 md:h-5 text-neutral-400" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight">{tip.text}</div>
-                             <div className="text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
+                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
