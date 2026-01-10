@@ -104,6 +104,7 @@ export default function App() {
   }, [confidantRanks]);
 
   const [expandedPalace, setExpandedPalace] = useState(null);
+  const [expandedMementos, setExpandedMementos] = useState(null);
   const [saveModal, setSaveModal] = useState(false);
   const [importText, setImportText] = useState('');
   const [copied, setCopied] = useState(false);
@@ -261,6 +262,12 @@ export default function App() {
   useEffect(() => {
     const palaceIdx = APP_DATA.palaces.findIndex(p => p.monthId === anchoredMonth);
     if (palaceIdx !== -1) setExpandedPalace(palaceIdx);
+  }, [anchoredMonth]);
+
+  // Auto-expand relevant mementos
+  useEffect(() => {
+    const memIdx = APP_DATA.mementos.findIndex(m => m.timing.toLowerCase().includes(anchoredMonth));
+    if (memIdx !== -1) setExpandedMementos(memIdx);
   }, [anchoredMonth]);
 
   return (
@@ -901,40 +908,49 @@ export default function App() {
 
         {/* MEMENTOS VIEW */}
         {activeTab === 'mementos' && (
-          <div className="space-y-8 animate-in fade-in duration-500">
-            {APP_DATA.mementos.map(mem => {
+          <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
+            {APP_DATA.mementos.map((mem, idx) => {
               const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
               const memMonthIdx = APP_DATA.months.findIndex(m => m.name.toLowerCase() === mem.timing.split('/')[0].toLowerCase());
               const isHistory = memMonthIdx < anchoredMonthIdx - 1; // Generous buffer for mementos
               
               return (
                 <div key={mem.id} className={`bg-neutral-900 border-l-[12px] border-red-600 rounded-3xl overflow-hidden shadow-2xl transition-opacity ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                  <div className="p-4 md:p-8">
-                    <div className="flex justify-between items-center mb-4 md:mb-8">
+                  <div 
+                    className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center"
+                    onClick={() => setExpandedMementos(expandedMementos === idx ? null : idx)}
+                  >
+                    <div className="flex items-center justify-between w-full pr-4 md:pr-8">
                       <div>
-                        <h3 className="text-xl md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
+                        <h3 className="text-lg md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
                         <p className="text-neutral-500 text-[9px] md:text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
                       </div>
-                      <div className="bg-black px-3 py-1.5 md:px-6 md:py-3 rounded-2xl text-lg md:text-2xl font-black border border-red-900 text-red-500 shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
+                      <div className="bg-black px-3 py-1 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-2xl font-black border border-red-900 text-red-500 shadow-[2px_2px_0px_0px_rgba(153,27,27,1)] md:shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
                     </div>
-                    <div className="space-y-4 md:space-y-6">
-                      <h4 className="text-[9px] md:text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        {mem.requests.map(req => (
-                          <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-4 md:p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
-                            <div className="flex justify-between items-center mb-2 md:mb-4">
-                               <div className="flex items-center gap-2 md:gap-3 italic">
-                                  {checkedItems[req.id] ? <CheckSquare className="w-4 h-4 md:w-5 md:h-5 text-green-500" /> : <Square className="w-4 h-4 md:w-5 md:h-5 text-neutral-700" />}
-                                  <span className="text-lg md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
-                               </div>
+                    <ChevronRight className={`transition-transform w-6 h-6 md:w-10 md:h-10 text-neutral-500 ${expandedMementos === idx ? 'rotate-90 text-red-600' : ''}`} />
+                  </div>
+
+                  {expandedMementos === idx && (
+                    <div className="p-4 md:p-8 pt-0 space-y-4 md:space-y-6 bg-black/20 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
+                      <div className="mt-4 md:mt-6">
+                        <h4 className="text-[9px] md:text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3 mb-4 md:mb-6"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                          {mem.requests.map(req => (
+                            <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-4 md:p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
+                              <div className="flex justify-between items-center mb-2 md:mb-4">
+                                 <div className="flex items-center gap-2 md:gap-3 italic">
+                                    {checkedItems[req.id] ? <CheckSquare className="w-4 h-4 md:w-5 md:h-5 text-green-500" /> : <Square className="w-4 h-4 md:w-5 md:h-5 text-neutral-700" />}
+                                    <span className="text-sm md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
+                                 </div>
+                              </div>
+                              <p className="text-[10px] md:text-xs text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
+                              <div className="text-[9px] md:text-[10px] font-black text-red-600 uppercase ml-6 md:ml-8">Reward: {req.reward}</div>
                             </div>
-                            <p className="text-[10px] md:text-xs text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
-                            <div className="text-[9px] md:text-[10px] font-black text-red-600 uppercase ml-6 md:ml-8">Reward: {req.reward}</div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               );
             })}
