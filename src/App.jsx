@@ -940,16 +940,12 @@ export default function App() {
         {/* MEMENTOS VIEW */}
         {activeTab === 'mementos' && (
           <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
-            {(() => {
-              const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
-              const historyMem = [];
-              const activeMem = [];
-
-              APP_DATA.mementos.forEach(mem => {
+              APP_DATA.mementos.forEach((mem, index) => {
                 const memMonthIdx = APP_DATA.months.findIndex(m => mem.timing.toLowerCase().includes(m.name.toLowerCase()));
                 const isHistory = memMonthIdx !== -1 && memMonthIdx < anchoredMonthIdx - 1;
-                if (isHistory) historyMem.push(mem);
-                else activeMem.push(mem);
+                const memWithIdx = { ...mem, originalIdx: index };
+                if (isHistory) historyMem.push(memWithIdx);
+                else activeMem.push(memWithIdx);
               });
 
               return (
@@ -966,13 +962,15 @@ export default function App() {
                       
                       {showArchived && (
                         <div className="border-t border-neutral-800 p-2 space-y-4">
-                          {historyMem.map((mem, idx) => (
+                          {historyMem.map((mem) => {
+                            const idx = mem.originalIdx;
+                            return (
                             <div key={mem.id} className="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
                                 {/* Render history mementos card (Compact) */}
                                 <div className={`bg-neutral-950 border-l-[8px] border-red-900 rounded-2xl overflow-hidden shadow-lg`}>
                                   <div 
                                     className="p-3 cursor-pointer hover:bg-neutral-900 transition-all flex justify-between items-center"
-                                    onClick={() => setExpandedMementos(expandedMementos === `hist-${idx}` ? null : `hist-${idx}`)}
+                                    onClick={() => setExpandedMementos(expandedMementos === idx ? null : idx)}
                                   >
                                     <div className="flex items-center justify-between w-full pr-4">
                                       <div>
@@ -980,10 +978,10 @@ export default function App() {
                                       </div>
                                       <div className="text-[10px] font-black text-neutral-600 border border-neutral-800 px-2 py-0.5 rounded">LVL {mem.targetLvl}</div>
                                     </div>
-                                    <ChevronRight className={`transition-transform w-4 h-4 text-neutral-600 ${expandedMementos === `hist-${idx}` ? 'rotate-90' : ''}`} />
+                                    <ChevronRight className={`transition-transform w-4 h-4 text-neutral-600 ${expandedMementos === idx ? 'rotate-90' : ''}`} />
                                   </div>
 
-                                  {expandedMementos === `hist-${idx}` && (
+                                  {expandedMementos === idx && (
                                     <div className="p-3 pt-0 space-y-3 bg-black/20 border-t border-neutral-900">
                                       <div className="mt-3">
                                         <div className="grid grid-cols-1 gap-2">
@@ -1002,13 +1000,15 @@ export default function App() {
                                   )}
                                 </div>
                             </div>
-                          ))}
+                          )})}
                         </div>
                       )}
                     </div>
                   )}
 
-                  {activeMem.map((mem, idx) => (
+                  {activeMem.map((mem) => {
+                    const idx = mem.originalIdx;
+                    return (
                     <div key={mem.id} className={`bg-neutral-900 border-l-[12px] border-red-600 rounded-3xl overflow-hidden shadow-2xl`}>
                       <div 
                         className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center"
@@ -1046,7 +1046,7 @@ export default function App() {
                         </div>
                       )}
                     </div>
-                  ))}
+                  )})}
                 </>
               );
             })()}
