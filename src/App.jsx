@@ -271,6 +271,22 @@ export default function App() {
     if (memIdx !== -1) setExpandedMementos(memIdx);
   }, [anchoredMonth]);
 
+  // Group Mementos logic
+  const mementosGroups = useMemo(() => {
+    const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
+    const history = [];
+    const active = [];
+
+    APP_DATA.mementos.forEach((mem, index) => {
+      const memMonthIdx = APP_DATA.months.findIndex(m => mem.timing.toLowerCase().includes(m.name.toLowerCase()));
+      const isHistory = memMonthIdx !== -1 && memMonthIdx < anchoredMonthIdx - 1;
+      const memWithIdx = { ...mem, originalIdx: index };
+      if (isHistory) history.push(memWithIdx);
+      else active.push(memWithIdx);
+    });
+    return { history, active };
+  }, [anchoredMonth]);
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans p-2 md:p-8">
       <header className="max-w-6xl mx-auto mb-4 md:mb-8 border-b-4 md:border-b-8 border-red-600 pb-4 md:pb-8 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
@@ -940,13 +956,8 @@ export default function App() {
         {/* MEMENTOS VIEW */}
         {activeTab === 'mementos' && (
           <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
-              APP_DATA.mementos.forEach((mem, index) => {
-                const memMonthIdx = APP_DATA.months.findIndex(m => mem.timing.toLowerCase().includes(m.name.toLowerCase()));
-                const isHistory = memMonthIdx !== -1 && memMonthIdx < anchoredMonthIdx - 1;
-                const memWithIdx = { ...mem, originalIdx: index };
-                if (isHistory) historyMem.push(memWithIdx);
-                else activeMem.push(memWithIdx);
-              });
+            {(() => {
+              const { history: historyMem, active: activeMem } = mementosGroups;
 
               return (
                 <>
@@ -966,11 +977,10 @@ export default function App() {
                             const idx = mem.originalIdx;
                             return (
                             <div key={mem.id} className="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
-                                {/* Render history mementos card (Compact) */}
                                 <div className={`bg-neutral-950 border-l-[8px] border-red-900 rounded-2xl overflow-hidden shadow-lg`}>
                                   <div 
                                     className="p-3 cursor-pointer hover:bg-neutral-900 transition-all flex justify-between items-center"
-                                    onClick={() => setExpandedMementos(expandedMementos === idx ? null : idx)}
+                                    onClick={() => setExpandedMementos(expandedMementos === `hist-${idx}` ? null : `hist-${idx}`)}
                                   >
                                     <div className="flex items-center justify-between w-full pr-4">
                                       <div>
@@ -978,10 +988,10 @@ export default function App() {
                                       </div>
                                       <div className="text-[10px] font-black text-neutral-600 border border-neutral-800 px-2 py-0.5 rounded">LVL {mem.targetLvl}</div>
                                     </div>
-                                    <ChevronRight className={`transition-transform w-4 h-4 text-neutral-600 ${expandedMementos === idx ? 'rotate-90' : ''}`} />
+                                    <ChevronRight className={`transition-transform w-4 h-4 text-neutral-600 ${expandedMementos === `hist-${idx}` ? 'rotate-90' : ''}`} />
                                   </div>
 
-                                  {expandedMementos === idx && (
+                                  {expandedMementos === `hist-${idx}` && (
                                     <div className="p-3 pt-0 space-y-3 bg-black/20 border-t border-neutral-900">
                                       <div className="mt-3">
                                         <div className="grid grid-cols-1 gap-2">
