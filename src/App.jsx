@@ -277,6 +277,16 @@ export default function App() {
           <p className="text-neutral-500 mt-2 font-mono uppercase text-[10px] tracking-[0.4em]">Integrated Strategy Compendium</p>
         </div>
         <div className="flex gap-4 flex-wrap justify-center items-center">
+            <a 
+              href="https://ko-fi.com/K3K11RWTSL" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-4 py-2 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-4 border-[#c44040] hover:border-neutral-300 group"
+              title="Support the Dev"
+            >
+              <Heart className="w-4 h-4 fill-current group-hover:text-red-500 transition-colors" /> 
+              <span className="hidden md:inline">Support</span>
+            </a>
             <button 
               onClick={() => setSaveModal(true)} 
               className="flex items-center gap-2 bg-red-600 hover:bg-white text-black px-4 py-2 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 active:scale-95 border-b-4 border-red-900"
