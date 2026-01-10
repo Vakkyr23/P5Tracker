@@ -49,6 +49,13 @@ Feedback, bug reports, and strategy corrections are welcome via GitHub Issues.
 *   Track your Knowledge, Guts, Proficiency, Kindness, and Charm.
 *   See real-time feedback on which stats are bottlenecking your relationships.
 
+## 🚀 Future Roadmap
+
+*   **Resources & Reference Hub:** Centralized links to proven 100% walkthroughs and a searchable Classroom/Exam/Crossword cheat sheet.
+*   **Persona Compendium:** A lightweight tracker for Compendium completion and early-game fusion essentials.
+*   **PWA Support:** Full offline access and installable app experience for iOS and Android.
+*   **Fusion Calculator:** Integrated tool for checking fusion recipes and skill requirements.
+
 ## Tech Stack
 
 *   **Frontend:** React 19 + Vite
