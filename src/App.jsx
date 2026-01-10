@@ -127,6 +127,12 @@ export default function App() {
   useEffect(() => {
     const lastSeen = localStorage.getItem('p5r_lastSeenVersion');
     
+    // If first visit, just record the version and don't show changelog
+    if (!lastSeen) {
+      localStorage.setItem('p5r_lastSeenVersion', APP_VERSION);
+      return;
+    }
+
     // Only show for Major.Minor changes (e.g. 2.1.0 -> 2.2.0), not patches
     const getMinor = (v) => v ? v.split('.').slice(0, 2).join('.') : null;
     

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.5] - 2026-01-10
+### Fixed
+- Prevented double popups (Onboarding + Changelog) for first-time users.
+
 ## [2.1.4] - 2026-01-10
 ### Changed
 - Refined **Mission Briefing** (Onboarding) to be more action-oriented, explaining how to use the timeline anchor and backlog systems.
