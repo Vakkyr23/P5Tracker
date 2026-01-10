@@ -443,6 +443,7 @@ export const APP_DATA = {
       name: 'Bank of Gluttony (Kaneshiro)',
       lvl: '25-28',
       threat: 'Piggytron (Phys/Gimmick)',
+      deadlineMonth: 'july',
       seeds: [
         { id: 'pks1_k', name: 'Red Gluttony Seed', text: 'Bankers Passageway. Grapple point near vault.' },
         { id: 'pks2_k', name: 'Green Gluttony Seed', text: 'Laundering Office. Crawl space near money room.' },
@@ -460,6 +461,7 @@ export const APP_DATA = {
       name: 'Pyramid (Futaba)',
       lvl: '34-36',
       threat: 'Anubis (Bless/Curse)',
+      deadlineMonth: 'august',
       seeds: [
         { id: 'p1s1', name: 'Red Will Seed', text: 'Chamber of Rejection. Jump on sarcophagi near chest to find hidden path.' },
         { id: 'p1s2', name: 'Green Will Seed', text: 'Chamber of Guilt. After solving the hologram puzzle, go through the red door.' },
@@ -477,6 +479,7 @@ export const APP_DATA = {
       name: 'Spaceport (Okumura)',
       lvl: '43-45',
       threat: 'Green Robots (DPS Race)',
+      deadlineMonth: 'october',
       seeds: [
         { id: 'p2s1', name: 'Red Will Seed', text: 'Facility Area. Vent in circular hall near start.' },
         { id: 'p2s2', name: 'Green Will Seed', text: 'Export Line. Grapple to moving cargo tops.' },
@@ -493,6 +496,7 @@ export const APP_DATA = {
       name: 'Casino (Sae)',
       lvl: '52-54',
       threat: 'Shadow Sae (Gimmicks)',
+      deadlineMonth: 'november',
       seeds: [
         { id: 'p3s1', name: 'Red Will Seed', text: 'Staff Area. Near first security room behind crates.' },
         { id: 'p3s2', name: 'Green Will Seed', text: 'Slot Room. High grapple above giant slot machine.' },
@@ -509,6 +513,7 @@ export const APP_DATA = {
       name: 'Cruiser (Shido)',
       lvl: '63-65',
       threat: 'Gauntlet of Bosses',
+      deadlineMonth: 'december',
       seeds: [
         { id: 'p4s1', name: 'Red Will Seed', text: 'Mid-Starboard Hallway. Grapple from chandelier to a vent.' },
         { id: 'p4s2', name: 'Green Will Seed', text: 'Lower Port Hallway. In the mouse puzzle room, use a small vent.' },

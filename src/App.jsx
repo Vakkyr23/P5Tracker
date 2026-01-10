@@ -842,10 +842,14 @@ export default function App() {
              {APP_DATA.palaces.map((p, idx) => {
                const viewingMonthIdx = APP_DATA.months.findIndex(m => m.id === currentMonth);
                const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
-               const palaceMonthIdx = APP_DATA.months.findIndex(m => m.id === p.monthId);
                
-               const isHistory = palaceMonthIdx < anchoredMonthIdx;
-               const isCurrent = p.monthId === anchoredMonth;
+               const palaceStartMonthIdx = APP_DATA.months.findIndex(m => m.id === p.monthId);
+               const palaceEndMonthIdx = p.deadlineMonth 
+                 ? APP_DATA.months.findIndex(m => m.id === p.deadlineMonth)
+                 : palaceStartMonthIdx;
+               
+               const isHistory = palaceEndMonthIdx < anchoredMonthIdx;
+               const isCurrent = anchoredMonthIdx >= palaceStartMonthIdx && anchoredMonthIdx <= palaceEndMonthIdx;
                
                return (
                  <div key={p.id} className={`bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl transition-all ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
