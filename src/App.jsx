@@ -118,7 +118,11 @@ export default function App() {
   // Check version for changelog
   useEffect(() => {
     const lastSeen = localStorage.getItem('p5r_lastSeenVersion');
-    if (lastSeen !== APP_VERSION) {
+    
+    // Only show for Major.Minor changes (e.g. 2.1.0 -> 2.2.0), not patches
+    const getMinor = (v) => v ? v.split('.').slice(0, 2).join('.') : null;
+    
+    if (getMinor(lastSeen) !== getMinor(APP_VERSION)) {
       setShowChangelog(true);
       localStorage.setItem('p5r_lastSeenVersion', APP_VERSION);
     }
