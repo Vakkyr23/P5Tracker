@@ -3,7 +3,7 @@ export const ROADMAP = [
     title: "1. Resources & Reference Hub",
     status: "Active",
     items: [
-      "**Day-to-Day 100% Guides:** Direct links to trusted GameFAQs and IGN walkthroughs.",
+      "**Day-to-Day 100% Guides:** Direct links to proven 100% walkthroughs for deep-dives.",
       "**Classroom & Exam Cheat Sheet:** Searchable collection of all answers and crossword puzzles.",
       "**Specialized Calculators:** Fast access to community Fusion and Skill databases.",
       "**Visual Guides:** Curated YouTube links for tricky sections like Will Seeds."
