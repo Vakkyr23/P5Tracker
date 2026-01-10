@@ -35,6 +35,7 @@ import {
 
 import { APP_DATA } from './data/gameData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
+import { RELEASE_NOTES } from './data/releaseNotes';
 import pkg from '../package.json';
 
 const STAT_ICONS = {
@@ -107,9 +108,19 @@ export default function App() {
   const [expandedMementos, setExpandedMementos] = useState(null);
   const [showArchived, setShowArchived] = useState(false);
   const [saveModal, setSaveModal] = useState(false);
+  const [showChangelog, setShowChangelog] = useState(false);
   const [importText, setImportText] = useState('');
   const [copied, setCopied] = useState(false);
   const hiddenInputRef = useRef(null);
+
+  // Check version for changelog
+  useEffect(() => {
+    const lastSeen = localStorage.getItem('p5r_lastSeenVersion');
+    if (lastSeen !== pkg.version) {
+      setShowChangelog(true);
+      localStorage.setItem('p5r_lastSeenVersion', pkg.version);
+    }
+  }, []);
 
 
   const updateRank = (arcana, val) => {
@@ -1081,8 +1092,12 @@ export default function App() {
 
         {/* Footer */}
         <div className="mt-20 pt-10 border-t border-neutral-800 text-center opacity-60 hover:opacity-100 transition-opacity">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
-            v{pkg.version} • Feedback Welcome
+          <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4 flex items-center justify-center gap-2">
+            <span>v{pkg.version}</span>
+            <span>•</span>
+            <button onClick={() => setShowChangelog(true)} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
+            <span>•</span>
+            <span>Feedback Welcome</span>
           </p>
           <a 
             href="https://ko-fi.com/K3K11RWTSL" 
@@ -1120,6 +1135,42 @@ export default function App() {
               </div>
               <input type="text" ref={hiddenInputRef} className="opacity-0 absolute pointer-events-none" />
               <button onClick={() => setSaveModal(false)} className="w-full text-neutral-600 hover:text-red-500 uppercase text-[10px] font-black tracking-[0.5em] transition-colors">Close Terminal</button>
+           </div>
+        </div>
+      )}
+      {/* CHANGELOG MODAL */}
+      {showChangelog && (
+        <div className="fixed inset-0 bg-black/98 backdrop-blur-2xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+           <div className="bg-neutral-900 border-2 border-red-600 rounded-[2rem] w-full max-w-lg p-6 md:p-10 shadow-[0_0_50px_rgba(220,38,38,0.2)] max-h-[80vh] overflow-y-auto custom-scrollbar">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">New Intel</h2>
+                  <div className="text-red-600 font-bold font-mono text-xs mt-1">PATCH v{RELEASE_NOTES[0].version}</div>
+                </div>
+                <button onClick={() => setShowChangelog(false)} className="p-2 bg-neutral-800 rounded-full hover:bg-red-600 transition-colors"><ChevronDown className="w-6 h-6 rotate-180" /></button>
+              </div>
+              
+              <div className="space-y-6">
+                <p className="text-sm text-neutral-400 italic">"{RELEASE_NOTES[0].description}"</p>
+                
+                {RELEASE_NOTES[0].sections.map((section, i) => (
+                  <div key={i}>
+                    <h4 className="text-xs font-black text-red-500 uppercase tracking-widest mb-3 border-b border-red-900/30 pb-1">{section.title}</h4>
+                    <ul className="space-y-2">
+                      {section.items.map((item, j) => (
+                        <li key={j} className="text-xs text-neutral-300 flex items-start gap-2">
+                          <span className="text-red-600 mt-0.5">›</span>
+                          <span dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              <button onClick={() => setShowChangelog(false)} className="w-full mt-8 bg-white text-black p-4 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-colors">
+                Acknowledged
+              </button>
            </div>
         </div>
       )}
