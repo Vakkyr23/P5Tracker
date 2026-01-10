@@ -261,13 +261,29 @@ export default function App() {
 
   // Auto-expand relevant palace
   useEffect(() => {
-    const palaceIdx = APP_DATA.palaces.findIndex(p => p.monthId === anchoredMonth);
+    const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
+    const palaceIdx = APP_DATA.palaces.findIndex(p => {
+      const startIdx = APP_DATA.months.findIndex(m => m.id === p.monthId);
+      const endIdx = p.deadlineMonth ? APP_DATA.months.findIndex(m => m.id === p.deadlineMonth) : startIdx;
+      return anchoredMonthIdx >= startIdx && anchoredMonthIdx <= endIdx;
+    });
     if (palaceIdx !== -1) setExpandedPalace(palaceIdx);
   }, [anchoredMonth]);
 
   // Auto-expand relevant mementos
   useEffect(() => {
-    const memIdx = APP_DATA.mementos.findIndex(m => m.timing.toLowerCase().includes(anchoredMonth));
+    const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
+    const memIdx = APP_DATA.mementos.findIndex(mem => {
+      // Find all months that match the timing string (e.g. "May/June")
+      const monthIndices = APP_DATA.months
+        .map((m, i) => mem.timing.toLowerCase().includes(m.name.toLowerCase()) ? i : -1)
+        .filter(i => i !== -1);
+      
+      if (monthIndices.length === 0) return false;
+      const startIdx = Math.min(...monthIndices);
+      const endIdx = Math.max(...monthIndices);
+      return anchoredMonthIdx >= startIdx && anchoredMonthIdx <= endIdx;
+    });
     if (memIdx !== -1) setExpandedMementos(memIdx);
   }, [anchoredMonth]);
 
