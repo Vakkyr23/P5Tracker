@@ -271,7 +271,7 @@ export default function App() {
             <span>P5</span>
             <span className="text-white not-italic text-2xl font-bold tracking-normal uppercase">Tracker</span>
             <span className="bg-red-600 text-black px-2 py-0.5 rounded not-italic text-[11px] font-black tracking-tighter align-middle ml-2 border border-red-900 shadow-sm">
-              v{pkg.version}
+              v{pkg.version}{import.meta.env.DEV ? ` [${__BRANCH__}]` : ''}
             </span>
           </h1>
           <p className="text-neutral-500 mt-2 font-mono uppercase text-[10px] tracking-[0.4em]">Integrated Strategy Compendium</p>
