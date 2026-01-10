@@ -955,7 +955,7 @@ export default function App() {
         {/* Footer */}
         <div className="mt-20 pt-10 border-t border-neutral-800 text-center opacity-60 hover:opacity-100 transition-opacity">
           <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4">
-            Public Beta v2.0 • Feedback Welcome
+            v{pkg.version} • Feedback Welcome
           </p>
           <a 
             href="https://ko-fi.com/K3K11RWTSL" 
