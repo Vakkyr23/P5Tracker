@@ -548,7 +548,7 @@ export default function App() {
                     <div 
                       key={`${task.id}-${idx}`} 
                       onClick={() => toggleItem(task.id)} 
-                      className={`p-4 rounded-xl border flex items-center gap-4 cursor-pointer transition-all ${
+                      className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${
                         checkedItems[task.id] 
                           ? 'opacity-30 border-neutral-800' 
                           : task.isOverdue 
@@ -613,118 +613,99 @@ export default function App() {
         {/* CONFIDANTS VIEW */}
         {activeTab === 'confidants' && (
           <div className="animate-in fade-in duration-500">
-            {/* Mobile Card View */}
-            <div className="grid grid-cols-1 gap-4 md:hidden">
-              {APP_DATA.confidants.map(c => (
-                <div key={c.arcana} className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 shadow-lg flex flex-col gap-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="font-black text-red-600 italic text-2xl tracking-tighter">{c.arcana}</div>
-                      <div className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest">{c.name}</div>
-                      
-                      {/* Stat Gate Warning (Mobile) */}
-                      {(() => {
-                        const gate = isGateBlocked(c.arcana, confidantRanks[c.arcana]);
-                        if (gate) {
-                          return (
-                            <div className="mt-2 flex items-center gap-1.5 bg-red-950/30 border border-red-900/50 px-2 py-1 rounded-lg">
-                              <AlertTriangle className="w-3 h-3 text-red-500" />
-                              <span className="text-[8px] font-black uppercase text-red-500 tracking-wider">Blocked: {gate.stat} Lv.{gate.lvl} Required</span>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })()}
-                    </div>
-                    <div className="flex items-center gap-2 bg-neutral-950 p-1 rounded-xl border border-neutral-800">
-                        <button 
-                          onClick={() => updateRank(c.arcana, (confidantRanks[c.arcana] || 0) - 1)} 
-                          className="p-3 bg-neutral-800 rounded-lg text-neutral-400 hover:text-red-500 text-xl font-black"
-                        >
-                          -
-                        </button>
-                        <span className="text-2xl font-black text-red-600 w-8 text-center">{confidantRanks[c.arcana] || 0}</span>
-                        <button 
-                          onClick={() => updateRank(c.arcana, (confidantRanks[c.arcana] || 0) + 1)} 
-                          className="p-3 bg-neutral-800 rounded-lg text-neutral-400 hover:text-red-500 text-xl font-black"
-                        >
-                          +
-                        </button>
-                    </div>
-                  </div>
-                  <div className="text-xs text-neutral-400 italic bg-neutral-950/50 p-3 rounded-xl border border-neutral-900">
-                      {c.notes}
-                      {c.deadline && <div className="text-red-500 font-black mt-2 uppercase text-[9px] tracking-widest">⚠️ Deadline: {c.deadline}</div>}
-                  </div>
+            {/* Mobile Compact List View */}
+            <div className="flex flex-col gap-2 md:hidden">
+              {APP_DATA.confidants.map(c => {
+                const isExpanded = expandedGuides[c.arcana];
+                const rank = confidantRanks[c.arcana] || 0;
+                const gate = isGateBlocked(c.arcana, rank);
+                const isMax = rank >= c.target;
 
-                  {/* Interaction Guide Toggle */}
-                  {CONFIDANT_INTERACTIONS[c.arcana] && (
-                    <div className="mt-2">
-                      <button 
-                        onClick={() => toggleGuide(c.arcana)}
-                        className="w-full flex items-center justify-between p-3 bg-neutral-800/50 hover:bg-neutral-800 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-neutral-800"
-                      >
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="w-3 h-3 text-blue-500" />
-                          <span>{expandedGuides[c.arcana] ? 'Hide Guide' : 'Show Interaction Guide'}</span>
+                return (
+                  <div key={c.arcana} className={`bg-neutral-900 border ${isExpanded ? 'border-red-600' : 'border-neutral-800'} rounded-xl overflow-hidden shadow-lg transition-all`}>
+                    {/* Compact Header */}
+                    <div 
+                      onClick={() => toggleGuide(c.arcana)}
+                      className="p-4 flex items-center justify-between cursor-pointer active:bg-neutral-800"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${isMax ? 'bg-red-600 text-black' : 'bg-neutral-800 text-neutral-400'}`}>
+                          {rank}
                         </div>
-                        <ChevronDown className={`w-4 h-4 transition-transform ${expandedGuides[c.arcana] ? 'rotate-180' : ''}`} />
-                      </button>
+                        <div>
+                          <div className="font-black text-white uppercase text-sm leading-none">{c.arcana}</div>
+                          <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">{c.name}</div>
+                        </div>
+                      </div>
                       
-                      {expandedGuides[c.arcana] && (
-                        <div className="mt-2 space-y-3 bg-neutral-950/80 p-4 rounded-xl border border-neutral-800 animate-in slide-in-from-top-2 duration-300">
-                          <div>
-                             <h5 className="text-[9px] font-black text-blue-500 uppercase mb-2 flex items-center gap-2"><Gift className="w-3 h-3" /> Best Gifts</h5>
-                             <div className="flex flex-wrap gap-1">
-                                {CONFIDANT_INTERACTIONS[c.arcana].bestGifts.map(g => (
-                                  <span key={g} className="px-2 py-1 bg-neutral-900 border border-neutral-800 rounded-md text-[9px] text-neutral-300">{g}</span>
-                                ))}
+                      <div className="flex items-center gap-2">
+                        {gate && <AlertTriangle className="w-4 h-4 text-red-500 animate-pulse" />}
+                        <ChevronDown className={`w-4 h-4 text-neutral-600 transition-transform ${isExpanded ? 'rotate-180 text-red-500' : ''}`} />
+                      </div>
+                    </div>
+
+                    {/* Expanded Detail View */}
+                    {isExpanded && (
+                      <div className="bg-black/20 border-t border-neutral-800 p-4 space-y-4 animate-in slide-in-from-top-2 duration-200">
+                        {/* Rank Controls */}
+                        <div className="flex items-center justify-between bg-neutral-950 p-2 rounded-lg border border-neutral-800">
+                           <span className="text-[10px] uppercase font-bold text-neutral-500 ml-2">Update Rank</span>
+                           <div className="flex items-center gap-4">
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); updateRank(c.arcana, rank - 1); }} 
+                                className="w-8 h-8 flex items-center justify-center bg-neutral-800 hover:bg-red-600 rounded text-white font-bold"
+                              >-</button>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); updateRank(c.arcana, rank + 1); }} 
+                                className="w-8 h-8 flex items-center justify-center bg-neutral-800 hover:bg-red-600 rounded text-white font-bold"
+                              >+</button>
+                           </div>
+                        </div>
+
+                        {/* Notes & Warnings */}
+                        <div className="space-y-2">
+                           {gate && (
+                              <div className="flex items-center gap-2 text-[10px] font-black text-red-500 bg-red-950/20 p-2 rounded border border-red-900/30">
+                                <AlertTriangle className="w-3 h-3" />
+                                <span>LOCKED: Requires {gate.stat} Lv.{gate.lvl}</span>
+                              </div>
+                           )}
+                           <p className="text-xs text-neutral-400 italic leading-relaxed">{c.notes}</p>
+                           {c.deadline && <div className="text-[10px] font-black text-red-500 uppercase tracking-widest">⚠️ Deadline: {c.deadline}</div>}
+                        </div>
+
+                        {/* Interaction Guide Data */}
+                        {CONFIDANT_INTERACTIONS[c.arcana] && (
+                          <div className="pt-4 border-t border-neutral-800 space-y-3">
+                             {/* Best Gifts */}
+                             <div>
+                                <h5 className="text-[9px] font-black text-blue-500 uppercase mb-2 flex items-center gap-1"><Gift className="w-3 h-3" /> Best Gifts</h5>
+                                <div className="flex flex-wrap gap-1">
+                                  {CONFIDANT_INTERACTIONS[c.arcana].bestGifts.map(g => (
+                                    <span key={g} className="px-2 py-1 bg-neutral-800 rounded text-[9px] text-neutral-300 border border-neutral-700">{g}</span>
+                                  ))}
+                                </div>
+                             </div>
+
+                             {/* Best Responses */}
+                             <div>
+                                <h5 className="text-[9px] font-black text-red-500 uppercase mb-2 flex items-center gap-1"><MessageCircle className="w-3 h-3" /> Best Responses (Rank {rank + 1})</h5>
+                                <div className="bg-neutral-900 p-3 rounded-lg border border-neutral-800 space-y-2">
+                                  {Array.isArray(CONFIDANT_INTERACTIONS[c.arcana].ranks[rank + 1]) 
+                                    ? CONFIDANT_INTERACTIONS[c.arcana].ranks[rank + 1].map((step, idx) => (
+                                        <p key={idx} className="text-[10px] text-neutral-300 border-b border-neutral-800 last:border-0 pb-1 last:pb-0">{step}</p>
+                                      ))
+                                    : <p className="text-[10px] text-neutral-500 italic">No dialogue data for this rank.</p>
+                                  }
+                                </div>
                              </div>
                           </div>
-
-                          {/* Strategic Roadmap Section (Mobile) */}
-                          {c.monthlyTargets && Object.keys(c.monthlyTargets).length > 0 && (
-                            <div className="pt-2 border-t border-neutral-800/50">
-                               <h5 className="text-[9px] font-black text-yellow-500 uppercase mb-2 flex items-center gap-2"><Trophy className="w-3 h-3" /> Strategic Roadmap</h5>
-                               <div className="grid grid-cols-2 gap-2">
-                                  {Object.entries(c.monthlyTargets).map(([mId, rank]) => {
-                                    const monthName = APP_DATA.months.find(m => m.id === mId)?.name || mId;
-                                    const isMet = (confidantRanks[c.arcana] || 0) >= rank;
-                                    const isSelected = currentMonth === mId;
-                                    return (
-                                      <div key={mId} className={`flex items-center justify-between p-2 rounded-lg border ${isSelected ? 'border-yellow-500/50 bg-yellow-500/5' : 'border-neutral-800 bg-neutral-900/30'}`}>
-                                        <span className={`text-[8px] uppercase font-bold ${isSelected ? 'text-yellow-500' : 'text-neutral-500'}`}>{monthName}</span>
-                                        <div className="flex items-center gap-1">
-                                          <span className="text-[10px] font-black italic">Rank {rank}</span>
-                                          {isMet ? <CheckCircle2 className="w-3 h-3 text-green-500" /> : <Circle className="w-2 h-2 text-neutral-700" />}
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                               </div>
-                            </div>
-                          )}
-
-                          <div>
-                             <h5 className="text-[9px] font-black text-red-500 uppercase mb-2 flex items-center gap-2"><MessageCircle className="w-3 h-3" /> Best Responses (Rank {confidantRanks[c.arcana] + 1})</h5>
-                             <div className="space-y-1 bg-neutral-900/50 p-3 rounded-lg border border-neutral-800">
-                                {Array.isArray(CONFIDANT_INTERACTIONS[c.arcana].ranks[confidantRanks[c.arcana] + 1]) 
-                                  ? CONFIDANT_INTERACTIONS[c.arcana].ranks[confidantRanks[c.arcana] + 1].map((step, idx) => (
-                                      <p key={idx} className="text-[10px] text-neutral-400 leading-relaxed border-b border-neutral-800 last:border-0 pb-1 mb-1 last:pb-0 last:mb-0">
-                                        {step}
-                                      </p>
-                                    ))
-                                  : <p className="text-[10px] text-neutral-400 italic">No data for this rank or max rank reached.</p>
-                                }
-                             </div>
-                          </div>
-                          <p className="text-[9px] text-neutral-500 italic border-t border-neutral-800 pt-2">{CONFIDANT_INTERACTIONS[c.arcana].tips}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Desktop Table View */}
@@ -867,15 +848,15 @@ export default function App() {
                
                return (
                  <div key={p.id} className={`bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl transition-all ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                   <div className="p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center" onClick={() => setExpandedPalace(expandedPalace === idx ? null : idx)}>
-                     <div className="flex items-center gap-8">
-                       <span className={`text-5xl font-black italic opacity-20 ${isCurrent ? 'text-red-600' : 'text-neutral-500'}`}>0{idx+1}</span>
+                   <div className="p-5 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center" onClick={() => setExpandedPalace(expandedPalace === idx ? null : idx)}>
+                     <div className="flex items-center gap-4 md:gap-8">
+                       <span className={`text-3xl md:text-5xl font-black italic opacity-20 ${isCurrent ? 'text-red-600' : 'text-neutral-500'}`}>0{idx+1}</span>
                        <div>
-                         <div className="flex items-center gap-3">
-                           <h3 className="text-3xl font-black uppercase text-white tracking-tighter">{p.name}</h3>
+                         <div className="flex items-center gap-2 md:gap-3">
+                           <h3 className="text-xl md:text-3xl font-black uppercase text-white tracking-tighter">{p.name}</h3>
                            {isCurrent && <span className="px-2 py-0.5 bg-red-600 text-white text-[8px] font-black rounded-md uppercase animate-pulse">Active Target</span>}
                          </div>
-                         <div className="flex gap-4 mt-2">
+                         <div className="flex gap-2 md:gap-4 mt-1 md:mt-2">
                             <span className="text-[10px] bg-red-900 text-black px-3 py-0.5 rounded-full font-black uppercase tracking-widest">Target Lvl: {p.lvl}</span>
                             <span className="text-[10px] text-neutral-500 font-black uppercase tracking-widest">Threat: {p.threat}</span>
                          </div>
@@ -885,8 +866,8 @@ export default function App() {
                    </div>
                    
                    {expandedPalace === idx && (
-                     <div className="p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
-                       <div className="mt-8 space-y-6">
+                     <div className="p-5 md:p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
+                       <div className="mt-6 md:mt-8 space-y-6">
                           <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-3"><MapPin className="w-5 h-5" /> Will Seed Coords</h4>
                           <div className="space-y-3">
                             {p.seeds.map((s, si) => (
@@ -930,13 +911,13 @@ export default function App() {
               
               return (
                 <div key={mem.id} className={`bg-neutral-900 border-l-[12px] border-red-600 rounded-3xl overflow-hidden shadow-2xl transition-opacity ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                  <div className="p-8">
-                    <div className="flex justify-between items-center mb-8">
+                  <div className="p-5 md:p-8">
+                    <div className="flex justify-between items-center mb-6 md:mb-8">
                       <div>
-                        <h3 className="text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
+                        <h3 className="text-2xl md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
                         <p className="text-neutral-500 text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
                       </div>
-                      <div className="bg-black px-6 py-3 rounded-2xl text-2xl font-black border border-red-900 text-red-500 shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
+                      <div className="bg-black px-4 py-2 md:px-6 md:py-3 rounded-2xl text-xl md:text-2xl font-black border border-red-900 text-red-500 shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
                     </div>
                     <div className="space-y-6">
                       <h4 className="text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-3"><Target className="w-5 h-5 text-red-600" /> Key Missions</h4>
