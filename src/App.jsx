@@ -105,6 +105,7 @@ export default function App() {
 
   const [expandedPalace, setExpandedPalace] = useState(null);
   const [expandedMementos, setExpandedMementos] = useState(null);
+  const [showArchived, setShowArchived] = useState(false);
   const [saveModal, setSaveModal] = useState(false);
   const [importText, setImportText] = useState('');
   const [copied, setCopied] = useState(false);
@@ -839,121 +840,216 @@ export default function App() {
         {/* PALACES VIEW */}
         {activeTab === 'palaces' && (
           <div className="space-y-6 animate-in fade-in duration-500">
-             {APP_DATA.palaces.map((p, idx) => {
-               const viewingMonthIdx = APP_DATA.months.findIndex(m => m.id === currentMonth);
+             {(() => {
                const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
                
-               const palaceStartMonthIdx = APP_DATA.months.findIndex(m => m.id === p.monthId);
-               const palaceEndMonthIdx = p.deadlineMonth 
-                 ? APP_DATA.months.findIndex(m => m.id === p.deadlineMonth)
-                 : palaceStartMonthIdx;
-               
-               const isHistory = palaceEndMonthIdx < anchoredMonthIdx;
-               const isCurrent = anchoredMonthIdx >= palaceStartMonthIdx && anchoredMonthIdx <= palaceEndMonthIdx;
-               
+               const historyPalaces = [];
+               const activePalaces = [];
+
+               APP_DATA.palaces.forEach((p, idx) => {
+                 const palaceStartMonthIdx = APP_DATA.months.findIndex(m => m.id === p.monthId);
+                 const palaceEndMonthIdx = p.deadlineMonth 
+                   ? APP_DATA.months.findIndex(m => m.id === p.deadlineMonth)
+                   : palaceStartMonthIdx;
+                 
+                 const isHistory = palaceEndMonthIdx < anchoredMonthIdx;
+                 if (isHistory) historyPalaces.push({ ...p, originalIdx: idx });
+                 else activePalaces.push({ ...p, originalIdx: idx });
+               });
+
                return (
-                 <div key={p.id} className={`bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl transition-all ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                   <div className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center" onClick={() => setExpandedPalace(expandedPalace === idx ? null : idx)}>
-                     <div className="flex items-center gap-3 md:gap-8">
-                       <span className={`text-2xl md:text-5xl font-black italic opacity-20 ${isCurrent ? 'text-red-600' : 'text-neutral-500'}`}>0{idx+1}</span>
-                       <div>
-                         <div className="flex items-center gap-2 md:gap-3">
-                           <h3 className="text-lg md:text-3xl font-black uppercase text-white tracking-tighter leading-tight">{p.name}</h3>
-                           {isCurrent && <span className="px-1.5 py-0.5 bg-red-600 text-white text-[8px] font-black rounded uppercase animate-pulse">Active</span>}
-                         </div>
-                         <div className="flex gap-2 md:gap-4 mt-1 md:mt-2">
-                            <span className="text-[9px] md:text-[10px] bg-red-900 text-black px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Lvl: {p.lvl}</span>
-                            <span className="text-[9px] md:text-[10px] text-neutral-500 font-black uppercase tracking-widest">{p.threat}</span>
-                         </div>
-                       </div>
-                     </div>
-                     <ChevronRight className={`transition-transform w-8 h-8 md:w-10 md:h-10 ${expandedPalace === idx ? 'rotate-90 text-red-600' : 'text-neutral-700'}`} />
-                   </div>
-                   
-                   {expandedPalace === idx && (
-                     <div className="p-4 md:p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
-                       <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-                          <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><MapPin className="w-4 h-4 md:w-5 md:h-5" /> Will Seed Coords</h4>
-                          <div className="space-y-2 md:space-y-3">
-                            {p.seeds.map((s, si) => (
-                              <div key={si} onClick={() => toggleItem(s.id)} className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${checkedItems[s.id] ? 'opacity-30 border-neutral-800 bg-black/20' : 'bg-neutral-900/80 border-l-4 border-l-red-600 border-neutral-800 hover:bg-neutral-800'}`}>
-                                 {checkedItems[s.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500 flex-shrink-0" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4 text-neutral-600 flex-shrink-0" />}
-                                 <div className="text-[10px] md:text-[11px] text-neutral-300 leading-tight">{s.text}</div>
-                              </div>
-                            ))}
-                          </div>
-                       </div>
-                       <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-                          <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Target className="w-4 h-4 md:w-5 md:h-5" /> Palace Personas</h4>
-                          <div className="grid gap-2">
-                             {p.personas.map(pers => (
-                               <div key={pers.id} onClick={() => toggleItem(pers.id)} className={`p-2 md:p-3 border rounded-xl text-[10px] md:text-xs font-bold cursor-pointer transition-all flex items-center gap-2 md:gap-3 ${checkedItems[pers.id] ? 'opacity-30 bg-black/20 border-neutral-800 text-green-500' : 'bg-neutral-800 border-neutral-700 hover:border-red-600 text-neutral-200'}`}>
-                                  {checkedItems[pers.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4" />}
-                                  {pers.name}
-                               </div>
-                             ))}
-                          </div>
-                       </div>
-                       <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-                          <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Search className="w-4 h-4 md:w-5 md:h-5" /> Field Intel</h4>
-                          <p className="text-[10px] md:text-sm italic text-neutral-400 leading-relaxed bg-red-950/10 p-4 md:p-6 border border-red-900/20 rounded-2xl ring-1 ring-red-500/10">"{p.tips}"</p>
-                       </div>
-                     </div>
+                 <>
+                   {historyPalaces.length > 0 && (
+                     <button 
+                       onClick={() => setShowArchived(!showArchived)}
+                       className="w-full py-3 border border-dashed border-neutral-800 rounded-2xl text-neutral-500 text-xs font-bold uppercase tracking-widest hover:bg-neutral-900 transition-colors flex items-center justify-center gap-2"
+                     >
+                       {showArchived ? 'Hide' : 'Show'} {historyPalaces.length} Completed {historyPalaces.length === 1 ? 'Palace' : 'Palaces'}
+                       <ChevronDown className={`w-4 h-4 transition-transform ${showArchived ? 'rotate-180' : ''}`} />
+                     </button>
                    )}
-                 </div>
+
+                   {(showArchived ? [...historyPalaces, ...activePalaces] : activePalaces).map((p) => {
+                     const idx = p.originalIdx;
+                     const palaceStartMonthIdx = APP_DATA.months.findIndex(m => m.id === p.monthId);
+                     const palaceEndMonthIdx = p.deadlineMonth 
+                       ? APP_DATA.months.findIndex(m => m.id === p.deadlineMonth)
+                       : palaceStartMonthIdx;
+                     
+                     const isHistory = palaceEndMonthIdx < anchoredMonthIdx;
+                     const isCurrent = anchoredMonthIdx >= palaceStartMonthIdx && anchoredMonthIdx <= palaceEndMonthIdx;
+               
+                     return (
+                       <div key={p.id} className={`bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl transition-all ${isHistory ? 'opacity-60 grayscale' : ''}`}>
+                         <div className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center" onClick={() => setExpandedPalace(expandedPalace === idx ? null : idx)}>
+                           <div className="flex items-center gap-3 md:gap-8">
+                             <span className={`text-2xl md:text-5xl font-black italic opacity-20 ${isCurrent ? 'text-red-600' : 'text-neutral-500'}`}>0{idx+1}</span>
+                             <div>
+                               <div className="flex items-center gap-2 md:gap-3">
+                                 <h3 className="text-lg md:text-3xl font-black uppercase text-white tracking-tighter leading-tight">{p.name}</h3>
+                                 {isCurrent && <span className="px-1.5 py-0.5 bg-red-600 text-white text-[8px] font-black rounded uppercase animate-pulse">Active</span>}
+                               </div>
+                               <div className="flex gap-2 md:gap-4 mt-1 md:mt-2">
+                                  <span className="text-[9px] md:text-[10px] bg-red-900 text-black px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Lvl: {p.lvl}</span>
+                                  <span className="text-[9px] md:text-[10px] text-neutral-500 font-black uppercase tracking-widest">{p.threat}</span>
+                               </div>
+                             </div>
+                           </div>
+                           <ChevronRight className={`transition-transform w-8 h-8 md:w-10 md:h-10 ${expandedPalace === idx ? 'rotate-90 text-red-600' : 'text-neutral-700'}`} />
+                         </div>
+                         
+                         {expandedPalace === idx && (
+                           <div className="p-4 md:p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
+                             <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
+                                <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><MapPin className="w-4 h-4 md:w-5 md:h-5" /> Will Seed Coords</h4>
+                                <div className="space-y-2 md:space-y-3">
+                                  {p.seeds.map((s, si) => (
+                                    <div key={si} onClick={() => toggleItem(s.id)} className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${checkedItems[s.id] ? 'opacity-30 border-neutral-800 bg-black/20' : 'bg-neutral-900/80 border-l-4 border-l-red-600 border-neutral-800 hover:bg-neutral-800'}`}>
+                                       {checkedItems[s.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500 flex-shrink-0" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4 text-neutral-600 flex-shrink-0" />}
+                                       <div className="text-[10px] md:text-[11px] text-neutral-300 leading-tight">{s.text}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                             </div>
+                             <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
+                                <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Target className="w-4 h-4 md:w-5 md:h-5" /> Palace Personas</h4>
+                                <div className="grid gap-2">
+                                   {p.personas.map(pers => (
+                                     <div key={pers.id} onClick={() => toggleItem(pers.id)} className={`p-2 md:p-3 border rounded-xl text-[10px] md:text-xs font-bold cursor-pointer transition-all flex items-center gap-2 md:gap-3 ${checkedItems[pers.id] ? 'opacity-30 bg-black/20 border-neutral-800 text-green-500' : 'bg-neutral-800 border-neutral-700 hover:border-red-600 text-neutral-200'}`}>
+                                        {checkedItems[pers.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4" />}
+                                        {pers.name}
+                                     </div>
+                                   ))}
+                                </div>
+                             </div>
+                             <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
+                                <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Search className="w-4 h-4 md:w-5 md:h-5" /> Field Intel</h4>
+                                <p className="text-[10px] md:text-sm italic text-neutral-400 leading-relaxed bg-red-950/10 p-4 md:p-6 border border-red-900/20 rounded-2xl ring-1 ring-red-500/10">"{p.tips}"</p>
+                             </div>
+                           </div>
+                         )}
+                       </div>
+                     );
+                   })}
+                 </>
                );
-             })}
+             })()}
           </div>
         )}
 
         {/* MEMENTOS VIEW */}
         {activeTab === 'mementos' && (
           <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
-            {APP_DATA.mementos.map((mem, idx) => {
+            {(() => {
               const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
-              const memMonthIdx = APP_DATA.months.findIndex(m => m.name.toLowerCase() === mem.timing.split('/')[0].toLowerCase());
-              const isHistory = memMonthIdx < anchoredMonthIdx - 1; // Generous buffer for mementos
-              
-              return (
-                <div key={mem.id} className={`bg-neutral-900 border-l-[12px] border-red-600 rounded-3xl overflow-hidden shadow-2xl transition-opacity ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                  <div 
-                    className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center"
-                    onClick={() => setExpandedMementos(expandedMementos === idx ? null : idx)}
-                  >
-                    <div className="flex items-center justify-between w-full pr-4 md:pr-8">
-                      <div>
-                        <h3 className="text-lg md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
-                        <p className="text-neutral-500 text-[9px] md:text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
-                      </div>
-                      <div className="bg-black px-3 py-1 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-2xl font-black border border-red-900 text-red-500 shadow-[2px_2px_0px_0px_rgba(153,27,27,1)] md:shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
-                    </div>
-                    <ChevronRight className={`transition-transform w-6 h-6 md:w-10 md:h-10 text-neutral-500 ${expandedMementos === idx ? 'rotate-90 text-red-600' : ''}`} />
-                  </div>
+              const historyMem = [];
+              const activeMem = [];
 
-                  {expandedMementos === idx && (
-                    <div className="p-4 md:p-8 pt-0 space-y-4 md:space-y-6 bg-black/20 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
-                      <div className="mt-4 md:mt-6">
-                        <h4 className="text-[9px] md:text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3 mb-4 md:mb-6"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                          {mem.requests.map(req => (
-                            <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-4 md:p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
-                              <div className="flex justify-between items-center mb-2 md:mb-4">
-                                 <div className="flex items-center gap-2 md:gap-3 italic">
-                                    {checkedItems[req.id] ? <CheckSquare className="w-4 h-4 md:w-5 md:h-5 text-green-500" /> : <Square className="w-4 h-4 md:w-5 md:h-5 text-neutral-700" />}
-                                    <span className="text-sm md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
-                                 </div>
-                              </div>
-                              <p className="text-[10px] md:text-xs text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
-                              <div className="text-[9px] md:text-[10px] font-black text-red-600 uppercase ml-6 md:ml-8">Reward: {req.reward}</div>
+              APP_DATA.mementos.forEach(mem => {
+                const memMonthIdx = APP_DATA.months.findIndex(m => m.name.toLowerCase() === mem.timing.split('/')[0].toLowerCase());
+                const isHistory = memMonthIdx < anchoredMonthIdx - 1;
+                if (isHistory) historyMem.push(mem);
+                else activeMem.push(mem);
+              });
+
+              return (
+                <>
+                  {historyMem.length > 0 && (
+                    <div className="bg-neutral-900 border border-dashed border-neutral-800 rounded-3xl overflow-hidden">
+                      <button 
+                        onClick={() => setShowArchived(!showArchived)}
+                        className="w-full p-4 flex items-center justify-between text-neutral-500 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors"
+                      >
+                        <span>Previous Paths ({historyMem.length})</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${showArchived ? 'rotate-180' : ''}`} />
+                      </button>
+                      
+                      {showArchived && (
+                        <div className="border-t border-neutral-800 p-2 space-y-4">
+                          {historyMem.map((mem, idx) => (
+                            <div key={mem.id} className="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
+                                {/* Render history mementos card (Compact) */}
+                                <div className={`bg-neutral-950 border-l-[8px] border-red-900 rounded-2xl overflow-hidden shadow-lg`}>
+                                  <div 
+                                    className="p-3 cursor-pointer hover:bg-neutral-900 transition-all flex justify-between items-center"
+                                    onClick={() => setExpandedMementos(expandedMementos === `hist-${idx}` ? null : `hist-${idx}`)}
+                                  >
+                                    <div className="flex items-center justify-between w-full pr-4">
+                                      <div>
+                                        <h3 className="text-sm font-black italic uppercase text-neutral-400 tracking-tighter">{mem.path}</h3>
+                                      </div>
+                                      <div className="text-[10px] font-black text-neutral-600 border border-neutral-800 px-2 py-0.5 rounded">LVL {mem.targetLvl}</div>
+                                    </div>
+                                    <ChevronRight className={`transition-transform w-4 h-4 text-neutral-600 ${expandedMementos === `hist-${idx}` ? 'rotate-90' : ''}`} />
+                                  </div>
+
+                                  {expandedMementos === `hist-${idx}` && (
+                                    <div className="p-3 pt-0 space-y-3 bg-black/20 border-t border-neutral-900">
+                                      <div className="mt-3">
+                                        <div className="grid grid-cols-1 gap-2">
+                                          {mem.requests.map(req => (
+                                            <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-3 border rounded-xl cursor-pointer ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800'}`}>
+                                              <div className="flex items-center gap-2 italic mb-1">
+                                                  {checkedItems[req.id] ? <CheckSquare className="w-3 h-3 text-green-500" /> : <Square className="w-3 h-3 text-neutral-700" />}
+                                                  <span className="text-xs font-black text-white uppercase tracking-tighter">{req.name}</span>
+                                              </div>
+                                              <div className="text-[9px] font-black text-red-600 uppercase ml-5">Reward: {req.reward}</div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
                             </div>
                           ))}
                         </div>
-                      </div>
+                      )}
                     </div>
                   )}
-                </div>
+
+                  {activeMem.map((mem, idx) => (
+                    <div key={mem.id} className={`bg-neutral-900 border-l-[12px] border-red-600 rounded-3xl overflow-hidden shadow-2xl`}>
+                      <div 
+                        className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center"
+                        onClick={() => setExpandedMementos(expandedMementos === idx ? null : idx)}
+                      >
+                        <div className="flex items-center justify-between w-full pr-4 md:pr-8">
+                          <div>
+                            <h3 className="text-lg md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
+                            <p className="text-neutral-500 text-[9px] md:text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
+                          </div>
+                          <div className="bg-black px-3 py-1 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-2xl font-black border border-red-900 text-red-500 shadow-[2px_2px_0px_0px_rgba(153,27,27,1)] md:shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
+                        </div>
+                        <ChevronRight className={`transition-transform w-6 h-6 md:w-10 md:h-10 text-neutral-500 ${expandedMementos === idx ? 'rotate-90 text-red-600' : ''}`} />
+                      </div>
+
+                      {expandedMementos === idx && (
+                        <div className="p-4 md:p-8 pt-0 space-y-4 md:space-y-6 bg-black/20 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
+                          <div className="mt-4 md:mt-6">
+                            <h4 className="text-[9px] md:text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3 mb-4 md:mb-6"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                              {mem.requests.map(req => (
+                                <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-4 md:p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
+                                  <div className="flex justify-between items-center mb-2 md:mb-4">
+                                     <div className="flex items-center gap-2 md:gap-3 italic">
+                                        {checkedItems[req.id] ? <CheckSquare className="w-4 h-4 md:w-5 md:h-5 text-green-500" /> : <Square className="w-4 h-4 md:w-5 md:h-5 text-neutral-700" />}
+                                        <span className="text-sm md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
+                                     </div>
+                                  </div>
+                                  <p className="text-[10px] md:text-xs text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
+                                  <div className="text-[9px] md:text-[10px] font-black text-red-600 uppercase ml-6 md:ml-8">Reward: {req.reward}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </>
               );
-            })}
+            })()}
           </div>
         )}
 
