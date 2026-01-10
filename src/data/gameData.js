@@ -429,7 +429,7 @@ export const APP_DATA = {
       seeds: [
         { id: 'pms1', name: 'Red Vanity Seed', text: 'Museum 2F. Grapple to central rafter walkway.' },
         { id: 'pms2', name: 'Green Vanity Seed', text: 'Treasure Hall Gallery. Grapple up to press button.' },
-        { id: 'pms3', name: 'Blue Vanity Seed', text: ' rafter rafters rafters. Vent to rafters.' }
+        { id: 'pms3', name: 'Blue Vanity Seed', text: 'Museum Main Hall. Enter vent in right hallway to reach balcony.' }
       ],
       personas: [
         { id: 'pmp1', name: 'Jack Frost', text: 'Mabufu for clones.' },
@@ -461,9 +461,9 @@ export const APP_DATA = {
       lvl: '34-36',
       threat: 'Anubis (Bless/Curse)',
       seeds: [
-        { id: 'p1s1', name: 'Red Will Seed', text: 'Chamber of Rejection. Behind a hidden wall near bird statue.' },
-        { id: 'p1s2', name: 'Green Will Seed', text: 'Chamber of Guilt. Grapple point high above coffin stairs.' },
-        { id: 'p1s3', name: 'Blue Will Seed', text: 'Chamber of Sanctuary. Moving platform puzzle near end.' }
+        { id: 'p1s1', name: 'Red Will Seed', text: 'Chamber of Rejection. Jump on sarcophagi near chest to find hidden path.' },
+        { id: 'p1s2', name: 'Green Will Seed', text: 'Chamber of Guilt. After solving the hologram puzzle, go through the red door.' },
+        { id: 'p1s3', name: 'Blue Will Seed', text: 'Chamber of Sanctuary. On floating platforms, grapple up to a statue.' }
       ],
       personas: [
         { id: 'p1p1', name: 'Isis', text: 'Nulls Bless/Curse from Anubis.' },
@@ -510,9 +510,9 @@ export const APP_DATA = {
       lvl: '63-65',
       threat: 'Gauntlet of Bosses',
       seeds: [
-        { id: 'p4s1', name: 'Red Will Seed', text: 'Mid-starboard. Side room during mouse puzzle.' },
-        { id: 'p4s2', name: 'Green Will Seed', text: 'Port Deck. Grapple to outside container tops.' },
-        { id: 'p4s3', name: 'Blue Will Seed', text: 'Engine Room. Behind machinery near boss door.' }
+        { id: 'p4s1', name: 'Red Will Seed', text: 'Mid-Starboard Hallway. Grapple from chandelier to a vent.' },
+        { id: 'p4s2', name: 'Green Will Seed', text: 'Lower Port Hallway. In the mouse puzzle room, use a small vent.' },
+        { id: 'p4s3', name: 'Blue Will Seed', text: 'Side Deck. Climb up the side of the ship and grapple backward.' }
       ],
       personas: [
         { id: 'p4p1', name: 'Trumpeter', text: 'Must have Debilitate to reduce boss stats.' }
@@ -526,8 +526,8 @@ export const APP_DATA = {
       lvl: '90+',
       threat: 'Final Boss',
       seeds: [
-        { id: 'p5s1', name: 'Red Will Seed', text: 'Monitoring. High balcony near the bridge.' },
-        { id: 'p5s2', name: 'Green Will Seed', text: 'Research Lab. Behind second color door puzzle.' },
+        { id: 'p5s1', name: 'Red Will Seed', text: 'Monitoring. Stairs to bottom floor, then vent near chest.' },
+        { id: 'p5s2', name: 'Green Will Seed', text: 'Research Lab. Spiral staircase -> Rafter grapple -> Break cracked window.' },
         { id: 'p5s3', name: 'Blue Will Seed', text: 'Twilight Corridor. Complex floating platform puzzle at end.' }
       ],
       personas: [
