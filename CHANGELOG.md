@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.2] - 2026-01-10
+### Added
+- Integrated **Umami Analytics** (GDPR compliant, privacy-first).
+- Custom event tracking for Support, Sync, Roadmap, and History toggles.
+
 ## [2.1.1] - 2026-01-10
 ### Fixed
 - Improved changelog trigger logic to only popup on Major/Minor version changes.

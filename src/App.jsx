@@ -47,6 +47,13 @@ const STAT_ICONS = {
   Charm: Sparkles
 };
 
+// Analytics Helper
+const trackEvent = (eventName, eventData = {}) => {
+  if (window.umami) {
+    window.umami.track(eventName, eventData);
+  }
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('p5r_activeTab') || 'cheatsheet');
   const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'july');
@@ -338,6 +345,7 @@ export default function App() {
               href="https://ko-fi.com/K3K11RWTSL" 
               target="_blank" 
               rel="noopener noreferrer"
+              onClick={() => trackEvent('support-link-click')}
               className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-2 md:border-b-4 border-[#c44040] hover:border-neutral-300 group"
               title="Support the Dev"
             >
@@ -345,7 +353,7 @@ export default function App() {
               <span className="hidden md:inline">Support</span>
             </a>
             <button 
-              onClick={() => setSaveModal(true)} 
+              onClick={() => { setSaveModal(true); trackEvent('sync-terminal-open'); }} 
               className="flex items-center gap-2 bg-red-600 hover:bg-white text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 active:scale-95 border-b-2 md:border-b-4 border-red-900"
             >
               <Save className="w-3 md:w-4 h-3 md:h-4" /> <span className="hidden md:inline">Sync Terminal</span><span className="md:hidden">Sync</span>
@@ -910,7 +918,7 @@ export default function App() {
                  <>
                    {historyPalaces.length > 0 && (
                      <button 
-                       onClick={() => setShowArchived(!showArchived)}
+                       onClick={() => { setShowArchived(!showArchived); trackEvent('palace-history-toggle', { state: !showArchived }); }}
                        className="w-full py-3 border border-dashed border-neutral-800 rounded-2xl text-neutral-500 text-xs font-bold uppercase tracking-widest hover:bg-neutral-900 transition-colors flex items-center justify-center gap-2"
                      >
                        {showArchived ? 'Hide' : 'Show'} {historyPalaces.length} Completed {historyPalaces.length === 1 ? 'Palace' : 'Palaces'}
@@ -997,7 +1005,7 @@ export default function App() {
                   {historyMem.length > 0 && (
                     <div className="bg-neutral-900 border border-dashed border-neutral-800 rounded-3xl overflow-hidden">
                       <button 
-                        onClick={() => setShowArchived(!showArchived)}
+                        onClick={() => { setShowArchived(!showArchived); trackEvent('mementos-history-toggle', { state: !showArchived }); }}
                         className="w-full p-4 flex items-center justify-between text-neutral-500 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors"
                       >
                         <span>Previous Paths ({historyMem.length})</span>
@@ -1101,14 +1109,15 @@ export default function App() {
           <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4 flex items-center justify-center gap-2">
             <span>v{APP_VERSION}</span>
             <span>•</span>
-            <button onClick={() => setShowChangelog(true)} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
+            <button onClick={() => { setShowChangelog(true); trackEvent('changelog-open'); }} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
             <span>•</span>
-            <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
+            <button onClick={() => { setShowRoadmap(true); trackEvent('roadmap-open'); }} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
             <span>•</span>
             <a 
               href="https://github.com/zucram/P5Tracker#support--feedback" 
               target="_blank" 
               rel="noopener noreferrer"
+              onClick={() => trackEvent('support-feedback-click')}
               className="hover:text-white underline decoration-neutral-600 underline-offset-4 transition-colors"
             >
               Support & Feedback
