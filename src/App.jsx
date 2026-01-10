@@ -36,6 +36,7 @@ import {
 import { APP_DATA } from './data/gameData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
+import { ROADMAP } from './data/roadmap';
 import { APP_VERSION } from './data/version';
 
 const STAT_ICONS = {
@@ -109,6 +110,7 @@ export default function App() {
   const [showArchived, setShowArchived] = useState(false);
   const [saveModal, setSaveModal] = useState(false);
   const [showChangelog, setShowChangelog] = useState(false);
+  const [showRoadmap, setShowRoadmap] = useState(false);
   const [importText, setImportText] = useState('');
   const [copied, setCopied] = useState(false);
   const hiddenInputRef = useRef(null);
@@ -1097,6 +1099,8 @@ export default function App() {
             <span>•</span>
             <button onClick={() => setShowChangelog(true)} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
             <span>•</span>
+            <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
+            <span>•</span>
             <span>Feedback Welcome</span>
           </p>
           <a 
@@ -1174,6 +1178,46 @@ export default function App() {
            </div>
         </div>
       )}
+      {/* ROADMAP MODAL */}
+      {showRoadmap && (
+        <div className="fixed inset-0 bg-black/98 backdrop-blur-2xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+           <div className="bg-neutral-900 border-2 border-blue-600 rounded-[2rem] w-full max-w-lg p-6 md:p-10 shadow-[0_0_50px_rgba(37,99,235,0.2)] max-h-[80vh] overflow-y-auto custom-scrollbar">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter text-blue-500">The Path Ahead</h2>
+                  <div className="text-neutral-500 font-bold font-mono text-xs mt-1 uppercase tracking-widest">Feature Roadmap</div>
+                </div>
+                <button onClick={() => setShowRoadmap(false)} className="p-2 bg-neutral-800 rounded-full hover:bg-blue-600 transition-colors"><ChevronDown className="w-6 h-6 rotate-180" /></button>
+              </div>
+              
+              <div className="space-y-8">
+                {ROADMAP.map((section, i) => (
+                  <div key={i}>
+                    <div className="flex justify-between items-center mb-3 border-b border-neutral-800 pb-1">
+                      <h4 className="text-xs font-black text-white uppercase tracking-widest">{section.title}</h4>
+                      <span className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase ${section.status === 'Active' ? 'bg-blue-600 text-white animate-pulse' : 'bg-neutral-800 text-neutral-500'}`}>
+                        {section.status}
+                      </span>
+                    </div>
+                    <ul className="space-y-2">
+                      {section.items.map((item, j) => (
+                        <li key={j} className="text-xs text-neutral-400 flex items-start gap-2">
+                          <span className="text-blue-600 mt-0.5">›</span>
+                          <span dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong class="text-neutral-200">$1</strong>') }} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              <button onClick={() => setShowRoadmap(false)} className="w-full mt-8 bg-blue-600 text-white p-4 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
+                Close Roadmap
+              </button>
+           </div>
+        </div>
+      )}
+
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
