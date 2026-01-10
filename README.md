@@ -14,7 +14,7 @@ If you find this tracker helpful for your heist, consider supporting the mainten
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K11RWTSL)
 
-Feedback, bug reports, and strategy corrections are welcome via GitHub Issues.
+Feedback, bug reports, and strategy corrections are welcome via [GitHub Issues](https://github.com/zucram/P5Tracker/issues).
 
 ## Gallery
 

@@ -1101,7 +1101,14 @@ export default function App() {
             <span>•</span>
             <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
             <span>•</span>
-            <span>Feedback Welcome</span>
+            <a 
+              href="https://github.com/zucram/P5Tracker#support--feedback" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-white underline decoration-neutral-600 underline-offset-4 transition-colors"
+            >
+              Support & Feedback
+            </a>
           </p>
           <a 
             href="https://ko-fi.com/K3K11RWTSL" 
