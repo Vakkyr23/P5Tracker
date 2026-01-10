@@ -626,19 +626,32 @@ export default function App() {
                     {/* Compact Header */}
                     <div 
                       onClick={() => toggleGuide(c.arcana)}
-                      className="p-4 flex items-center justify-between cursor-pointer active:bg-neutral-800"
+                      className="p-3 flex items-center justify-between cursor-pointer active:bg-neutral-800"
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${isMax ? 'bg-red-600 text-black' : 'bg-neutral-800 text-neutral-400'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs shrink-0 ${isMax ? 'bg-red-600 text-black' : 'bg-neutral-800 text-neutral-400'}`}>
                           {rank}
                         </div>
-                        <div>
-                          <div className="font-black text-white uppercase text-sm leading-none">{c.arcana}</div>
-                          <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider">{c.name}</div>
+                        
+                        {/* Rank Controls (Inline) */}
+                        <div className="flex items-center gap-1">
+                           <button 
+                             onClick={(e) => { e.stopPropagation(); updateRank(c.arcana, rank - 1); }} 
+                             className="w-8 h-8 flex items-center justify-center bg-neutral-800 hover:bg-red-600 rounded text-neutral-400 hover:text-white font-bold text-lg active:scale-90 transition-transform"
+                           >-</button>
+                           <button 
+                             onClick={(e) => { e.stopPropagation(); updateRank(c.arcana, rank + 1); }} 
+                             className="w-8 h-8 flex items-center justify-center bg-neutral-800 hover:bg-red-600 rounded text-neutral-400 hover:text-white font-bold text-lg active:scale-90 transition-transform"
+                           >+</button>
+                        </div>
+
+                        <div className="min-w-0">
+                          <div className="font-black text-white uppercase text-sm leading-none truncate">{c.arcana}</div>
+                          <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider truncate">{c.name}</div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         {gate && <AlertTriangle className="w-4 h-4 text-red-500 animate-pulse" />}
                         <ChevronDown className={`w-4 h-4 text-neutral-600 transition-transform ${isExpanded ? 'rotate-180 text-red-500' : ''}`} />
                       </div>
@@ -647,21 +660,6 @@ export default function App() {
                     {/* Expanded Detail View */}
                     {isExpanded && (
                       <div className="bg-black/20 border-t border-neutral-800 p-4 space-y-4 animate-in slide-in-from-top-2 duration-200">
-                        {/* Rank Controls */}
-                        <div className="flex items-center justify-between bg-neutral-950 p-2 rounded-lg border border-neutral-800">
-                           <span className="text-[10px] uppercase font-bold text-neutral-500 ml-2">Update Rank</span>
-                           <div className="flex items-center gap-4">
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); updateRank(c.arcana, rank - 1); }} 
-                                className="w-8 h-8 flex items-center justify-center bg-neutral-800 hover:bg-red-600 rounded text-white font-bold"
-                              >-</button>
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); updateRank(c.arcana, rank + 1); }} 
-                                className="w-8 h-8 flex items-center justify-center bg-neutral-800 hover:bg-red-600 rounded text-white font-bold"
-                              >+</button>
-                           </div>
-                        </div>
-
                         {/* Notes & Warnings */}
                         <div className="space-y-2">
                            {gate && (
