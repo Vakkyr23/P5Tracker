@@ -380,40 +380,40 @@ export default function App() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-             <div className="space-y-4 md:space-y-8">
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
-                   <h3 className="text-xl md:text-2xl font-black italic text-red-600 uppercase mb-4 md:mb-6 flex items-center gap-2">
-                     <Clock className="w-5 h-5 md:w-6 md:h-6" /> Daily Routine
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8">
+             <div className="space-y-3 md:space-y-8">
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
+                   <h3 className="text-lg md:text-2xl font-black italic text-red-600 uppercase mb-3 md:mb-6 flex items-center gap-2">
+                     <Clock className="w-4 h-4 md:w-6 md:h-6" /> Daily Routine
                    </h3>
-                   <div className="space-y-3 md:space-y-4">
+                   <div className="space-y-2 md:space-y-4">
                      {APP_DATA.tips.daily.map((tip, i) => (
-                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
+                       <div key={i} className="flex gap-2 md:gap-4 p-2 md:p-4 bg-neutral-800/50 rounded-xl md:rounded-2xl border border-neutral-800">
+                          <div className="p-1.5 md:p-3 bg-neutral-900 rounded-lg md:rounded-xl h-fit border border-neutral-700">
+                             <CheckCircle2 className="w-3.5 h-3.5 md:w-5 md:h-5 text-red-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
-                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
                           </div>
                        </div>
                      ))}
                    </div>
                 </div>
 
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
-                   <h3 className="text-xl md:text-2xl font-black italic text-blue-500 uppercase mb-4 md:mb-6 flex items-center gap-2">
-                     <Calendar className="w-5 h-5 md:w-6 md:h-6" /> Weekly / Time Specific
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
+                   <h3 className="text-lg md:text-2xl font-black italic text-blue-500 uppercase mb-3 md:mb-6 flex items-center gap-2">
+                     <Calendar className="w-4 h-4 md:w-6 md:h-6" /> Weekly / Time Specific
                    </h3>
-                   <div className="space-y-3 md:space-y-4">
+                   <div className="space-y-2 md:space-y-4">
                      {APP_DATA.tips.weekly.map((tip, i) => (
-                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <Calendar className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+                       <div key={i} className="flex gap-2 md:gap-4 p-2 md:p-4 bg-neutral-800/50 rounded-xl md:rounded-2xl border border-neutral-800">
+                          <div className="p-1.5 md:p-3 bg-neutral-900 rounded-lg md:rounded-xl h-fit border border-neutral-700">
+                             <Calendar className="w-3.5 h-3.5 md:w-5 md:h-5 text-blue-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
-                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -421,39 +421,39 @@ export default function App() {
                 </div>
              </div>
 
-             <div className="space-y-4 md:space-y-8">
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
-                   <h3 className="text-xl md:text-2xl font-black italic text-yellow-500 uppercase mb-4 md:mb-6 flex items-center gap-2">
-                     <Sword className="w-5 h-5 md:w-6 md:h-6" /> Combat & Systems
+             <div className="space-y-3 md:space-y-8">
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
+                   <h3 className="text-lg md:text-2xl font-black italic text-yellow-500 uppercase mb-3 md:mb-6 flex items-center gap-2">
+                     <Sword className="w-4 h-4 md:w-6 md:h-6" /> Combat & Systems
                    </h3>
-                   <div className="space-y-3 md:space-y-4">
+                   <div className="space-y-2 md:space-y-4">
                      {APP_DATA.tips.combat.map((tip, i) => (
-                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <Sword className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
+                       <div key={i} className="flex gap-2 md:gap-4 p-2 md:p-4 bg-neutral-800/50 rounded-xl md:rounded-2xl border border-neutral-800">
+                          <div className="p-1.5 md:p-3 bg-neutral-900 rounded-lg md:rounded-xl h-fit border border-neutral-700">
+                             <Sword className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
-                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
                           </div>
                        </div>
                      ))}
                    </div>
                 </div>
 
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6">
-                   <h3 className="text-xl md:text-2xl font-black italic text-neutral-400 uppercase mb-4 md:mb-6 flex items-center gap-2">
-                     <Users className="w-5 h-5 md:w-6 md:h-6" /> Weather & Environment
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
+                   <h3 className="text-lg md:text-2xl font-black italic text-neutral-400 uppercase mb-3 md:mb-6 flex items-center gap-2">
+                     <Users className="w-4 h-4 md:w-6 md:h-6" /> Weather & Environment
                    </h3>
-                   <div className="space-y-3 md:space-y-4">
+                   <div className="space-y-2 md:space-y-4">
                      {APP_DATA.tips.weather.map((tip, i) => (
-                       <div key={i} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-neutral-800/50 rounded-2xl border border-neutral-800">
-                          <div className="p-2 md:p-3 bg-neutral-900 rounded-xl h-fit border border-neutral-700">
-                             <Users className="w-4 h-4 md:w-5 md:h-5 text-neutral-400" />
+                       <div key={i} className="flex gap-2 md:gap-4 p-2 md:p-4 bg-neutral-800/50 rounded-xl md:rounded-2xl border border-neutral-800">
+                          <div className="p-1.5 md:p-3 bg-neutral-900 rounded-lg md:rounded-xl h-fit border border-neutral-700">
+                             <Users className="w-3.5 h-3.5 md:w-5 md:h-5 text-neutral-400" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-xs md:text-base">{tip.text}</div>
-                             <div className="text-[10px] md:text-xs text-neutral-400 mt-1">{tip.note}</div>
+                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -561,7 +561,7 @@ export default function App() {
                       {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500" /> : <Square className={`w-5 h-5 ${task.isOverdue ? 'text-red-500' : isTaskStatBuilding(task.text) ? 'text-blue-500' : 'text-neutral-600'}`} />}
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-black uppercase tracking-tight leading-tight">{task.text}</span>
+                          <span className="text-[11px] md:text-xs font-black uppercase tracking-tight leading-tight">{task.text}</span>
                           {isTaskStatBuilding(task.text) && !checkedItems[task.id] && (
                             <span className="bg-blue-600 text-[8px] font-black px-1.5 py-0.5 rounded text-white uppercase animate-pulse">Priority Stat</span>
                           )}
@@ -846,50 +846,50 @@ export default function App() {
                
                return (
                  <div key={p.id} className={`bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl transition-all ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                   <div className="p-5 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center" onClick={() => setExpandedPalace(expandedPalace === idx ? null : idx)}>
-                     <div className="flex items-center gap-4 md:gap-8">
-                       <span className={`text-3xl md:text-5xl font-black italic opacity-20 ${isCurrent ? 'text-red-600' : 'text-neutral-500'}`}>0{idx+1}</span>
+                   <div className="p-4 md:p-8 cursor-pointer hover:bg-neutral-800 transition-all flex justify-between items-center" onClick={() => setExpandedPalace(expandedPalace === idx ? null : idx)}>
+                     <div className="flex items-center gap-3 md:gap-8">
+                       <span className={`text-2xl md:text-5xl font-black italic opacity-20 ${isCurrent ? 'text-red-600' : 'text-neutral-500'}`}>0{idx+1}</span>
                        <div>
                          <div className="flex items-center gap-2 md:gap-3">
-                           <h3 className="text-xl md:text-3xl font-black uppercase text-white tracking-tighter">{p.name}</h3>
-                           {isCurrent && <span className="px-2 py-0.5 bg-red-600 text-white text-[8px] font-black rounded-md uppercase animate-pulse">Active Target</span>}
+                           <h3 className="text-lg md:text-3xl font-black uppercase text-white tracking-tighter leading-tight">{p.name}</h3>
+                           {isCurrent && <span className="px-1.5 py-0.5 bg-red-600 text-white text-[8px] font-black rounded uppercase animate-pulse">Active</span>}
                          </div>
                          <div className="flex gap-2 md:gap-4 mt-1 md:mt-2">
-                            <span className="text-[10px] bg-red-900 text-black px-3 py-0.5 rounded-full font-black uppercase tracking-widest">Target Lvl: {p.lvl}</span>
-                            <span className="text-[10px] text-neutral-500 font-black uppercase tracking-widest">Threat: {p.threat}</span>
+                            <span className="text-[9px] md:text-[10px] bg-red-900 text-black px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Lvl: {p.lvl}</span>
+                            <span className="text-[9px] md:text-[10px] text-neutral-500 font-black uppercase tracking-widest">{p.threat}</span>
                          </div>
                        </div>
                      </div>
-                     <ChevronRight className={`transition-transform w-10 h-10 ${expandedPalace === idx ? 'rotate-90 text-red-600' : 'text-neutral-700'}`} />
+                     <ChevronRight className={`transition-transform w-8 h-8 md:w-10 md:h-10 ${expandedPalace === idx ? 'rotate-90 text-red-600' : 'text-neutral-700'}`} />
                    </div>
                    
                    {expandedPalace === idx && (
-                     <div className="p-5 md:p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
-                       <div className="mt-6 md:mt-8 space-y-6">
-                          <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-3"><MapPin className="w-5 h-5" /> Will Seed Coords</h4>
-                          <div className="space-y-3">
+                     <div className="p-4 md:p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
+                       <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
+                          <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><MapPin className="w-4 h-4 md:w-5 md:h-5" /> Will Seed Coords</h4>
+                          <div className="space-y-2 md:space-y-3">
                             {p.seeds.map((s, si) => (
-                              <div key={si} onClick={() => toggleItem(s.id)} className={`p-4 rounded-xl border flex items-center gap-4 cursor-pointer transition-all ${checkedItems[s.id] ? 'opacity-30 border-neutral-800 bg-black/20' : 'bg-neutral-900/80 border-l-4 border-l-red-600 border-neutral-800 hover:bg-neutral-800'}`}>
-                                 {checkedItems[s.id] ? <CheckSquare className="w-4 h-4 text-green-500 flex-shrink-0" /> : <Square className="w-4 h-4 text-neutral-600 flex-shrink-0" />}
-                                 <div className="text-[11px] text-neutral-300">{s.text}</div>
+                              <div key={si} onClick={() => toggleItem(s.id)} className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${checkedItems[s.id] ? 'opacity-30 border-neutral-800 bg-black/20' : 'bg-neutral-900/80 border-l-4 border-l-red-600 border-neutral-800 hover:bg-neutral-800'}`}>
+                                 {checkedItems[s.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500 flex-shrink-0" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4 text-neutral-600 flex-shrink-0" />}
+                                 <div className="text-[10px] md:text-[11px] text-neutral-300 leading-tight">{s.text}</div>
                               </div>
                             ))}
                           </div>
                        </div>
-                       <div className="mt-8 space-y-6">
-                          <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-3"><Target className="w-5 h-5" /> Palace Personas</h4>
+                       <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
+                          <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Target className="w-4 h-4 md:w-5 md:h-5" /> Palace Personas</h4>
                           <div className="grid gap-2">
                              {p.personas.map(pers => (
-                               <div key={pers.id} onClick={() => toggleItem(pers.id)} className={`p-3 border rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-3 ${checkedItems[pers.id] ? 'opacity-30 bg-black/20 border-neutral-800 text-green-500' : 'bg-neutral-800 border-neutral-700 hover:border-red-600 text-neutral-200'}`}>
-                                  {checkedItems[pers.id] ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+                               <div key={pers.id} onClick={() => toggleItem(pers.id)} className={`p-2 md:p-3 border rounded-xl text-[10px] md:text-xs font-bold cursor-pointer transition-all flex items-center gap-2 md:gap-3 ${checkedItems[pers.id] ? 'opacity-30 bg-black/20 border-neutral-800 text-green-500' : 'bg-neutral-800 border-neutral-700 hover:border-red-600 text-neutral-200'}`}>
+                                  {checkedItems[pers.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4" />}
                                   {pers.name}
                                </div>
                              ))}
                           </div>
                        </div>
-                       <div className="mt-8 space-y-6">
-                          <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-3"><Search className="w-5 h-5" /> Field Intel</h4>
-                          <p className="text-sm italic text-neutral-400 leading-relaxed bg-red-950/10 p-6 border border-red-900/20 rounded-2xl ring-1 ring-red-500/10">"{p.tips}"</p>
+                       <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
+                          <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Search className="w-4 h-4 md:w-5 md:h-5" /> Field Intel</h4>
+                          <p className="text-[10px] md:text-sm italic text-neutral-400 leading-relaxed bg-red-950/10 p-4 md:p-6 border border-red-900/20 rounded-2xl ring-1 ring-red-500/10">"{p.tips}"</p>
                        </div>
                      </div>
                    )}
@@ -909,27 +909,27 @@ export default function App() {
               
               return (
                 <div key={mem.id} className={`bg-neutral-900 border-l-[12px] border-red-600 rounded-3xl overflow-hidden shadow-2xl transition-opacity ${isHistory ? 'opacity-40 hover:opacity-100 grayscale hover:grayscale-0' : ''}`}>
-                  <div className="p-5 md:p-8">
-                    <div className="flex justify-between items-center mb-6 md:mb-8">
+                  <div className="p-4 md:p-8">
+                    <div className="flex justify-between items-center mb-4 md:mb-8">
                       <div>
-                        <h3 className="text-2xl md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
-                        <p className="text-neutral-500 text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
+                        <h3 className="text-xl md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
+                        <p className="text-neutral-500 text-[9px] md:text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
                       </div>
-                      <div className="bg-black px-4 py-2 md:px-6 md:py-3 rounded-2xl text-xl md:text-2xl font-black border border-red-900 text-red-500 shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
+                      <div className="bg-black px-3 py-1.5 md:px-6 md:py-3 rounded-2xl text-lg md:text-2xl font-black border border-red-900 text-red-500 shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
                     </div>
-                    <div className="space-y-6">
-                      <h4 className="text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-3"><Target className="w-5 h-5 text-red-600" /> Key Missions</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4 md:space-y-6">
+                      <h4 className="text-[9px] md:text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         {mem.requests.map(req => (
-                          <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
-                            <div className="flex justify-between items-center mb-4">
-                               <div className="flex items-center gap-3 italic">
-                                  {checkedItems[req.id] ? <CheckSquare className="w-5 h-5 text-green-500" /> : <Square className="w-5 h-5 text-neutral-700" />}
-                                  <span className="text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
+                          <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-4 md:p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
+                            <div className="flex justify-between items-center mb-2 md:mb-4">
+                               <div className="flex items-center gap-2 md:gap-3 italic">
+                                  {checkedItems[req.id] ? <CheckSquare className="w-4 h-4 md:w-5 md:h-5 text-green-500" /> : <Square className="w-4 h-4 md:w-5 md:h-5 text-neutral-700" />}
+                                  <span className="text-lg md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
                                </div>
                             </div>
-                            <p className="text-xs text-neutral-500 mb-6 italic leading-relaxed ml-8">"{req.tip}"</p>
-                            <div className="text-[10px] font-black text-red-600 uppercase ml-8">Reward: {req.reward}</div>
+                            <p className="text-[10px] md:text-xs text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
+                            <div className="text-[9px] md:text-[10px] font-black text-red-600 uppercase ml-6 md:ml-8">Reward: {req.reward}</div>
                           </div>
                         ))}
                       </div>
