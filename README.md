@@ -65,8 +65,8 @@ Feedback, bug reports, and strategy corrections are welcome via GitHub Issues.
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/p5r-tactician.git
-    cd p5r-tactician/p5r-app
+    git clone https://github.com/zucram/P5Tracker.git
+    cd P5Tracker
     ```
 
 2.  Install dependencies:

@@ -46,8 +46,8 @@ const STAT_ICONS = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('p5r_activeTab') || 'cheatsheet');
-  const [currentMonth, setCurrentMonth] = useState('july');
   const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'july');
+  const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'july');
   
   // Data State
   const [checkedItems, setCheckedItems] = useState(() => {
