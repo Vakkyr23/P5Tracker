@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.4] - 2026-01-10
+### Changed
+- Refined **Mission Briefing** (Onboarding) to be more action-oriented, explaining how to use the timeline anchor and backlog systems.
+
 ## [2.1.3] - 2026-01-10
 ### Added
 - **Onboarding Guide:** New high-impact welcome tutorial for first-time users.

@@ -1267,12 +1267,12 @@ export default function App() {
               </div>
 
               <div className="space-y-4">
-                <OnboardingItem icon={BookOpen} color="text-red-500" title="Guide" text="Daily routines, weekly events, and social stat management." />
-                <OnboardingItem icon={Calendar} color="text-red-500" title="Roadmap" text="Monthly strategic objectives and completion targets." />
-                <OnboardingItem icon={Users} color="text-red-500" title="Confidants" text="Interaction cheat sheets, gifts, and rank tracking." />
-                <OnboardingItem icon={MapPin} color="text-red-500" title="Palaces" text="Will Seed locations, boss tips, and persona intel." />
-                <OnboardingItem icon={Target} color="text-red-500" title="Mementos" text="Path details and request tracking." />
-                <OnboardingItem icon={Save} color="text-white" title="Sync" text="Manual backup/import of your progress (Local storage only)." />
+                <OnboardingItem icon={Calendar} color="text-blue-500" title="Anchor Your Timeline" text="Go to Roadmap, select your month, and tap 'Set as Active' to focus the tracker." />
+                <OnboardingItem icon={CheckSquare} color="text-red-500" title="Check Your Tasks" text="Tap tasks to complete them. Important ones follow you to next month if missed." />
+                <OnboardingItem icon={Users} color="text-red-500" title="Level Confidants" text="Tap a name to see the best dialogue choices and gifts for your next rank up." />
+                <OnboardingItem icon={Zap} color="text-yellow-500" title="Manage Stats" text="Update your Social Stats in the Guide tab to see if a Confidant is 'Blocked'." />
+                <OnboardingItem icon={MapPin} color="text-red-500" title="Palace Intel" text="Find Will Seeds and boss strategies. Past Palaces are hidden automatically." />
+                <OnboardingItem icon={Save} color="text-white" title="Sync Your Progress" text="Use the Sync Terminal to backup or import your data (it lives on your device)." />
               </div>
 
               <button 
