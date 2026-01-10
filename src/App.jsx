@@ -946,8 +946,8 @@ export default function App() {
               const activeMem = [];
 
               APP_DATA.mementos.forEach(mem => {
-                const memMonthIdx = APP_DATA.months.findIndex(m => m.name.toLowerCase() === mem.timing.split('/')[0].toLowerCase());
-                const isHistory = memMonthIdx < anchoredMonthIdx - 1;
+                const memMonthIdx = APP_DATA.months.findIndex(m => mem.timing.toLowerCase().includes(m.name.toLowerCase()));
+                const isHistory = memMonthIdx !== -1 && memMonthIdx < anchoredMonthIdx - 1;
                 if (isHistory) historyMem.push(mem);
                 else activeMem.push(mem);
               });
