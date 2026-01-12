@@ -363,26 +363,16 @@ export default function App() {
     
     const groups = {
       critical: [],
-      calendar: [],
-      school: [],
-      operations: [],
-      general: []
+      timeline: []
     };
 
     activeMonthData.tasks.forEach(task => {
       const t = task.text;
-      const isDate = t.match(/^\d{1,2}\/\d{1,2}/);
-
-      if (t.includes('DEADLINE') || t.includes('Secure Route') || t.includes('Calling Card') || t.includes('MUST be') || t.includes('CRITICAL')) {
+      // Strict Critical: Deadlines, Rank Requirements, Palace Milestones
+      if (t.includes('DEADLINE') || t.includes('MUST be') || t.includes('Secure Route') || t.includes('Calling Card') || t.includes('CRITICAL')) {
         groups.critical.push(task);
-      } else if (t.includes('Answer:') || t.includes('Exam:') || t.includes('Crossword:')) {
-        groups.school.push(task);
-      } else if (t.includes('Mementos') || t.includes('Palace') || t.includes('Mission') || t.includes('Infiltration')) {
-        groups.operations.push(task);
-      } else if (isDate) {
-        groups.calendar.push(task);
       } else {
-        groups.general.push(task);
+        groups.timeline.push(task);
       }
     });
     
@@ -700,59 +690,72 @@ export default function App() {
                 </div>
                 
                 {/* Tasks Section */}
-                <div className="space-y-4 mb-8">
-                  {[
-                    { id: 'critical', title: 'Critical Objectives', icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-950/20', border: 'border-red-900/30' },
-                    { id: 'calendar', title: 'Calendar Events', icon: Calendar, color: 'text-blue-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
-                    { id: 'operations', title: 'Phantom Operations', icon: Target, color: 'text-purple-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
-                    { id: 'general', title: 'General Goals', icon: CheckCircle2, color: 'text-green-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
-                    { id: 'school', title: 'School & Knowledge', icon: Book, color: 'text-yellow-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
-                  ].map(section => {
-                    const tasks = groupedTasks?.[section.id] || [];
-                    if (tasks.length === 0) return null;
-
-                    return (
-                      <details key={section.id} open className={`group rounded-2xl border ${section.border} overflow-hidden transition-all duration-300`}>
-                        <summary className={`flex items-center justify-between p-3 md:p-4 cursor-pointer select-none ${section.bg} hover:bg-neutral-800 transition-colors`}>
-                          <div className="flex items-center gap-2 md:gap-3">
-                            <section.icon className={`w-4 h-4 md:w-5 md:h-5 ${section.color}`} />
-                            <h4 className={`text-xs md:text-sm font-black uppercase tracking-widest ${section.color}`}>{section.title}</h4>
-                            <span className="bg-black/40 px-2 py-0.5 rounded text-[9px] font-bold text-neutral-500">{tasks.length}</span>
+                <div className="space-y-6 mb-8">
+                  {/* Mission Critical */}
+                  {groupedTasks.critical.length > 0 && (
+                    <div className="bg-red-950/20 border border-red-900/50 rounded-2xl overflow-hidden">
+                      <div className="flex items-center gap-2 p-3 bg-red-900/20 border-b border-red-900/30">
+                        <AlertTriangle className="w-4 h-4 text-red-500" />
+                        <h4 className="text-xs font-black text-red-500 uppercase tracking-widest">Mission Critical</h4>
+                      </div>
+                      <div className="p-2 space-y-2">
+                        {groupedTasks.critical.map((task, idx) => (
+                          <div 
+                            key={`crit-${idx}`}
+                            onClick={() => toggleItem(task.id)}
+                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                              checkedItems[task.id] 
+                                ? 'bg-red-950/10 border-red-900/10 opacity-50' 
+                                : 'bg-red-900/10 border-red-900/30 hover:bg-red-900/20'
+                            }`}
+                          >
+                            {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-red-600/50" /> : <Square className="w-5 h-5 text-red-500" />}
+                            <span className={`text-[11px] md:text-xs font-bold text-red-200 ${checkedItems[task.id] ? 'line-through' : ''}`}>{task.text}</span>
                           </div>
-                          <ChevronDown className="w-4 h-4 text-neutral-500 group-open:rotate-180 transition-transform" />
-                        </summary>
-                        
-                        <div className="p-2 md:p-3 space-y-2 bg-black/20">
-                          {tasks.map((task, idx) => (
-                            <div 
-                              key={`${task.id}-${idx}`} 
-                              onClick={() => toggleItem(task.id)} 
-                              className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${
-                                checkedItems[task.id] 
-                                  ? 'opacity-30 border-neutral-800' 
-                                  : task.isOverdue 
-                                    ? 'bg-red-950/20 border-red-600 hover:bg-red-900/30 shadow-lg shadow-red-950/20' 
-                                    : isTaskStatBuilding(task.text)
-                                      ? 'bg-blue-950/20 border-blue-600 hover:border-blue-400'
-                                      : 'bg-neutral-800 border-neutral-700 hover:border-red-600'
-                              }`}
-                            >
-                              {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className={`w-5 h-5 shrink-0 ${task.isOverdue ? 'text-red-500' : isTaskStatBuilding(task.text) ? 'text-blue-500' : 'text-neutral-600'}`} />}
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[11px] md:text-xs font-black uppercase tracking-tight leading-tight">{task.text}</span>
-                                  {isTaskStatBuilding(task.text) && !checkedItems[task.id] && (
-                                    <span className="bg-blue-600 text-[8px] font-black px-1.5 py-0.5 rounded text-white uppercase animate-pulse">Priority Stat</span>
-                                  )}
-                                </div>
-                                {task.isOverdue && <div className="text-[9px] font-bold text-red-500 mt-1 uppercase tracking-widest flex items-center gap-1"><AlertTriangle className="w-2 h-2" /> Overdue from {task.sourceMonth}</div>}
-                              </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Standard Timeline */}
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-black text-neutral-500 uppercase tracking-widest ml-1">Timeline</h4>
+                    {groupedTasks.timeline.map((task, idx) => {
+                      const getStyle = (t) => {
+                        if (t.includes('Answer:') || t.includes('Exam:') || t.includes('Crossword:')) 
+                          return { icon: Book, color: 'text-yellow-500', bg: 'bg-yellow-900/5', border: 'border-yellow-900/20' };
+                        if (t.includes('Mementos') || t.includes('Palace') || t.includes('Mission') || t.includes('Infiltration'))
+                          return { icon: Target, color: 'text-purple-500', bg: 'bg-purple-900/5', border: 'border-purple-900/20' };
+                        if (t.match(/^\d{1,2}\/\d{1,2}/))
+                          return { icon: Calendar, color: 'text-blue-500', bg: 'bg-blue-900/5', border: 'border-blue-900/20' };
+                        return { icon: Circle, color: 'text-neutral-500', bg: 'bg-neutral-800/20', border: 'border-neutral-800' };
+                      };
+                      
+                      const style = getStyle(task.text);
+                      const StyleIcon = style.icon;
+
+                      return (
+                        <div 
+                          key={`time-${idx}`} 
+                          onClick={() => toggleItem(task.id)} 
+                          className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${
+                            checkedItems[task.id] 
+                              ? 'opacity-30 border-neutral-800 bg-transparent' 
+                              : `${style.bg} ${style.border} hover:border-neutral-600`
+                          }`}
+                        >
+                          {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className={`w-5 h-5 shrink-0 ${style.color}`} />}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[11px] md:text-xs font-bold leading-tight ${checkedItems[task.id] ? 'text-neutral-500 line-through' : 'text-neutral-200'}`}>{task.text}</span>
+                              {!checkedItems[task.id] && !style.icon.name?.includes('Circle') && <StyleIcon className={`w-3 h-3 ${style.color} opacity-50`} />}
                             </div>
-                          ))}
+                            {task.isOverdue && <div className="text-[9px] font-bold text-red-500 mt-1 uppercase tracking-widest flex items-center gap-1"><AlertTriangle className="w-2 h-2" /> Overdue from {task.sourceMonth}</div>}
+                          </div>
                         </div>
-                      </details>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Targets Section */}
