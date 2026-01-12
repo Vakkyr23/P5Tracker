@@ -1,5 +1,29 @@
 export const RELEASE_NOTES = [
   {
+    version: "2.2.1",
+    date: "2026-01-12",
+    title: "The Strategic Update",
+    description: "Refined the Mission Critical system and introduced a dedicated Strategy Briefing.",
+    sections: [
+      {
+        title: "🧠 Strategic Briefing",
+        items: [
+          "**New Section:** Non-actionable advice (like 'Clear Palace ASAP') is now separated into a dedicated blue 'Strategic Briefing' card.",
+          "**Mission Critical:** The red warning section is now strictly for deadlines and game-over conditions.",
+          "**Chronological Timeline:** Tasks in the standard timeline are now automatically sorted by date."
+        ]
+      },
+      {
+        title: "📅 Calendar Refinements",
+        items: [
+          "**Consistent Deadlines:** Every Palace month now clearly separates the 'Deadline' (Requirement) from the 'Strategy' (Recommendation).",
+          "**Temporal Accuracy:** Deadlines now only appear in the month they occur (e.g., Madarame deadline moved to June).",
+          "**Visual Polish:** Enhanced visibility for strategic tips."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.1.0",
     date: "2026-01-10",
     title: "The Phantom Refactor",

@@ -155,6 +155,7 @@ export const APP_DATA = {
       palace: 'Castle of Lust (Kamoshida)',
       tasks: [
         { id: 'apr_pal_sec', text: 'DEADLINE: Secure Route (Kamoshida) by 4/20', isMissable: true },
+        { id: 'apr_pal_strat', text: 'Strategy: Clear Palace early (by 4/18)', isMissable: true },
         { id: 'apr_q1', text: '4/12 Answer: "Villains" (+1 Knowledge)', isMissable: true },
         { id: 'apr_q2', text: '4/19 Answer: "They\'re the same" (+1 Knowledge)', isMissable: true },
         { id: 'apr_q3', text: '4/23 Answer: "All of them" (+1 Knowledge)', isMissable: true },
@@ -171,7 +172,7 @@ export const APP_DATA = {
       name: 'May',
       palace: 'Museum of Vanity (Madarame)',
       tasks: [
-        { id: 'may_pal_clear', text: 'RECOMMENDED: Clear Madarame by 5/20', isMissable: true },
+        { id: 'may_pal_strat', text: 'Strategy: Clear Madarame early (by 5/20)', isMissable: true },
         { id: 'may_unlock_maruki', text: '5/13: Councillor (Maruki) Unlocks (PRIORITY)' },
         { id: 'may_unlock_kawakami', text: '5/24: Operation Maidwatch (Starts Temperance)' },
         { id: 'may_unlock_kasumi', text: '5/30: Faith (Yoshizawa) Rank 1' },
@@ -192,6 +193,8 @@ export const APP_DATA = {
       name: 'June',
       palace: 'Bank of Gluttony (Kaneshiro)',
       tasks: [
+        { id: 'may_pal_dead', text: 'DEADLINE: Secure Route (Madarame) by 6/4', isMissable: true },
+        { id: 'jun_pal_strat', text: 'Strategy: Secure Route (Kaneshiro) ASAP', isMissable: true },
         { id: 'jun_fortune', text: '6/21: Unlock Fortune (Chihaya) - Need 100k Yen (CRITICAL)' },
         { id: 'jun_justice', text: '6/10: Justice (Akechi) Unlocks (Night, Kichijoji)' },
         { id: 'jun_priestess', text: '6/24: Priestess (Makoto) Unlocks' },
@@ -212,10 +215,11 @@ export const APP_DATA = {
       name: 'July',
       palace: 'Pyramid (Futaba)',
       tasks: [
+        { id: 'jun_pal_dead', text: 'DEADLINE: Secure Route (Kaneshiro) by 7/9', isMissable: true },
         { id: 'july_exams', text: '7/13-7/15: Finals (Requires Knowledge 4/5)', isMissable: true },
         { id: 'july_kawakami_10', text: 'CRITICAL: Reach Kawakami Rank 10 before 7/24', isMissable: true },
         { id: 'july_speed_reading', text: '7/25: Go to Jinbocho Bookstore for Speed Reading', isMissable: true },
-        { id: 'pal4_start', text: '7/25: Start Futaba Palace Infiltration', isMissable: true },
+        { id: 'pal4_start', text: 'Strategy: Begin Futaba Palace Infiltration', isMissable: true },
         { id: 'j1', text: 'Borrow "Speed Reading" from Shujin Library (7/1)', isMissable: true },
         { id: 'j2', text: '7/11: Trader Sakai: Trade Soothing Soba for Koedo Sword', isMissable: true },
         { id: 'j3', text: '7/24: Last day to borrow school books before summer', isMissable: true },
@@ -239,7 +243,7 @@ export const APP_DATA = {
         { id: 'pal4_card', text: 'DEADLINE: Send Calling Card (Futaba) by 8/21', isMissable: true },
         { id: 'a1', text: '8/14 Jazz Jin: Matarukaja (Team Offense)', isMissable: true },
         { id: 'a2', text: '8/28 Jazz Jin: Marakukaja (Team Defense)', isMissable: true },
-        { id: 'a3', text: 'Complete Futaba\'s Palace ASAP to free up dates', isMissable: true },
+        { id: 'a3', text: 'Strategy: Clear Palace early (Early Aug) to maximize free time', isMissable: true },
         { id: 'aug_stats', text: 'Strategy: Max out Social Stats using Chihaya Luck Reading', isMissable: true },
         { id: 'aug_mementos', text: 'Mementos: Clear piled-up requests (Batch 3-5 at once)' },
         { id: 'aug_unlock_futaba', text: '8/31: Hermit (Futaba) Unlocks (Need Kindness 4)' },
@@ -254,7 +258,7 @@ export const APP_DATA = {
       name: 'September',
       palace: 'Spaceport (Okumura)',
       tasks: [
-        { id: 'pal5_start', text: 'RECOMMENDED: Start Okumura Palace Infiltration', isMissable: true },
+        { id: 'pal5_strat', text: 'Strategy: Secure Route (Okumura) ASAP', isMissable: true },
         { id: 'sep_okumura_fix', text: 'Boss Strategy: If struggling, switch to MERCILESS', isMissable: true },
         { id: 'sep_maruki_5', text: '9/20: Maruki\'s rank lock lifts. Priority 1.' },
         { id: 'sep_unlock_tower', text: '9/4: Tower (Shinya) Unlocks' },
@@ -293,6 +297,7 @@ export const APP_DATA = {
       palace: 'The Heist (Niijima)',
       tasks: [
         { id: 'pal6_dead', text: 'DEADLINE: Secure Route (Sae) by 11/17', isMissable: true },
+        { id: 'nov_pal_strat', text: 'Strategy: Secure Route (Sae) early to free up social time', isMissable: true },
         { id: 'nov_deadline_maruki', text: '11/17 DEADLINE: Maruki MUST be Rank 9', isMissable: true },
         { id: 'nov_deadline_akechi', text: '11/17 DEADLINE: Akechi MUST be Rank 8', isMissable: true },
         { id: 'nov_deadline_yoshida', text: '11/13 DEADLINE: Yoshida MUST be Rank 10', isMissable: true },
@@ -308,6 +313,7 @@ export const APP_DATA = {
       palace: 'Cruiser (Shido)',
       tasks: [
         { id: 'pal7_dead', text: 'DEADLINE: Secure Route (Shido) by 12/16', isMissable: true },
+        { id: 'dec_pal_strat', text: 'Strategy: Secure Route (Shido) early to minimize late-game stress', isMissable: true },
         { id: 'dec_faith', text: '12/18 DEADLINE: Kasumi MUST be Rank 5', isMissable: true },
         { id: 'dec_mementos', text: '12/24: Clear Mementos Depths entirely' },
         { id: 'dec_akechi', text: 'Post-Shido: Say "I want to keep our promise" to Akechi', isMissable: true },
@@ -322,6 +328,7 @@ export const APP_DATA = {
       palace: 'Laboratory (Maruki)',
       tasks: [
         { id: 'pal9_dead', text: 'DEADLINE: Secure Route (Maruki) by 2/2', isMissable: true },
+        { id: 'jan_pal_strat', text: 'Strategy: Secure Route (Maruki) ASAP to focus on Tier 3 Awakenings', isMissable: true },
         { id: 'jan_awakenings', text: 'Focus: Dedicate afternoons to Tier 3 Personas', isMissable: true },
         { id: 'j1_jan', text: 'Talk to friends for 3rd Tier Personas' },
         { id: 'j2_jan', text: '1/22 Jazz Jin: Ali Dance', isMissable: true },

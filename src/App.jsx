@@ -30,7 +30,8 @@ import {
   Wrench,
   Heart,
   Book,
-  Sparkles
+  Sparkles,
+  Lightbulb
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
@@ -363,18 +364,42 @@ export default function App() {
     
     const groups = {
       critical: [],
-      timeline: []
+      timeline: [],
+      strategy: []
     };
 
     activeMonthData.tasks.forEach(task => {
       const t = task.text;
-      // Strict Critical: Deadlines, Rank Requirements, Palace Milestones
+      
+      // 1. Strategies (Non-actionable tips)
+      if (t.startsWith('Strategy:') || t.startsWith('Focus:') || t.startsWith('Optimization:') || t.startsWith('Boss Strategy:')) {
+        groups.strategy.push(task);
+        return;
+      }
+
+      // 2. Strict Critical: Deadlines, Rank Requirements, Palace Milestones
       if (t.includes('DEADLINE') || t.includes('MUST be') || t.includes('Secure Route') || t.includes('Calling Card') || t.includes('CRITICAL')) {
         groups.critical.push(task);
-      } else {
+      } 
+      // 3. Standard Timeline
+      else {
         groups.timeline.push(task);
       }
     });
+
+    // Helper to sort by date (Academic Year: April=4 ... Jan=13, Feb=14, Mar=15)
+    const getDateValue = (text) => {
+      const match = text.match(/^(\d{1,2})\/(\d{1,2})/);
+      if (match) {
+        let m = parseInt(match[1]);
+        const d = parseInt(match[2]);
+        if (m < 4) m += 12; // Treat Jan-Mar as next year
+        return m * 100 + d;
+      }
+      return 99999; // Undated items at the bottom
+    };
+
+    groups.timeline.sort((a, b) => getDateValue(a.text) - getDateValue(b.text));
     
     return groups;
   }, [activeMonthData]);
@@ -756,6 +781,26 @@ export default function App() {
                       );
                     })}
                   </div>
+
+                  {/* Strategic Briefing (Non-actionable) */}
+                  {groupedTasks.strategy.length > 0 && (
+                    <div className="mt-8 bg-blue-900/20 border border-blue-800/50 rounded-2xl overflow-hidden">
+                       <div className="flex items-center gap-2 p-4 bg-blue-800/20 border-b border-blue-800/30">
+                          <Lightbulb className="w-5 h-5 text-blue-400" />
+                          <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest">Strategic Briefing</h4>
+                       </div>
+                       <div className="p-4 space-y-3">
+                          {groupedTasks.strategy.map((task, idx) => (
+                             <div key={`strat-${idx}`} className="flex gap-4 items-start">
+                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                <span className="text-xs md:text-sm text-blue-100 font-bold leading-relaxed">
+                                  {task.text}
+                                </span>
+                             </div>
+                          ))}
+                       </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Targets Section */}
