@@ -9,7 +9,7 @@ export const RELEASE_NOTES = [
         title: "📡 Signal Analysis",
         items: [
           "**Engagement Tracking:** Added secure, private metrics to help us balance future features based on real usage.",
-          "**Smart Notifications:** Implemented a new non-intrusive messaging system for important updates and community alerts.",
+          "**Smart Notifications:** Implemented a new non-intrusive messaging system for important updates, community alerts, and support engagement.",
           "**System Optimization:** Refined the event handling for smoother performance on long playthroughs."
         ]
       }
