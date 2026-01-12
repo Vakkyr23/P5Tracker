@@ -31,10 +31,17 @@ import {
   Heart,
   Book,
   Sparkles,
-  Lightbulb
+  Lightbulb,
+  Library,
+  ExternalLink,
+  Cpu,
+  PlayCircle,
+  FileText,
+  MessageSquare
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
+import { RESOURCE_DATA } from './data/resourceData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
 import { ROADMAP } from './data/roadmap';
@@ -46,6 +53,22 @@ const STAT_ICONS = {
   Proficiency: Wrench,
   Kindness: Heart,
   Charm: Sparkles
+};
+
+const RESOURCE_ICONS = {
+  Cpu,
+  BookOpen,
+  Sword,
+  Trophy,
+  Sparkles,
+  Users
+};
+
+const FORMAT_ICONS = {
+  video: PlayCircle,
+  tool: Wrench,
+  guide: FileText,
+  community: MessageSquare
 };
 
 // Analytics Helper
@@ -87,6 +110,14 @@ export default function App() {
   });
 
   const [expandedGuides, setExpandedGuides] = useState({});
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      document.title = 'P5Tracker - DEV';
+    } else {
+      document.title = 'P5 Tracker';
+    }
+  }, []);
 
   const toggleGuide = (arcana) => {
     setExpandedGuides(prev => ({ ...prev, [arcana]: !prev[arcana] }));
@@ -444,6 +475,7 @@ export default function App() {
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
         <TabButton active={activeTab === 'palaces'} onClick={() => setActiveTab('palaces')} label="Palaces" icon={MapPin} />
         <TabButton active={activeTab === 'mementos'} onClick={() => setActiveTab('mementos')} label="Mementos" icon={Target} />
+        <TabButton active={activeTab === 'resources'} onClick={() => setActiveTab('resources')} label="Resources" icon={Library} />
       </nav>
 
       <main className="max-w-6xl mx-auto pb-48 md:pb-24">
@@ -1267,6 +1299,70 @@ export default function App() {
                 </>
               );
             })()}
+          </div>
+        )}
+
+        {/* RESOURCES VIEW */}
+        {activeTab === 'resources' && (
+          <div className="space-y-12 animate-in fade-in duration-500">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-5xl font-black italic text-white uppercase tracking-tighter mb-4">Command Center</h2>
+              <p className="text-xs md:text-sm text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">
+                A curated index of community tools and archives to supplement your journey.
+              </p>
+            </div>
+
+            {RESOURCE_DATA.map((section) => {
+              const SectionIcon = RESOURCE_ICONS[section.icon] || Info;
+              return (
+                <div key={section.id} className="space-y-6">
+                  <div className="flex items-center gap-3 border-b border-neutral-800 pb-4">
+                    <div className={`p-2 rounded-xl bg-neutral-900 border border-neutral-800 ${section.color}`}>
+                      <SectionIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-2xl font-black uppercase text-white tracking-tight leading-none">{section.title}</h3>
+                      <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase mt-1 tracking-wider">{section.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {section.items.map((item, idx) => {
+                      const FormatIcon = FORMAT_ICONS[item.format] || Info;
+                      const hostname = new URL(item.url).hostname.replace('www.', '');
+                      
+                      return (
+                        <a 
+                          key={idx}
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group bg-neutral-900 border border-neutral-800 rounded-3xl p-6 hover:bg-neutral-800/50 hover:border-neutral-700 transition-all flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-2">
+                                <FormatIcon className="w-3.5 h-3.5 text-neutral-500 group-hover:text-red-500 transition-colors" />
+                                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500">{item.format}</span>
+                              </div>
+                              <ExternalLink className="w-3 h-3 text-neutral-700 group-hover:text-white transition-colors" />
+                            </div>
+                            <h4 className="text-sm md:text-lg font-black uppercase text-white mb-2 leading-tight group-hover:text-red-500 transition-colors">{item.title}</h4>
+                            <p className="text-[11px] md:text-sm text-neutral-300 font-medium leading-relaxed">{item.desc}</p>
+                          </div>
+                          
+                          <div className="mt-6 pt-4 border-t border-neutral-800/50">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500 group-hover:text-neutral-300 transition-colors flex items-center gap-2">
+                              {hostname}
+                            </span>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 
