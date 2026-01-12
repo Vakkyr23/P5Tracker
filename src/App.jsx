@@ -35,10 +35,15 @@ import {
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
+import { RESOURCE_DATA } from './data/resourceData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
 import { ROADMAP } from './data/roadmap';
 import { APP_VERSION } from './data/version';
+
+import { useUserStats } from './hooks/useUserStats';
+import { useSmartSupport } from './hooks/useSmartSupport';
+import { SupportToast } from './components/SupportToast';
 
 const STAT_ICONS = {
   Knowledge: Book,
@@ -85,6 +90,10 @@ export default function App() {
     APP_DATA.confidants.forEach(c => initial[c.arcana] = 0);
     return initial;
   });
+
+  // --- Smart Support & Analytics ---
+  const userStats = useUserStats(checkedItems, confidantRanks);
+  const { showToast, toastType, handleDismiss, handleSupport } = useSmartSupport(userStats);
 
   const [expandedGuides, setExpandedGuides] = useState({});
 
@@ -1436,6 +1445,14 @@ export default function App() {
            </div>
         </div>
       )}
+
+      {/* SMART SUPPORT TOAST */}
+      <SupportToast 
+        show={showToast} 
+        type={toastType} 
+        onDismiss={handleDismiss} 
+        onSupport={handleSupport} 
+      />
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
