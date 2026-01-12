@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 // Analytics Helper
 const trackEvent = (eventName, eventData = {}) => {
-  if (window.umami) {
+  if (import.meta.env.PROD && window.umami) {
     window.umami.track(eventName, eventData);
   }
 };

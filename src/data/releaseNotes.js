@@ -1,5 +1,21 @@
 export const RELEASE_NOTES = [
   {
+    version: "2.2.2",
+    date: "2026-01-12",
+    title: "The Phantom Signal",
+    description: "Implemented new background systems to better understand how Thieves use the app.",
+    sections: [
+      {
+        title: "📡 Signal Analysis",
+        items: [
+          "**Engagement Tracking:** Added secure, private metrics to help us balance future features based on real usage.",
+          "**Smart Notifications:** Implemented a new non-intrusive messaging system for important updates and community alerts.",
+          "**System Optimization:** Refined the event handling for smoother performance on long playthroughs."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.2.1",
     date: "2026-01-12",
     title: "The Strategic Update",

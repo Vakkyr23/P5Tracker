@@ -35,7 +35,6 @@ import {
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
-import { RESOURCE_DATA } from './data/resourceData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
 import { ROADMAP } from './data/roadmap';
@@ -55,7 +54,7 @@ const STAT_ICONS = {
 
 // Analytics Helper
 const trackEvent = (eventName, eventData = {}) => {
-  if (window.umami) {
+  if (import.meta.env.PROD && window.umami) {
     window.umami.track(eventName, eventData);
   }
 };
@@ -96,6 +95,14 @@ export default function App() {
   const { showToast, toastType, handleDismiss, handleSupport } = useSmartSupport(userStats);
 
   const [expandedGuides, setExpandedGuides] = useState({});
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      document.title = 'P5Tracker - DEV';
+    } else {
+      document.title = 'P5 Tracker';
+    }
+  }, []);
 
   const toggleGuide = (arcana) => {
     setExpandedGuides(prev => ({ ...prev, [arcana]: !prev[arcana] }));
@@ -1299,6 +1306,17 @@ export default function App() {
             >
               Support & Feedback
             </a>
+            {import.meta.env.DEV && (
+              <>
+                <span>•</span>
+                <button 
+                  onClick={() => { localStorage.clear(); window.location.reload(); }}
+                  className="text-red-500 font-black hover:text-white transition-colors"
+                >
+                  [DEV: RESET]
+                </button>
+              </>
+            )}
           </p>
           <a 
             href="https://ko-fi.com/K3K11RWTSL" 
