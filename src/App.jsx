@@ -119,6 +119,7 @@ export default function App() {
   const [showChangelog, setShowChangelog] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [importText, setImportText] = useState('');
   const [copied, setCopied] = useState(false);
   const hiddenInputRef = useRef(null);
@@ -303,6 +304,15 @@ export default function App() {
     return null;
   };
 
+  // Get all classroom answers for Reference tab
+  const classroomAnswers = useMemo(() => {
+    return APP_DATA.months.flatMap(m => 
+      m.tasks
+        .filter(t => t.text.includes('Answer:') || t.text.includes('Exam:') || t.text.includes('Crossword:'))
+        .map(t => ({ ...t, month: m.name }))
+    );
+  }, []);
+
   // Auto-expand relevant palace
   useEffect(() => {
     const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
@@ -382,7 +392,7 @@ export default function App() {
       </header>
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:relative md:bottom-auto md:left-auto md:right-auto md:mb-8 flex justify-between gap-1 bg-neutral-900/90 backdrop-blur-xl p-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))] border-t border-neutral-800 md:bg-neutral-900 md:p-1 md:border md:rounded-2xl md:shadow-2xl">
-        <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Guide" icon={BookOpen} />
+        <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Intel" icon={BookOpen} />
         <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Roadmap" icon={Calendar} />
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
         <TabButton active={activeTab === 'palaces'} onClick={() => setActiveTab('palaces')} label="Palaces" icon={MapPin} />
@@ -545,6 +555,36 @@ export default function App() {
                    </div>
                 </div>
              </div>
+            </div>
+
+            {/* SCHOOL ARCHIVES */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
+               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-6">
+                 <h3 className="text-lg md:text-2xl font-black italic text-white uppercase flex items-center gap-2">
+                   <Book className="w-4 h-4 md:w-6 md:h-6 text-neutral-500" /> School Archives
+                 </h3>
+                 <div className="relative w-full md:w-64">
+                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                   <input 
+                     type="text" 
+                     placeholder="Search answers..." 
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
+                     className="w-full bg-black border border-neutral-800 rounded-xl py-2 pl-10 pr-4 text-xs font-bold text-white focus:border-red-600 outline-none transition-colors"
+                   />
+                 </div>
+               </div>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 max-h-64 md:max-h-96 overflow-y-auto custom-scrollbar pr-1 md:pr-2">
+                 {classroomAnswers
+                   .filter(t => t.text.toLowerCase().includes(searchTerm.toLowerCase()) || t.month.toLowerCase().includes(searchTerm.toLowerCase()))
+                   .map((t, i) => (
+                   <div key={i} className="flex gap-3 p-3 bg-neutral-800/30 rounded-xl border border-neutral-800/50 hover:border-neutral-600 transition-colors">
+                      <div className="text-[10px] font-black text-neutral-500 uppercase w-12 md:w-16 shrink-0 pt-0.5">{t.month}</div>
+                      <div className="text-[10px] md:text-xs text-neutral-300 font-bold leading-snug">{t.text}</div>
+                   </div>
+                 ))}
+               </div>
             </div>
           </div>
         )}
