@@ -357,6 +357,38 @@ export default function App() {
     return { history, active };
   }, [anchoredMonth]);
 
+  // Group Roadmap Tasks
+  const groupedTasks = useMemo(() => {
+    if (!activeMonthData) return null;
+    
+    const groups = {
+      critical: [],
+      calendar: [],
+      school: [],
+      operations: [],
+      general: []
+    };
+
+    activeMonthData.tasks.forEach(task => {
+      const t = task.text;
+      const isDate = t.match(/^\d{1,2}\/\d{1,2}/);
+
+      if (t.includes('DEADLINE') || t.includes('Secure Route') || t.includes('Calling Card') || t.includes('MUST be') || t.includes('CRITICAL')) {
+        groups.critical.push(task);
+      } else if (t.includes('Answer:') || t.includes('Exam:') || t.includes('Crossword:')) {
+        groups.school.push(task);
+      } else if (t.includes('Mementos') || t.includes('Palace') || t.includes('Mission') || t.includes('Infiltration')) {
+        groups.operations.push(task);
+      } else if (isDate) {
+        groups.calendar.push(task);
+      } else {
+        groups.general.push(task);
+      }
+    });
+    
+    return groups;
+  }, [activeMonthData]);
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans p-2 md:p-8">
       <header className="max-w-6xl mx-auto mb-4 md:mb-8 border-b-4 md:border-b-8 border-red-600 pb-4 md:pb-8 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
@@ -392,7 +424,7 @@ export default function App() {
       </header>
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:relative md:bottom-auto md:left-auto md:right-auto md:mb-8 flex justify-between gap-1 bg-neutral-900/90 backdrop-blur-xl p-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))] border-t border-neutral-800 md:bg-neutral-900 md:p-1 md:border md:rounded-2xl md:shadow-2xl">
-        <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Intel" icon={BookOpen} />
+        <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Guide" icon={BookOpen} />
         <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Roadmap" icon={Calendar} />
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
         <TabButton active={activeTab === 'palaces'} onClick={() => setActiveTab('palaces')} label="Palaces" icon={MapPin} />
@@ -668,33 +700,59 @@ export default function App() {
                 </div>
                 
                 {/* Tasks Section */}
-                <div className="space-y-3 mb-8">
-                  {activeMonthData.tasks.map((task, idx) => (
-                    <div 
-                      key={`${task.id}-${idx}`} 
-                      onClick={() => toggleItem(task.id)} 
-                      className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${
-                        checkedItems[task.id] 
-                          ? 'opacity-30 border-neutral-800' 
-                          : task.isOverdue 
-                            ? 'bg-red-950/20 border-red-600 hover:bg-red-900/30 shadow-lg shadow-red-950/20' 
-                            : isTaskStatBuilding(task.text)
-                              ? 'bg-blue-950/20 border-blue-600 hover:border-blue-400'
-                              : 'bg-neutral-800 border-neutral-700 hover:border-red-600'
-                      }`}
-                    >
-                      {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500" /> : <Square className={`w-5 h-5 ${task.isOverdue ? 'text-red-500' : isTaskStatBuilding(task.text) ? 'text-blue-500' : 'text-neutral-600'}`} />}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] md:text-xs font-black uppercase tracking-tight leading-tight">{task.text}</span>
-                          {isTaskStatBuilding(task.text) && !checkedItems[task.id] && (
-                            <span className="bg-blue-600 text-[8px] font-black px-1.5 py-0.5 rounded text-white uppercase animate-pulse">Priority Stat</span>
-                          )}
+                <div className="space-y-4 mb-8">
+                  {[
+                    { id: 'critical', title: 'Critical Objectives', icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-950/20', border: 'border-red-900/30' },
+                    { id: 'calendar', title: 'Calendar Events', icon: Calendar, color: 'text-blue-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
+                    { id: 'operations', title: 'Phantom Operations', icon: Target, color: 'text-purple-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
+                    { id: 'general', title: 'General Goals', icon: CheckCircle2, color: 'text-green-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
+                    { id: 'school', title: 'School & Knowledge', icon: Book, color: 'text-yellow-500', bg: 'bg-neutral-900/50', border: 'border-neutral-800' },
+                  ].map(section => {
+                    const tasks = groupedTasks?.[section.id] || [];
+                    if (tasks.length === 0) return null;
+
+                    return (
+                      <details key={section.id} open className={`group rounded-2xl border ${section.border} overflow-hidden transition-all duration-300`}>
+                        <summary className={`flex items-center justify-between p-3 md:p-4 cursor-pointer select-none ${section.bg} hover:bg-neutral-800 transition-colors`}>
+                          <div className="flex items-center gap-2 md:gap-3">
+                            <section.icon className={`w-4 h-4 md:w-5 md:h-5 ${section.color}`} />
+                            <h4 className={`text-xs md:text-sm font-black uppercase tracking-widest ${section.color}`}>{section.title}</h4>
+                            <span className="bg-black/40 px-2 py-0.5 rounded text-[9px] font-bold text-neutral-500">{tasks.length}</span>
+                          </div>
+                          <ChevronDown className="w-4 h-4 text-neutral-500 group-open:rotate-180 transition-transform" />
+                        </summary>
+                        
+                        <div className="p-2 md:p-3 space-y-2 bg-black/20">
+                          {tasks.map((task, idx) => (
+                            <div 
+                              key={`${task.id}-${idx}`} 
+                              onClick={() => toggleItem(task.id)} 
+                              className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${
+                                checkedItems[task.id] 
+                                  ? 'opacity-30 border-neutral-800' 
+                                  : task.isOverdue 
+                                    ? 'bg-red-950/20 border-red-600 hover:bg-red-900/30 shadow-lg shadow-red-950/20' 
+                                    : isTaskStatBuilding(task.text)
+                                      ? 'bg-blue-950/20 border-blue-600 hover:border-blue-400'
+                                      : 'bg-neutral-800 border-neutral-700 hover:border-red-600'
+                              }`}
+                            >
+                              {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className={`w-5 h-5 shrink-0 ${task.isOverdue ? 'text-red-500' : isTaskStatBuilding(task.text) ? 'text-blue-500' : 'text-neutral-600'}`} />}
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[11px] md:text-xs font-black uppercase tracking-tight leading-tight">{task.text}</span>
+                                  {isTaskStatBuilding(task.text) && !checkedItems[task.id] && (
+                                    <span className="bg-blue-600 text-[8px] font-black px-1.5 py-0.5 rounded text-white uppercase animate-pulse">Priority Stat</span>
+                                  )}
+                                </div>
+                                {task.isOverdue && <div className="text-[9px] font-bold text-red-500 mt-1 uppercase tracking-widest flex items-center gap-1"><AlertTriangle className="w-2 h-2" /> Overdue from {task.sourceMonth}</div>}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        {task.isOverdue && <div className="text-[9px] font-bold text-red-500 mt-1 uppercase tracking-widest flex items-center gap-1"><AlertTriangle className="w-2 h-2" /> Overdue from {task.sourceMonth}</div>}
-                      </div>
-                    </div>
-                  ))}
+                      </details>
+                    );
+                  })}
                 </div>
 
                 {/* Targets Section */}
