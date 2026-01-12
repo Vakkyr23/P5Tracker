@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-01-10
+### Added
+- **Priority Roadmap:** Redesigned the monthly checklist into "Mission Critical" and "Timeline" sections.
+- **Visual Task Categorization:** Tasks now use distinct icons and colors (School, Calendar, Ops) for faster scanning.
+
 ## [2.1.5] - 2026-01-10
 ### Fixed
 - Prevented double popups (Onboarding + Changelog) for first-time users.
