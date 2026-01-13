@@ -61,7 +61,8 @@ const RESOURCE_ICONS = {
   Sword,
   Trophy,
   Sparkles,
-  Users
+  Users,
+  Zap
 };
 
 const FORMAT_ICONS = {
@@ -1312,57 +1313,90 @@ export default function App() {
               </p>
             </div>
 
-            {RESOURCE_DATA.map((section) => {
-              const SectionIcon = RESOURCE_ICONS[section.icon] || Info;
-              return (
-                <div key={section.id} className="space-y-6">
-                  <div className="flex items-center gap-3 border-b border-neutral-800 pb-4">
-                    <div className={`p-2 rounded-xl bg-neutral-900 border border-neutral-800 ${section.color}`}>
-                      <SectionIcon className="w-5 h-5" />
+            <div className="space-y-12">
+              {RESOURCE_DATA.map((section) => {
+                const SectionIcon = RESOURCE_ICONS[section.icon] || Info;
+                return (
+                  <div key={section.id} className="space-y-6">
+                    {/* Section Header - Vertical Stack */}
+                    <div className="flex items-center gap-3 border-b border-neutral-800 pb-4">
+                      <div className={`p-2 rounded-xl bg-neutral-900 border border-neutral-800 ${section.color}`}>
+                        <SectionIcon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg md:text-2xl font-black uppercase text-white tracking-tight leading-none">{section.title}</h3>
+                        <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase mt-1 tracking-wider">{section.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg md:text-2xl font-black uppercase text-white tracking-tight leading-none">{section.title}</h3>
-                      <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase mt-1 tracking-wider">{section.description}</p>
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {section.items.map((item, idx) => {
-                      const FormatIcon = FORMAT_ICONS[item.format] || Info;
-                      const hostname = new URL(item.url).hostname.replace('www.', '');
-                      
-                      return (
-                        <a 
-                          key={idx}
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group bg-neutral-900 border border-neutral-800 rounded-3xl p-6 hover:bg-neutral-800/50 hover:border-neutral-700 transition-all flex flex-col justify-between"
-                        >
-                          <div>
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center gap-2">
-                                <FormatIcon className="w-3.5 h-3.5 text-neutral-500 group-hover:text-red-500 transition-colors" />
-                                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500">{item.format}</span>
+                    {/* Items Grid - Horizontal layout within section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                      {section.items.map((item, idx) => {
+                        const FormatIcon = FORMAT_ICONS[item.format] || Info;
+                        let hostname = 'EXTERNAL';
+                        try {
+                           if (item.isLocked) {
+                             hostname = 'COMING SOON';
+                           } else if (item.url) {
+                             hostname = new URL(item.url).hostname.replace('www.', '');
+                           }
+                        } catch (e) {
+                           console.warn('Invalid URL:', item.url);
+                        }
+                        
+                        return (
+                          <a 
+                            key={idx}
+                            href={item.isLocked ? undefined : item.url}
+                            target={item.isLocked ? undefined : "_blank"}
+                            rel={item.isLocked ? undefined : "noopener noreferrer"}
+                            onClick={() => !item.isLocked && trackEvent('resource-click', { title: item.title, category: section.id })}
+                            className={`group bg-neutral-900 border border-neutral-800 rounded-3xl p-6 transition-all flex flex-col justify-between ${
+                              item.isLocked 
+                                ? 'cursor-not-allowed border-neutral-800' 
+                                : item.isGold 
+                                  ? 'bg-red-600/5 border-red-600/30 hover:bg-red-600/10 hover:border-red-500' 
+                                  : 'bg-neutral-800/30 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-600'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                  <FormatIcon className={`w-3.5 h-3.5 ${item.isLocked ? 'text-neutral-500' : 'text-neutral-500 group-hover:text-red-500'} transition-colors`} />
+                                  <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500">{item.format}</span>
+                                </div>
+                                {item.isLocked ? (
+                                  <div className="px-1.5 py-0.5 bg-neutral-800 border border-neutral-700 rounded text-[7px] font-black uppercase text-neutral-500">Upcoming</div>
+                                ) : (
+                                  <ExternalLink className="w-3 h-3 text-neutral-700 group-hover:text-white transition-colors" />
+                                )}
                               </div>
-                              <ExternalLink className="w-3 h-3 text-neutral-700 group-hover:text-white transition-colors" />
+                              <h4 className={`text-sm md:text-lg font-black uppercase mb-2 leading-tight transition-colors ${
+                                item.isLocked ? 'text-white' : 'text-white group-hover:text-red-500'
+                              }`}>
+                                {item.title}
+                              </h4>
+                              <p className={`text-[11px] md:text-sm font-medium leading-relaxed ${
+                                item.isLocked ? 'text-neutral-300' : 'text-neutral-300'
+                              }`}>
+                                {item.desc}
+                              </p>
                             </div>
-                            <h4 className="text-sm md:text-lg font-black uppercase text-white mb-2 leading-tight group-hover:text-red-500 transition-colors">{item.title}</h4>
-                            <p className="text-[11px] md:text-sm text-neutral-300 font-medium leading-relaxed">{item.desc}</p>
-                          </div>
-                          
-                          <div className="mt-6 pt-4 border-t border-neutral-800/50">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500 group-hover:text-neutral-300 transition-colors flex items-center gap-2">
-                              {hostname}
-                            </span>
-                          </div>
-                        </a>
-                      );
-                    })}
+                            
+                            <div className="mt-6 pt-4 border-t border-neutral-800/50 flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500 group-hover:text-neutral-300 transition-colors flex items-center gap-2">
+                                {hostname}
+                              </span>
+                              {item.isGold && !item.isLocked && <Star className="w-3 h-3 text-red-500 fill-current" />}
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         )}
 
