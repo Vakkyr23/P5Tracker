@@ -41,11 +41,12 @@ import {
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
+import { APP_VERSION } from './data/version';
 import { RESOURCE_DATA } from './data/resourceData';
+import { CROSSWORD_DATA } from './data/crosswordData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
 import { ROADMAP } from './data/roadmap';
-import { APP_VERSION } from './data/version';
 
 const STAT_ICONS = {
   Knowledge: Book,
@@ -205,7 +206,73 @@ export default function App() {
     return socialStats[gate.stat] < gate.lvl ? gate : false;
   };
 
+  // --- Crossword System ---
+  const crosswordTaskIds = useMemo(() => {
+    return APP_DATA.months.flatMap(m => m.tasks)
+      .filter(t => t.text.toLowerCase().includes('crossword'))
+      .map(t => t.id);
+  }, []);
+
+  const libraryCwCount = useMemo(() => {
+    return Array.isArray(CROSSWORD_DATA) ? CROSSWORD_DATA.filter(cw => checkedItems[cw.id]).length : 0;
+  }, [checkedItems]);
+
+  const isTaskChecked = (task) => {
+    return checkedItems[task.id];
+  };
+
+  useEffect(() => {
+    // Migration: transfer legacy roadmap checks to library sequence
+    const legacyCheckedCount = crosswordTaskIds.filter(id => checkedItems[id]).length;
+    if (legacyCheckedCount > libraryCwCount) {
+      const newItems = { ...checkedItems };
+      for (let i = 0; i < legacyCheckedCount; i++) {
+        if (CROSSWORD_DATA[i]) newItems[CROSSWORD_DATA[i].id] = true;
+      }
+      setCheckedItems(newItems);
+    }
+  }, [crosswordTaskIds]);
+
+  const bulkCheckCrosswords = (count) => {
+    const newItems = { ...checkedItems };
+    // 1. Clear current sequence
+    CROSSWORD_DATA.forEach(cw => delete newItems[cw.id]);
+    // 2. Clear current roadmap boxes
+    crosswordTaskIds.forEach(id => delete newItems[id]);
+    
+    // 3. Apply new count to both
+    CROSSWORD_DATA.forEach((cw, idx) => {
+      if (idx < count) {
+        newItems[cw.id] = true;
+        if (crosswordTaskIds[idx]) newItems[crosswordTaskIds[idx]] = true;
+      }
+    });
+    setCheckedItems(newItems);
+  };
+
   const toggleItem = (id) => {
+    const cwIndex = crosswordTaskIds.indexOf(id);
+    if (cwIndex !== -1) {
+      const isChecking = !checkedItems[id];
+      if (isChecking) {
+        const nextCw = CROSSWORD_DATA.find(cw => !checkedItems[cw.id]);
+        setCheckedItems(prev => ({
+          ...prev,
+          [id]: true,
+          ...(nextCw ? { [nextCw.id]: true } : {})
+        }));
+      } else {
+        const lastCheckedCw = [...CROSSWORD_DATA].reverse().find(cw => checkedItems[cw.id]);
+        setCheckedItems(prev => {
+          const next = { ...prev };
+          delete next[id];
+          if (lastCheckedCw) delete next[lastCheckedCw.id];
+          return next;
+        });
+      }
+      return;
+    }
+    
     setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
@@ -316,6 +383,12 @@ export default function App() {
   };
 
   const activeMonthData = getSmartMonthData(currentMonth);
+
+  // --- Crossword Logic ---
+  const nextCrossword = useMemo(() => {
+    if (!Array.isArray(CROSSWORD_DATA)) return null;
+    return CROSSWORD_DATA.find(cw => !checkedItems[cw.id]);
+  }, [checkedItems]);
 
   // --- Bottleneck detection ---
   const bottleneckStats = useMemo(() => {
@@ -471,12 +544,12 @@ export default function App() {
       </header>
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:relative md:bottom-auto md:left-auto md:right-auto md:mb-8 flex justify-between gap-1 bg-neutral-900/90 backdrop-blur-xl p-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))] border-t border-neutral-800 md:bg-neutral-900 md:p-1 md:border md:rounded-2xl md:shadow-2xl">
-        <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Guide" icon={BookOpen} />
-        <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Roadmap" icon={Calendar} />
+        <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Briefing" icon={BookOpen} />
+        <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Calendar" icon={Calendar} />
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
+        <TabButton active={activeTab === 'library'} onClick={() => setActiveTab('library')} label="Reference" icon={Library} />
         <TabButton active={activeTab === 'palaces'} onClick={() => setActiveTab('palaces')} label="Palaces" icon={MapPin} />
         <TabButton active={activeTab === 'mementos'} onClick={() => setActiveTab('mementos')} label="Mementos" icon={Target} />
-        <TabButton active={activeTab === 'resources'} onClick={() => setActiveTab('resources')} label="Resources" icon={Library} />
       </nav>
 
       <main className="max-w-6xl mx-auto pb-48 md:pb-24">
@@ -637,11 +710,11 @@ export default function App() {
              </div>
             </div>
 
-            {/* SCHOOL ARCHIVES */}
+            {/* SCHOOL ANSWERS */}
             <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-6">
                  <h3 className="text-lg md:text-2xl font-black italic text-white uppercase flex items-center gap-2">
-                   <Book className="w-4 h-4 md:w-6 md:h-6 text-neutral-500" /> School Archives
+                   <Book className="w-4 h-4 md:w-6 md:h-6 text-neutral-500" /> School Answers
                  </h3>
                  <div className="relative w-full md:w-64">
                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
@@ -666,10 +739,57 @@ export default function App() {
                  ))}
                </div>
             </div>
+
+            {/* CROSSWORD ANSWERS */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col border-t-4 border-t-yellow-600">
+              <div className="p-4 md:p-8 border-b border-neutral-800 bg-black/20">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-neutral-800 border border-neutral-800 text-yellow-500">
+                      <Book className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-3xl font-black uppercase text-white tracking-tight italic">Crossword Answers</h3>
+                      <p className="text-xs md:text-sm text-neutral-500 font-semibold mt-1 tracking-wider uppercase">Sequential Progression Tracking</p>
+                    </div>
+                  </div>
+                  <div className="bg-neutral-800 px-4 py-2 rounded-2xl border border-neutral-700">
+                    <span className="text-xs font-black text-white italic">Puzzles Completed: {Array.isArray(CROSSWORD_DATA) ? CROSSWORD_DATA.filter(cw => checkedItems[cw.id]).length : 0} / 38</span>
+                  </div>
+                </div>
+                <p className="text-xs md:text-sm text-neutral-400 mt-4 leading-relaxed max-w-3xl">
+                  Crosswords in Royal are sequential. They always appear in this order, regardless of the calendar date. Check them off here to update your Calendar hints.
+                </p>
+              </div>
+
+              <div className="p-4 md:p-8 max-h-[400px] overflow-y-auto custom-scrollbar bg-black/10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {Array.isArray(CROSSWORD_DATA) && CROSSWORD_DATA.map((cw, idx) => (
+                    <div 
+                      key={cw.id}
+                      onClick={() => toggleItem(cw.id)}
+                      className={`flex items-center gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${
+                        checkedItems[cw.id] 
+                          ? 'bg-neutral-950/50 border-neutral-800 opacity-40' 
+                          : 'bg-neutral-800/30 border-neutral-800 hover:bg-neutral-800/50 hover:border-yellow-900/50'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] shrink-0 ${checkedItems[cw.id] ? 'bg-neutral-800 text-neutral-500' : 'bg-yellow-600 text-black'}`}>
+                        {idx + 1}
+                      </div>
+                                              <div className="flex-1 min-w-0">
+                                                <div className={`text-xs font-bold truncate ${checkedItems[cw.id] ? 'text-neutral-500 line-through' : 'text-neutral-300'}`}>{cw.q}</div>
+                                                <div className={`text-sm font-black italic ${checkedItems[cw.id] ? 'text-neutral-600' : 'text-white'}`}>{cw.a}</div>
+                                              </div>                      {checkedItems[cw.id] ? <CheckSquare className="w-4 h-4 text-green-500" /> : <Square className="w-4 h-4 text-neutral-700" />}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Calendar Header Navigation (Applicable to Roadmap) */}
+        {/* Calendar Header Navigation */}
         {activeTab === 'months' && (
           <div className="mb-4 md:mb-8 bg-neutral-900 border border-neutral-800 rounded-3xl p-3 md:p-6 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
@@ -797,15 +917,20 @@ export default function App() {
                           key={`time-${idx}`} 
                           onClick={() => toggleItem(task.id)} 
                           className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${
-                            checkedItems[task.id] 
+                            isTaskChecked(task) 
                               ? 'opacity-30 border-neutral-800 bg-transparent' 
                               : `${style.bg} ${style.border} hover:border-neutral-600`
                           }`}
                         >
-                          {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className={`w-5 h-5 shrink-0 ${style.color}`} />}
+                          {isTaskChecked(task) ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className={`w-5 h-5 shrink-0 ${style.color}`} />}
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className={`text-sm font-semibold leading-tight ${checkedItems[task.id] ? 'text-neutral-600 line-through' : 'text-neutral-300'}`}>{task.text}</span>
+                              <span className={`text-sm font-semibold leading-tight ${isTaskChecked(task) ? 'text-neutral-600 line-through' : 'text-neutral-300'}`}>
+                                {task.text}
+                                {!isTaskChecked(task) && task.text.includes('Crossword') && nextCrossword && (
+                                  <span className="text-red-500 ml-2 font-black italic">Next: "{nextCrossword.a}"</span>
+                                )}
+                              </span>
                               {!checkedItems[task.id] && !style.icon.name?.includes('Circle') && <StyleIcon className={`w-3.5 h-3.5 ${style.color} opacity-50`} />}
                             </div>
                             {task.isOverdue && <div className="text-xs font-bold text-red-500 mt-1 tracking-widest flex items-center gap-1"><AlertTriangle className="w-2.5 h-2.5" /> Overdue from {task.sourceMonth}</div>}
@@ -1303,18 +1428,18 @@ export default function App() {
           </div>
         )}
 
-        {/* RESOURCES VIEW */}
-        {activeTab === 'resources' && (
+        {/* REFERENCE VIEW */}
+        {activeTab === 'library' && (
           <div className="space-y-12 animate-in fade-in duration-500">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-5xl font-black italic text-white uppercase tracking-tighter mb-4">Command Center</h2>
               <p className="text-xs md:text-sm text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">
-                A curated index of community tools and archives to supplement your journey.
+                External tools and curated community intelligence.
               </p>
             </div>
 
             <div className="space-y-12">
-              {RESOURCE_DATA.map((section) => {
+              {Array.isArray(RESOURCE_DATA) && RESOURCE_DATA.map((section) => {
                 const SectionIcon = RESOURCE_ICONS[section.icon] || Info;
                 return (
                   <div key={section.id} className="space-y-6">
@@ -1350,7 +1475,7 @@ export default function App() {
                             href={item.isLocked ? undefined : item.url}
                             target={item.isLocked ? undefined : "_blank"}
                             rel={item.isLocked ? undefined : "noopener noreferrer"}
-                            onClick={() => !item.isLocked && trackEvent('resource-click', { title: item.title, category: section.id })}
+                            onClick={() => !item.isLocked && trackEvent('resource-click', { title: item.title, category: 'library' })}
                             className={`group bg-neutral-900 border border-neutral-800 rounded-3xl p-6 transition-all flex flex-col justify-between ${
                               item.isLocked 
                                 ? 'cursor-not-allowed border-neutral-800' 

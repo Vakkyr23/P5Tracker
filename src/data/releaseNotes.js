@@ -1,5 +1,29 @@
 export const RELEASE_NOTES = [
   {
+    version: "2.2.4",
+    date: "2026-01-13",
+    title: "The Intelligence Update",
+    description: "Refined the data hierarchy and implemented sequential crossword tracking.",
+    sections: [
+      {
+        title: "🧩 Crossword Mastery",
+        items: [
+          "**Sequential Tracking:** Crosswords are now tracked by their sequence (Q1-Q38) rather than just dates, matching the actual game logic.",
+          "**Smart Roadmap:** Calendar tasks now show the *next* answer you actually need based on your progress.",
+          "**How to Sync:** If your count looks wrong after this update, just go to the **Briefing** tab and check/uncheck the puzzles to match your in-game state. Your Calendar will auto-sync!"
+        ]
+      },
+      {
+        title: "📂 Navigation & Hierarchy",
+        items: [
+          "**Roadmap → Calendar:** Renamed for better intuition.",
+          "**Guide → Briefing:** Consolidated all core in-game knowledge (Social Stats, Answers, Routines).",
+          "**Library → Reference:** Dedicated space for external tools and future tracker placeholders."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.2.3",
     date: "2026-01-13",
     title: "The Library Update",

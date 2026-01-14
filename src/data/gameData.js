@@ -162,8 +162,8 @@ export const APP_DATA = {
         { id: 'apr_q4', text: '4/25 Answer: "You unquestionably support it" -> "You have a duty to correct it" (+1 Knowledge/Charm)', isMissable: true },
         { id: 'apr_q5', text: '4/27 Answer: "Four color theorem" (+1 Knowledge)', isMissable: true },
         { id: 'apr_q6', text: '4/30 Answer: "Wonder" -> "Child" -> "A prodigy" (+1 Knowledge)', isMissable: true },
-        { id: 'apr_cw1', text: '4/18 Crossword: "Semesters" (+1 Knowledge)', isMissable: true },
-        { id: 'apr_cw2', text: '4/27 Crossword: "Blossom" (+1 Knowledge)', isMissable: true },
+        { id: 'apr_cw1', text: '4/18 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'apr_cw2', text: '4/27 Crossword puzzle at LeBlanc', isMissable: true },
         { id: 'apr_tip1', text: 'Optimization: Clean room early to unlock TV/Console', isMissable: true }
       ]
     },
@@ -185,7 +185,12 @@ export const APP_DATA = {
         { id: 'may_q6', text: '5/21 Answer: "1:1.414" (+1 Knowledge)', isMissable: true },
         { id: 'may_q7', text: '5/23 Answer: "Together" -> "Senses" -> "Senses coming together" (+1 Knowledge)', isMissable: true },
         { id: 'may_q8', text: '5/26 Answer: "Arthur Conan Doyle" (+1 Knowledge)', isMissable: true },
-        { id: 'may_q9', text: '5/31 Answer: "John Silver" (+1 Knowledge)', isMissable: true }
+        { id: 'may_q9', text: '5/31 Answer: "John Silver" (+1 Knowledge)', isMissable: true },
+        { id: 'may_cw1', text: '5/2 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'may_cw2', text: '5/10 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'may_cw3', text: '5/18 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'may_cw4', text: '5/26 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'may_cw5', text: '5/31 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -207,7 +212,12 @@ export const APP_DATA = {
         { id: 'jun_q5', text: '6/20 Answer: "Smartphone" (+1 Knowledge)', isMissable: true },
         { id: 'jun_q6', text: '6/23 Answer: "A pope" (+1 Knowledge)', isMissable: true },
         { id: 'jun_q7', text: '6/27 Answer: "Dogs" (+1 Knowledge)', isMissable: true },
-        { id: 'jun_q8', text: '6/29 Answer: "Gold" (+1 Knowledge)', isMissable: true }
+        { id: 'jun_q8', text: '6/29 Answer: "Gold" (+1 Knowledge)', isMissable: true },
+        { id: 'jun_cw1', text: '6/3 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jun_cw2', text: '6/7 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jun_cw3', text: '6/16 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jun_cw4', text: '6/22 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jun_cw5', text: '6/30 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -231,7 +241,11 @@ export const APP_DATA = {
         { id: 'july_q4', text: '7/9 Answer: "A triangle" (+1 Knowledge)', isMissable: true },
         { id: 'july_q5', text: '7/11 Answer: "Memories that last a long time" (+1 Knowledge)', isMissable: true },
         { id: 'july_q6', text: '7/12 Answer: "180 degrees" -> "Luciferin" -> "Ishikawa Goemon" (+1 Knowledge)', isMissable: true },
-        { id: 'july_exam_ans', text: 'Exam: "Nouveau riche" -> "Gentleman-thief" -> "Hideyoshi" -> "Boiled alive"', isMissable: true }
+        { id: 'july_exam_ans', text: 'Exam: "Nouveau riche" -> "Gentleman-thief" -> "Hideyoshi" -> "Boiled alive"', isMissable: true },
+        { id: 'july_cw1', text: '7/7 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'july_cw2', text: '7/12 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'july_cw3', text: '7/19 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'july_cw4', text: '7/27 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -247,10 +261,12 @@ export const APP_DATA = {
         { id: 'aug_stats', text: 'Strategy: Max out Social Stats using Chihaya Luck Reading', isMissable: true },
         { id: 'aug_mementos', text: 'Mementos: Clear piled-up requests (Batch 3-5 at once)' },
         { id: 'aug_unlock_futaba', text: '8/31: Hermit (Futaba) Unlocks (Need Kindness 4)' },
-        { id: 'aug_q1', text: '8/3 Crossword: "Island"', isMissable: true },
-        { id: 'aug_q2', text: '8/8 Crossword: "Courage"', isMissable: true },
-        { id: 'aug_q3', text: '8/17 Crossword: "Sunburn"', isMissable: true },
-        { id: 'aug_q4', text: '8/25 Crossword: "Sweltering"', isMissable: true }
+        { id: 'aug_cw1', text: '8/3 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'aug_cw2', text: '8/8 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'aug_cw3', text: '8/14 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'aug_cw4', text: '8/17 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'aug_cw5', text: '8/25 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'aug_cw6', text: '8/30 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -271,7 +287,11 @@ export const APP_DATA = {
         { id: 'sep_q3', text: '9/14 Answer: "Loans for collateral" (+1 Knowledge)', isMissable: true },
         { id: 'sep_q4', text: '9/17 Answer: "Cats eating tongues" (+1 Knowledge)', isMissable: true },
         { id: 'sep_q5', text: '9/21 Answer: "Central Europe" (+1 Knowledge)', isMissable: true },
-        { id: 'sep_q6', text: '9/24 Answer: "20 white, 12 black" (+1 Knowledge)', isMissable: true }
+        { id: 'sep_q6', text: '9/24 Answer: "20 white, 12 black" (+1 Knowledge)', isMissable: true },
+        { id: 'sep_cw1', text: '9/2 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'sep_cw2', text: '9/19 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'sep_cw3', text: '9/21 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'sep_cw4', text: '9/28 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -288,7 +308,9 @@ export const APP_DATA = {
         { id: 'oct_exams', text: '10/17-10/20: Midterm Exams (Requires Knowledge 5)', isMissable: true },
         { id: 'o1', text: '10/2: Buy "Donut-Worry" from Home Shopping', isMissable: true },
         { id: 'o2', text: 'Exams: 10/17-10/20 (Knowledge 4 Required)', isMissable: true },
-        { id: 'o3', text: '10/30: Cultural Festival Events', isMissable: true }
+        { id: 'o3', text: '10/30: Cultural Festival Events', isMissable: true },
+        { id: 'oct_cw1', text: '10/10 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'oct_cw2', text: '10/31 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -304,7 +326,10 @@ export const APP_DATA = {
         { id: 'nov_interrogation', text: '11/20 TRAP: Do NOT sell out friends.', isMissable: true },
         { id: 'nov_akechi_choices', text: 'Akechi Choices: Rank 7: "You\'re my rival" | Rank 8: "I accept"', isMissable: true },
         { id: 'n1', text: '11/13: LAST DAY for Yoshida (Sun)', isMissable: true },
-        { id: 'n4', text: '11/20: DO NOT sell out your friends', isMissable: true }
+        { id: 'n4', text: '11/20: DO NOT sell out your friends', isMissable: true },
+        { id: 'nov_cw1', text: '11/4 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'nov_cw2', text: '11/14 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'nov_cw3', text: '11/28 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -319,7 +344,11 @@ export const APP_DATA = {
         { id: 'dec_akechi', text: 'Post-Shido: Say "I want to keep our promise" to Akechi', isMissable: true },
         { id: 'd1', text: '12/11: Jazz Jin (Debilitate)', isMissable: true },
         { id: 'd2', text: '12/22: Last day for Kasumi (Faith) Rank 5', isMissable: true },
-        { id: 'd3', text: '12/24: Christmas Eve Special Date', isMissable: true }
+        { id: 'd3', text: '12/24: Christmas Eve Special Date', isMissable: true },
+        { id: 'dec_cw1', text: '12/2 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'dec_cw2', text: '12/7 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'dec_cw3', text: '12/12 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'dec_cw4', text: '12/19 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -334,7 +363,11 @@ export const APP_DATA = {
         { id: 'j2_jan', text: '1/22 Jazz Jin: Ali Dance', isMissable: true },
         { id: 'j3_jan', text: '1/29 Jazz Jin: Arms Master', isMissable: true },
         { id: 'jan_q1', text: '1/11 Answer: "How numerous they are" -> "The Eight Million Gods"', isMissable: true },
-        { id: 'jan_q2', text: '1/14 Answer: "Iwate"', isMissable: true }
+        { id: 'jan_q2', text: '1/14 Answer: "Iwate"', isMissable: true },
+        { id: 'jan_cw1', text: '1/14 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jan_cw2', text: '1/19 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jan_cw3', text: '1/23 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'jan_cw4', text: '1/27 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     }
   ],
