@@ -158,46 +158,39 @@ export default function App() {
     const allKeys = Object.keys(items);
     
     // Count different types of legacy indicators
-    // 1. Old date-based keys (apr_cw1, etc)
     const legacyDateCount = allKeys.filter(k => k.includes('_cw') && !k.startsWith('cw_')).length;
-    // 2. Failed migration keys (cw1, cw2...)
     const failedMigrationCount = allKeys.filter(k => k.match(/^cw\d+$/)).length;
-    // 3. Valid new keys (cw_1, cw_2...)
-    const validSequenceCount = allKeys.filter(k => k.startsWith('cw_')).length;
-    // 4. Very old August keys (aug_q1...)
+    const oldAttemptCount = allKeys.filter(k => k.startsWith('cw_') && !k.startsWith('cw_ans_') && !k.startsWith('cw_slot_')).length;
     const oldAugCount = allKeys.filter(k => k.startsWith('aug_q')).length;
 
-    // Use the HIGHEST count found to determine progress
-    const maxProgress = Math.max(legacyDateCount + oldAugCount, failedMigrationCount, validSequenceCount);
+    // We take the HIGHEST count found to determine progress
+    const maxProgress = Math.max(legacyDateCount + oldAugCount, failedMigrationCount, oldAttemptCount);
 
-    if (maxProgress > 0) {
-      // Check if we need to clean up (if we have any "bad" keys)
-      const hasGarbage = legacyDateCount > 0 || failedMigrationCount > 0 || oldAugCount > 0;
-      
-      // If we found a valid sequence but it's "shorter" than legacy data (e.g. user imported old data on top of new),
-      // we should probably trust the legacy data count.
-      
-      if (hasGarbage || maxProgress > validSequenceCount) {
-        const next = { ...items };
-        
-        // 1. Enforce the correct sequence
-        for (let i = 1; i <= maxProgress; i++) {
-          next[`cw_${i}`] = true;
-        }
+    // Check if we already have the new format
+    const hasNewFormat = allKeys.some(k => k.startsWith('cw_slot_') || k.startsWith('cw_ans_'));
 
-        // 2. Delete all legacy/garbage keys
-        allKeys.forEach(k => {
-          if (
-            (k.includes('_cw') && !k.startsWith('cw_')) || 
-            k.startsWith('aug_q') || 
-            k.match(/^cw\d+$/)
-          ) {
-            delete next[k];
-          }
-        });
-        
-        return next;
+    if (maxProgress > 0 && !hasNewFormat) {
+      const next = { ...items };
+      
+      // 1. Enforce the correct sequence for BOTH slots and answers
+      for (let i = 1; i <= maxProgress; i++) {
+        next[`cw_slot_${i}`] = true; // Calendar checkboxes
+        next[`cw_ans_${i}`] = true;  // Briefing checkboxes
       }
+
+      // 2. Nuke all non-standard keys
+      allKeys.forEach(k => {
+        if (
+          (k.includes('_cw') && !k.startsWith('cw_slot_') && !k.startsWith('cw_ans_')) || 
+          k.startsWith('aug_q') || 
+          k.match(/^cw\d+$/) ||
+          (k.startsWith('cw_') && !k.startsWith('cw_slot_') && !k.startsWith('cw_ans_'))
+        ) {
+          delete next[k];
+        }
+      });
+      
+      return next;
     }
     return items;
   };
@@ -276,23 +269,22 @@ export default function App() {
   };
 
   const toggleItem = (id) => {
-    // Crossword Sequential Logic
-    if (id.startsWith('cw_')) {
-      const num = parseInt(id.split('_')[1]);
+    // Crossword Opportunity Logic (Calendar)
+    if (id.startsWith('cw_opp_')) {
       const isChecking = !checkedItems[id];
       
       setCheckedItems(prev => {
         const next = { ...prev };
         if (isChecking) {
-          // Bulk check all up to this number
-          for (let i = 1; i <= num; i++) {
-            next[`cw_${i}`] = true;
-          }
+          next[id] = true;
+          // Find next unchecked answer and check it
+          const nextAns = CROSSWORD_DATA.find(cw => !prev[cw.id] && !next[cw.id]);
+          if (nextAns) next[nextAns.id] = true;
         } else {
-          // Bulk uncheck all from this number forward
-          for (let i = num; i <= 38; i++) {
-            delete next[`cw_${i}`];
-          }
+          delete next[id];
+          // Find latest checked answer and uncheck it
+          const lastAns = [...CROSSWORD_DATA].reverse().find(cw => prev[cw.id] && next[cw.id]);
+          if (lastAns) delete next[lastAns.id];
         }
         return next;
       });
@@ -778,7 +770,7 @@ export default function App() {
                     </div>
                   </div>
                   <div className="bg-neutral-800 px-4 py-2 rounded-2xl border border-neutral-700">
-                    <span className="text-xs font-black text-white italic">Puzzles Completed: {Array.isArray(CROSSWORD_DATA) ? CROSSWORD_DATA.filter(cw => checkedItems[cw.id]).length : 0} / 38</span>
+                    <span className="text-xs font-black text-white italic">Puzzles Completed: {Object.keys(checkedItems).filter(k => k.startsWith('cw_ans_')).length} / 38</span>
                   </div>
                 </div>
                 <p className="text-xs md:text-sm text-neutral-400 mt-4 leading-relaxed max-w-3xl">
@@ -953,7 +945,7 @@ export default function App() {
                                 {task.text}
                                 {!isTaskChecked(task) && task.text.includes('Crossword') && (
                                   <span className="text-red-500 ml-2 font-black italic">
-                                    Next: "{CROSSWORD_DATA.find(cw => cw.id === task.id)?.a || '???'}"
+                                    Next: "{CROSSWORD_DATA.find(cw => !checkedItems[cw.id])?.a || 'Complete'}"
                                   </span>
                                 )}
                               </span>

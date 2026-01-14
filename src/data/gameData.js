@@ -162,8 +162,8 @@ export const APP_DATA = {
         { id: 'apr_q4', text: '4/25 Answer: "You unquestionably support it" -> "You have a duty to correct it" (+1 Knowledge/Charm)', isMissable: true },
         { id: 'apr_q5', text: '4/27 Answer: "Four color theorem" (+1 Knowledge)', isMissable: true },
         { id: 'apr_q6', text: '4/30 Answer: "Wonder" -> "Child" -> "A prodigy" (+1 Knowledge)', isMissable: true },
-        { id: 'cw_1', text: '4/18 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_2', text: '4/27 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_1', text: '4/18 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_2', text: '4/27 Crossword puzzle at LeBlanc', isMissable: true },
         { id: 'apr_tip1', text: 'Optimization: Clean room early to unlock TV/Console', isMissable: true }
       ]
     },
@@ -186,11 +186,11 @@ export const APP_DATA = {
         { id: 'may_q7', text: '5/23 Answer: "Together" -> "Senses" -> "Senses coming together" (+1 Knowledge)', isMissable: true },
         { id: 'may_q8', text: '5/26 Answer: "Arthur Conan Doyle" (+1 Knowledge)', isMissable: true },
         { id: 'may_q9', text: '5/31 Answer: "John Silver" (+1 Knowledge)', isMissable: true },
-        { id: 'cw_3', text: '5/2 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_4', text: '5/10 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_5', text: '5/18 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_6', text: '5/26 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_7', text: '5/31 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_3', text: '5/2 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_4', text: '5/10 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_5', text: '5/18 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_6', text: '5/26 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_7', text: '5/31 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -213,11 +213,11 @@ export const APP_DATA = {
         { id: 'jun_q6', text: '6/23 Answer: "A pope" (+1 Knowledge)', isMissable: true },
         { id: 'jun_q7', text: '6/27 Answer: "Dogs" (+1 Knowledge)', isMissable: true },
         { id: 'jun_q8', text: '6/29 Answer: "Gold" (+1 Knowledge)', isMissable: true },
-        { id: 'cw_8', text: '6/3 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_9', text: '6/7 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_10', text: '6/16 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_11', text: '6/22 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_12', text: '6/30 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_8', text: '6/3 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_9', text: '6/7 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_10', text: '6/16 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_11', text: '6/22 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_12', text: '6/30 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -242,10 +242,10 @@ export const APP_DATA = {
         { id: 'july_q5', text: '7/11 Answer: "Memories that last a long time" (+1 Knowledge)', isMissable: true },
         { id: 'july_q6', text: '7/12 Answer: "180 degrees" -> "Luciferin" -> "Ishikawa Goemon" (+1 Knowledge)', isMissable: true },
         { id: 'july_exam_ans', text: 'Exam: "Nouveau riche" -> "Gentleman-thief" -> "Hideyoshi" -> "Boiled alive"', isMissable: true },
-        { id: 'cw_13', text: '7/7 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_14', text: '7/12 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_15', text: '7/19 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_16', text: '7/27 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_13', text: '7/7 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_14', text: '7/12 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_15', text: '7/19 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_16', text: '7/27 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -261,12 +261,12 @@ export const APP_DATA = {
         { id: 'aug_stats', text: 'Strategy: Max out Social Stats using Chihaya Luck Reading', isMissable: true },
         { id: 'aug_mementos', text: 'Mementos: Clear piled-up requests (Batch 3-5 at once)' },
         { id: 'aug_unlock_futaba', text: '8/31: Hermit (Futaba) Unlocks (Need Kindness 4)' },
-        { id: 'cw_17', text: '8/3 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_18', text: '8/8 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_19', text: '8/14 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_20', text: '8/17 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_21', text: '8/25 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_22', text: '8/30 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_17', text: '8/3 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_18', text: '8/8 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_19', text: '8/14 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_20', text: '8/17 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_21', text: '8/25 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_22', text: '8/30 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -288,10 +288,10 @@ export const APP_DATA = {
         { id: 'sep_q4', text: '9/17 Answer: "Cats eating tongues" (+1 Knowledge)', isMissable: true },
         { id: 'sep_q5', text: '9/21 Answer: "Central Europe" (+1 Knowledge)', isMissable: true },
         { id: 'sep_q6', text: '9/24 Answer: "20 white, 12 black" (+1 Knowledge)', isMissable: true },
-        { id: 'cw_23', text: '9/2 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_24', text: '9/19 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_25', text: '9/21 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_26', text: '9/28 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_23', text: '9/2 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_24', text: '9/19 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_25', text: '9/21 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_26', text: '9/28 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -309,8 +309,8 @@ export const APP_DATA = {
         { id: 'o1', text: '10/2: Buy "Donut-Worry" from Home Shopping', isMissable: true },
         { id: 'o2', text: 'Exams: 10/17-10/20 (Knowledge 4 Required)', isMissable: true },
         { id: 'o3', text: '10/30: Cultural Festival Events', isMissable: true },
-        { id: 'cw_27', text: '10/10 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_28', text: '10/31 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_27', text: '10/10 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_28', text: '10/31 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -327,9 +327,9 @@ export const APP_DATA = {
         { id: 'nov_akechi_choices', text: 'Akechi Choices: Rank 7: "You\'re my rival" | Rank 8: "I accept"', isMissable: true },
         { id: 'n1', text: '11/13: LAST DAY for Yoshida (Sun)', isMissable: true },
         { id: 'n4', text: '11/20: DO NOT sell out your friends', isMissable: true },
-        { id: 'cw_29', text: '11/4 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_30', text: '11/14 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_31', text: '11/28 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_29', text: '11/4 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_30', text: '11/14 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_31', text: '11/28 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -345,10 +345,10 @@ export const APP_DATA = {
         { id: 'd1', text: '12/11: Jazz Jin (Debilitate)', isMissable: true },
         { id: 'd2', text: '12/22: Last day for Kasumi (Faith) Rank 5', isMissable: true },
         { id: 'd3', text: '12/24: Christmas Eve Special Date', isMissable: true },
-        { id: 'cw_32', text: '12/2 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_33', text: '12/7 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_34', text: '12/12 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_35', text: '12/19 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_32', text: '12/2 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_33', text: '12/7 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_34', text: '12/12 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_35', text: '12/19 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     },
     {
@@ -364,10 +364,10 @@ export const APP_DATA = {
         { id: 'j3_jan', text: '1/29 Jazz Jin: Arms Master', isMissable: true },
         { id: 'jan_q1', text: '1/11 Answer: "How numerous they are" -> "The Eight Million Gods"', isMissable: true },
         { id: 'jan_q2', text: '1/14 Answer: "Iwate"', isMissable: true },
-        { id: 'cw_36', text: '1/14 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_37', text: '1/19 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_38', text: '1/23 Crossword puzzle at LeBlanc', isMissable: true },
-        { id: 'cw_39', text: '1/27 Crossword puzzle at LeBlanc', isMissable: true }
+        { id: 'cw_opp_36', text: '1/14 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_37', text: '1/19 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_38', text: '1/23 Crossword puzzle at LeBlanc', isMissable: true },
+        { id: 'cw_opp_39', text: '1/27 Crossword puzzle at LeBlanc', isMissable: true }
       ]
     }
   ],

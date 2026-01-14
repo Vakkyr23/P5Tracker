@@ -9,8 +9,8 @@ export const RELEASE_NOTES = [
         title: "🧩 Crossword Mastery",
         items: [
           "**Sequential Tracking:** Crosswords are now tracked by their sequence (Q1-Q38) rather than just dates, matching the actual game logic.",
-          "**Smart Roadmap:** Calendar tasks now show the *next* answer you actually need based on your progress.",
-          "**How to Sync:** If your count looks wrong after this update, just go to the **Briefing** tab and check/uncheck the puzzles to match your in-game state. Your Calendar will auto-sync!"
+          "**Smart Calendar:** Calendar tasks now show the *next* answer you actually need based on your progress.",
+          "**How to Sync:** If your count looks wrong after this update, just go to the **Briefing** tab (formerly Guide) and check/uncheck the puzzles to match your in-game state. Your Calendar will auto-sync!"
         ]
       },
       {
