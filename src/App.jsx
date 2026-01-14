@@ -1578,9 +1578,8 @@ export default function App() {
       </main>
 
       {/* SAVE/LOAD MODAL */}
-      {saveModal && (
-        <div className="fixed inset-0 bg-black/98 backdrop-blur-2xl flex items-center justify-center p-4 z-50">
-           <div className="bg-neutral-900 border-2 border-red-600 rounded-[3rem] w-full max-w-2xl p-10 shadow-[0_0_50px_rgba(220,38,38,0.2)]">
+      <Modal isOpen={saveModal} onClose={() => setSaveModal(false)} className="max-w-2xl border-red-600 shadow-[0_0_50px_rgba(220,38,38,0.2)] rounded-[3rem]">
+           <div className="p-10">
               <h2 className="text-4xl font-black text-red-600 italic uppercase mb-2 tracking-tighter">Sync Terminal</h2>
               <p className="text-neutral-400 text-sm mb-8 font-mono">Backup your tactical data before exiting.</p>
               
@@ -1601,12 +1600,10 @@ export default function App() {
               <input type="text" ref={hiddenInputRef} className="opacity-0 absolute pointer-events-none" />
               <button onClick={() => setSaveModal(false)} className="w-full text-neutral-600 hover:text-red-500 text-[10px] font-black tracking-[0.5em] transition-colors uppercase">Close Terminal</button>
            </div>
-        </div>
-      )}
+      </Modal>
       {/* CHANGELOG MODAL */}
-      {showChangelog && (
-        <div className="fixed inset-0 bg-black/98 backdrop-blur-2xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
-           <div className="bg-neutral-900 border-2 border-red-600 rounded-[2rem] w-full max-w-lg p-6 md:p-10 shadow-[0_0_50px_rgba(220,38,38,0.2)] max-h-[80vh] overflow-y-auto custom-scrollbar">
+      <Modal isOpen={showChangelog} onClose={() => setShowChangelog(false)} className="max-w-lg border-red-600 shadow-[0_0_50px_rgba(220,38,38,0.2)] max-h-[80vh]">
+           <div className="p-6 md:p-10 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div className="flex justify-between items-start mb-8 border-b-2 border-red-600 pb-4">
                 <div>
                   <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">Mission Intel</h2>
@@ -1653,12 +1650,10 @@ export default function App() {
                 Acknowledged
               </button>
            </div>
-        </div>
-      )}
+      </Modal>
       {/* ROADMAP MODAL */}
-      {showRoadmap && (
-        <div className="fixed inset-0 bg-black/98 backdrop-blur-2xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
-           <div className="bg-neutral-900 border-2 border-blue-600 rounded-[2rem] w-full max-w-lg p-6 md:p-10 shadow-[0_0_50px_rgba(37,99,235,0.2)] max-h-[80vh] overflow-y-auto custom-scrollbar">
+      <Modal isOpen={showRoadmap} onClose={() => setShowRoadmap(false)} className="max-w-lg border-blue-600 shadow-[0_0_50px_rgba(37,99,235,0.2)] max-h-[80vh]">
+           <div className="p-6 md:p-10 overflow-y-auto custom-scrollbar max-h-[80vh]">
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter text-blue-500">The Path Ahead</h2>
@@ -1692,39 +1687,36 @@ export default function App() {
                 Close Roadmap
               </button>
            </div>
-        </div>
-      )}
+      </Modal>
 
       {/* ONBOARDING MODAL */}
-      {showOnboarding && (
-        <div className="fixed inset-0 bg-black/98 backdrop-blur-3xl flex items-center justify-center p-4 z-[60] animate-in fade-in duration-500">
-           <div className="bg-neutral-900 border-2 border-red-600 rounded-[2.5rem] w-full max-w-lg p-8 shadow-[0_0_60px_rgba(220,38,38,0.3)] relative overflow-hidden">
-              <div className="flex flex-col items-center text-center mb-8">
-                <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center mb-4 rotate-3 shadow-xl shadow-red-900/40">
-                  <Zap className="w-8 h-8 text-white fill-current" />
+      <Modal isOpen={showOnboarding} onClose={completeOnboarding} className="max-w-md border-red-600 shadow-[0_0_60px_rgba(220,38,38,0.3)] max-h-[85vh]">
+           <div className="p-4 md:p-8 overflow-y-auto custom-scrollbar">
+              <div className="flex flex-col items-center text-center mb-6 md:mb-8">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-red-600 rounded-2xl flex items-center justify-center mb-4 rotate-3 shadow-xl shadow-red-900/40">
+                  <Zap className="w-6 h-6 md:w-8 md:h-8 text-white fill-current" />
                 </div>
-                <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Mission Briefing</h2>
-                <p className="text-xs text-neutral-500 uppercase font-bold tracking-widest mt-1">Tactical Guide v{APP_VERSION}</p>
+                <h2 className="text-2xl md:text-3xl font-black text-white uppercase italic tracking-tighter">Mission Briefing</h2>
+                <p className="text-[10px] md:text-xs text-neutral-500 uppercase font-bold tracking-widest mt-1">Tactical Guide v{APP_VERSION}</p>
               </div>
 
-              <div className="space-y-4">
-                <OnboardingItem icon={Calendar} color="text-blue-500" title="Anchor Your Timeline" text="Go to Roadmap, select your month, and tap 'Set as Active' to focus the tracker." />
+              <div className="space-y-3 md:space-y-4">
+                <OnboardingItem icon={Calendar} color="text-blue-500" title="Anchor Your Timeline" text="Go to Calendar, select your month, and tap 'Set as Active' to focus the tracker." />
                 <OnboardingItem icon={CheckSquare} color="text-red-500" title="Check Your Tasks" text="Tap tasks to complete them. Important ones follow you to next month if missed." />
-                <OnboardingItem icon={Users} color="text-red-500" title="Level Confidants" text="Tap a name to see the best dialogue choices and gifts for your next rank up." />
-                <OnboardingItem icon={Zap} color="text-yellow-500" title="Manage Stats" text="Update your Social Stats in the Guide tab to see if a Confidant is 'Blocked'." />
-                <OnboardingItem icon={MapPin} color="text-red-500" title="Palace Intel" text="Find Will Seeds and boss strategies. Past Palaces are hidden automatically." />
+                <OnboardingItem icon={Users} color="text-red-500" title="Level Bonds" text="Go to the Bonds tab to see the best dialogue choices and gifts for your next rank up." />
+                <OnboardingItem icon={Zap} color="text-yellow-500" title="Manage Stats" text="Update your Social Stats in the Intel tab to see if a Confidant is 'Blocked'." />
+                <OnboardingItem icon={MapPin} color="text-red-500" title="Metaverse Intel" text="Find Will Seeds and boss strategies. Past Palaces are hidden automatically." />
                 <OnboardingItem icon={Save} color="text-white" title="Sync Your Progress" text="Use the Sync Terminal to backup or import your data (it lives on your device)." />
               </div>
 
               <button 
                 onClick={completeOnboarding}
-                className="w-full mt-10 py-4 rounded-2xl bg-red-600 text-black font-bold text-xs hover:bg-white transition-all shadow-lg shadow-red-900/20"
+                className="w-full mt-8 md:mt-10 py-3 md:py-4 rounded-2xl bg-red-600 text-black font-bold text-xs hover:bg-white transition-all shadow-lg shadow-red-900/20"
               >
                 Understood
               </button>
            </div>
-        </div>
-      )}
+      </Modal>
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -1760,6 +1752,39 @@ function OnboardingItem({ icon: Icon, color, title, text }) {
       <div className="text-left">
         <div className="font-black text-white uppercase text-xs tracking-widest">{title}</div>
         <div className="text-sm text-neutral-500 leading-tight mt-1">{text}</div>
+      </div>
+    </div>
+  );
+}
+
+function Modal({ isOpen, onClose, children, className = "max-w-lg" }) {
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-2 md:p-4 z-[100] animate-in fade-in duration-200">
+      <div 
+        className="absolute inset-0 cursor-pointer" 
+        onClick={onClose} 
+        aria-label="Close modal"
+      />
+      <div className={`relative bg-neutral-900 border-2 border-neutral-800 rounded-[2.5rem] md:rounded-[3rem] w-full ${className} shadow-2xl z-10 flex flex-col max-h-[95vh] md:max-h-[90vh] overflow-hidden`}>
+        <div className="overflow-y-auto custom-scrollbar flex-1">
+          {children}
+        </div>
       </div>
     </div>
   );
