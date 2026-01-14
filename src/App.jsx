@@ -84,6 +84,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('p5r_activeTab') || 'cheatsheet');
   const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
   const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Data State
   const [checkedItems, setCheckedItems] = useState(() => {
@@ -112,6 +113,13 @@ export default function App() {
   });
 
   const [expandedGuides, setExpandedGuides] = useState({});
+  const [expandedPalace, setExpandedPalace] = useState(null);
+  const [expandedMementos, setExpandedMementos] = useState(null);
+  const [showArchived, setShowArchived] = useState(false);
+  const [saveModal, setSaveModal] = useState(false);
+  const [importText, setImportText] = useState('');
+  const [copied, setCopied] = useState(false);
+  const hiddenInputRef = useRef(null);
 
   useEffect(() => {
     if (import.meta.env.DEV) {
@@ -146,34 +154,38 @@ export default function App() {
     localStorage.setItem('p5r_confidantRanks', JSON.stringify(confidantRanks));
   }, [confidantRanks]);
 
-  const [expandedPalace, setExpandedPalace] = useState(null);
-  const [expandedMementos, setExpandedMementos] = useState(null);
-  const [showArchived, setShowArchived] = useState(false);
-  const [saveModal, setSaveModal] = useState(false);
   const [showChangelog, setShowChangelog] = useState(false);
+  const [changelogFullHistory, setChangelogFullHistory] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [importText, setImportText] = useState('');
-  const [copied, setCopied] = useState(false);
-  const hiddenInputRef = useRef(null);
+  const lastSeenVersion = useRef(localStorage.getItem('p5r_lastSeenVersion'));
+
+  // Version Comparison Helper
+  const isVersionNewer = (current, last) => {
+    if (!last) return true;
+    const c = current.split('.').map(Number);
+    const l = last.split('.').map(Number);
+    for (let i = 0; i < 3; i++) {
+      if (c[i] > l[i]) return true;
+      if (c[i] < l[i]) return false;
+    }
+    return false;
+  };
 
   // Check version for changelog
   useEffect(() => {
-    const lastSeen = localStorage.getItem('p5r_lastSeenVersion');
+    const lastSeen = lastSeenVersion.current;
+    const latestNotesVersion = RELEASE_NOTES[0]?.version;
     
-    // If first visit, just record the version and don't show changelog
     if (!lastSeen) {
-      localStorage.setItem('p5r_lastSeenVersion', APP_VERSION);
+      localStorage.setItem('p5r_lastSeenVersion', latestNotesVersion);
       return;
     }
 
-    // Only show for Major.Minor changes (e.g. 2.1.0 -> 2.2.0), not patches
-    const getMinor = (v) => v ? v.split('.').slice(0, 2).join('.') : null;
-    
-    if (getMinor(lastSeen) !== getMinor(APP_VERSION)) {
+    if (isVersionNewer(latestNotesVersion, lastSeen)) {
+      setChangelogFullHistory(false);
       setShowChangelog(true);
-      localStorage.setItem('p5r_lastSeenVersion', APP_VERSION);
+      localStorage.setItem('p5r_lastSeenVersion', latestNotesVersion);
     }
   }, []);
 
@@ -1530,7 +1542,7 @@ export default function App() {
           <p className="text-[10px] tracking-[0.2em] text-neutral-500 mb-4 flex items-center justify-center gap-2">
             <span>v{APP_VERSION}</span>
             <span>•</span>
-            <button onClick={() => { setShowChangelog(true); trackEvent('changelog-open'); }} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors font-bold tracking-widest uppercase">What's New</button>
+            <button onClick={() => { setChangelogFullHistory(true); setShowChangelog(true); trackEvent('changelog-open'); }} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors font-bold tracking-widest uppercase">What's New</button>
             <span>•</span>
             <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors font-bold tracking-widest uppercase">Roadmap</button>
             <span>•</span>
@@ -1589,33 +1601,49 @@ export default function App() {
       {showChangelog && (
         <div className="fixed inset-0 bg-black/98 backdrop-blur-2xl flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
            <div className="bg-neutral-900 border-2 border-red-600 rounded-[2rem] w-full max-w-lg p-6 md:p-10 shadow-[0_0_50px_rgba(220,38,38,0.2)] max-h-[80vh] overflow-y-auto custom-scrollbar">
-              <div className="flex justify-between items-start mb-6">
+              <div className="flex justify-between items-start mb-8 border-b-2 border-red-600 pb-4">
                 <div>
-                  <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">New Intel</h2>
-                  <div className="text-red-600 font-bold font-mono text-xs mt-1">PATCH v{RELEASE_NOTES[0].version}</div>
+                  <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">Mission Intel</h2>
+                  <div className="text-neutral-500 font-bold font-mono text-xs mt-1 uppercase tracking-widest">Update History</div>
                 </div>
                 <button onClick={() => setShowChangelog(false)} className="p-2 bg-neutral-800 rounded-full hover:bg-red-600 transition-colors"><ChevronDown className="w-6 h-6 rotate-180" /></button>
               </div>
               
-              <div className="space-y-6">
-                <p className="text-sm text-neutral-400 italic">"{RELEASE_NOTES[0].description}"</p>
-                
-                {RELEASE_NOTES[0].sections.map((section, i) => (
-                  <div key={i}>
-                    <h4 className="text-xs font-black text-red-500 uppercase tracking-widest mb-3 border-b border-red-900/30 pb-1">{section.title}</h4>
-                    <ul className="space-y-2">
-                      {section.items.map((item, j) => (
-                        <li key={j} className="text-xs text-neutral-300 flex items-start gap-2">
-                          <span className="text-red-600 mt-0.5">›</span>
-                          <span dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
-                        </li>
+              <div className="space-y-12">
+                {RELEASE_NOTES
+                  .filter(r => changelogFullHistory || isVersionNewer(r.version, lastSeenVersion.current))
+                  .map((release, releaseIdx) => (
+                  <div key={release.version} className={`relative ${releaseIdx !== 0 ? 'opacity-60 grayscale-[50%] hover:opacity-100 hover:grayscale-0 transition-all pt-8 border-t border-neutral-800' : ''}`}>
+                    {releaseIdx === 0 && (
+                      <div className="absolute -top-4 -left-2 bg-red-600 text-black text-[8px] font-black px-2 py-0.5 uppercase rotate-[-2deg] shadow-lg">New Deployment</div>
+                    )}
+                    <div className="flex justify-between items-baseline mb-4">
+                      <h3 className="text-xl font-black text-white italic uppercase tracking-tight">{release.title}</h3>
+                      <span className="text-red-600 font-bold font-mono text-xs">v{release.version}</span>
+                    </div>
+                    
+                    <p className="text-sm text-neutral-400 italic mb-6">"{release.description}"</p>
+                    
+                    <div className="space-y-6">
+                      {release.sections.map((section, i) => (
+                        <div key={i}>
+                          <h4 className="text-xs font-black text-red-500 uppercase tracking-widest mb-3 border-b border-red-900/30 pb-1">{section.title}</h4>
+                          <ul className="space-y-2">
+                            {section.items.map((item, j) => (
+                              <li key={j} className="text-sm text-neutral-300 flex items-start gap-2">
+                                <span className="text-red-600 mt-0.5">›</span>
+                                <span dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>') }} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <button onClick={() => setShowChangelog(false)} className="w-full mt-8 bg-white text-black p-4 rounded-xl text-xs font-bold tracking-widest hover:bg-red-600 hover:text-white transition-colors">
+              <button onClick={() => setShowChangelog(false)} className="w-full mt-12 bg-white text-black p-4 rounded-xl text-xs font-bold tracking-widest hover:bg-red-600 hover:text-white transition-colors">
                 Acknowledged
               </button>
            </div>

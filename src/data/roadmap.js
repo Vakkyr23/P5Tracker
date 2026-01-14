@@ -1,7 +1,7 @@
 export const ROADMAP = [
   {
     title: "1. Resources & Reference Hub",
-    status: "Active",
+    status: "Implemented",
     items: [
       "**Day-to-Day 100% Guides:** Direct links to proven 100% walkthroughs for deep-dives.",
       "**Classroom & Exam Cheat Sheet:** Searchable collection of all answers and crossword puzzles.",
@@ -11,7 +11,7 @@ export const ROADMAP = [
   },
   {
     title: "2. Basic Persona Compendium",
-    status: "Planned",
+    status: "Active",
     items: [
       "**Arcana Checklists:** Simple 'Mark as Registered' buttons for every Persona.",
       "**Treasure Demon Tracker:** Specific section for finding/catching rare demons.",
