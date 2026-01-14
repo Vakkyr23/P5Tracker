@@ -31,18 +31,21 @@ import {
   Heart,
   Book,
   Sparkles,
-  Lightbulb
+  Lightbulb,
+  Library,
+  ExternalLink,
+  Cpu,
+  PlayCircle,
+  FileText,
+  MessageSquare
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
+import { RESOURCE_DATA } from './data/resourceData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
 import { ROADMAP } from './data/roadmap';
 import { APP_VERSION } from './data/version';
-
-import { useUserStats } from './hooks/useUserStats';
-import { useSmartSupport } from './hooks/useSmartSupport';
-import { SupportToast } from './components/SupportToast';
 
 const STAT_ICONS = {
   Knowledge: Book,
@@ -52,9 +55,26 @@ const STAT_ICONS = {
   Charm: Sparkles
 };
 
+const RESOURCE_ICONS = {
+  Cpu,
+  BookOpen,
+  Sword,
+  Trophy,
+  Sparkles,
+  Users,
+  Zap
+};
+
+const FORMAT_ICONS = {
+  video: PlayCircle,
+  tool: Wrench,
+  guide: FileText,
+  community: MessageSquare
+};
+
 // Analytics Helper
 const trackEvent = (eventName, eventData = {}) => {
-  if (import.meta.env.PROD && window.umami) {
+  if (window.umami) {
     window.umami.track(eventName, eventData);
   }
 };
@@ -89,10 +109,6 @@ export default function App() {
     APP_DATA.confidants.forEach(c => initial[c.arcana] = 0);
     return initial;
   });
-
-  // --- Smart Support & Analytics ---
-  const userStats = useUserStats(checkedItems, confidantRanks);
-  const { showToast, toastType, handleDismiss, handleSupport } = useSmartSupport(userStats);
 
   const [expandedGuides, setExpandedGuides] = useState({});
 
@@ -431,7 +447,7 @@ export default function App() {
               v{APP_VERSION}
             </span>
           </h1>
-          <p className="text-neutral-500 mt-1 md:mt-2 font-mono uppercase text-[8px] md:text-[10px] tracking-[0.4em] hidden md:block">Integrated Strategy Compendium</p>
+          <p className="text-neutral-500 mt-1 md:mt-2 font-mono text-[8px] md:text-[10px] tracking-[0.4em] hidden md:block">Integrated Strategy Compendium</p>
         </div>
         <div className="flex gap-2 md:gap-4 flex-wrap justify-center items-center">
             <a 
@@ -439,11 +455,11 @@ export default function App() {
               target="_blank" 
               rel="noopener noreferrer"
               onClick={() => trackEvent('support-link-click')}
-              className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-2 md:border-b-4 border-[#c44040] hover:border-neutral-300 group"
+              className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-3 py-1.5 md:px-6 md:py-3 font-bold text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-2 md:border-b-4 border-[#c44040] hover:border-neutral-300 group"
               title="Support the Dev"
             >
               <Heart className="w-3 md:w-4 h-3 md:h-4 fill-current group-hover:text-red-500 transition-colors" /> 
-              <span className="hidden md:inline">Support</span>
+              <span className="hidden md:inline">Support the Dev</span><span className="md:hidden">Support</span>
             </a>
             <button 
               onClick={() => { setSaveModal(true); trackEvent('sync-terminal-open'); }} 
@@ -460,6 +476,7 @@ export default function App() {
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
         <TabButton active={activeTab === 'palaces'} onClick={() => setActiveTab('palaces')} label="Palaces" icon={MapPin} />
         <TabButton active={activeTab === 'mementos'} onClick={() => setActiveTab('mementos')} label="Mementos" icon={Target} />
+        <TabButton active={activeTab === 'resources'} onClick={() => setActiveTab('resources')} label="Resources" icon={Library} />
       </nav>
 
       <main className="max-w-6xl mx-auto pb-48 md:pb-24">
@@ -481,8 +498,8 @@ export default function App() {
                       <div key={stat.id} className="flex flex-col gap-2 md:gap-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Icon className="w-3 h-3 text-neutral-400" />
-                            <span className="text-[10px] font-bold text-white uppercase tracking-tighter">{stat.id}</span>
+                            <Icon className="w-3 h-3 text-neutral-500" />
+                            <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-tighter">{stat.id}</span>
                           </div>
                           <span className="text-xs font-black text-red-500 italic">Lv.{currentLvl}</span>
                         </div>
@@ -534,7 +551,7 @@ export default function App() {
                     })}
                   </div>
                 </div>
-                <p className="text-[8px] font-bold uppercase mt-4 opacity-60">System: Mandatory for 3rd Semester Access</p>
+                <p className="text-[8px] font-bold mt-4 opacity-60">System: Mandatory for 3rd Semester Access</p>
               </div>
             </div>
 
@@ -551,8 +568,8 @@ export default function App() {
                              <CheckCircle2 className="w-3.5 h-3.5 md:w-5 md:h-5 text-red-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
-                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
+                             <div className="font-bold text-white tracking-tight text-sm md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-xs text-neutral-500 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -570,8 +587,8 @@ export default function App() {
                              <Calendar className="w-3.5 h-3.5 md:w-5 md:h-5 text-blue-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
-                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
+                             <div className="font-bold text-white tracking-tight text-sm md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-xs text-neutral-500 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -591,8 +608,8 @@ export default function App() {
                              <Sword className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-500" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
-                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
+                             <div className="font-bold text-white tracking-tight text-sm md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-xs text-neutral-500 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -610,8 +627,8 @@ export default function App() {
                              <Users className="w-3.5 h-3.5 md:w-5 md:h-5 text-neutral-400" />
                           </div>
                           <div>
-                             <div className="font-black text-white uppercase tracking-tight text-[11px] md:text-base leading-tight">{tip.text}</div>
-                             <div className="text-[9px] md:text-xs text-neutral-400 mt-0.5">{tip.note}</div>
+                             <div className="font-bold text-white tracking-tight text-sm md:text-base leading-tight">{tip.text}</div>
+                             <div className="text-xs text-neutral-500 mt-1">{tip.note}</div>
                           </div>
                        </div>
                      ))}
@@ -643,8 +660,8 @@ export default function App() {
                    .filter(t => t.text.toLowerCase().includes(searchTerm.toLowerCase()) || t.month.toLowerCase().includes(searchTerm.toLowerCase()))
                    .map((t, i) => (
                    <div key={i} className="flex gap-3 p-3 bg-neutral-800/30 rounded-xl border border-neutral-800/50 hover:border-neutral-600 transition-colors">
-                      <div className="text-[10px] font-black text-neutral-500 uppercase w-12 md:w-16 shrink-0 pt-0.5">{t.month}</div>
-                      <div className="text-[10px] md:text-xs text-neutral-300 font-bold leading-snug">{t.text}</div>
+                      <div className="text-xs font-black text-neutral-500 w-12 md:w-16 shrink-0 pt-0.5">{t.month}</div>
+                      <div className="text-sm text-neutral-300 font-bold leading-snug">{t.text}</div>
                    </div>
                  ))}
                </div>
@@ -710,11 +727,11 @@ export default function App() {
 
             <div className="flex gap-8 text-right z-10 hidden md:flex">
                <div>
-                  <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Confidant Targets</div>
+                  <div className="text-[10px] text-neutral-500 font-bold tracking-widest">Confidant Targets</div>
                   <div className="text-2xl font-black text-white">{activeMonthData?.smartTargets.length}</div>
                </div>
                <div>
-                  <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Total Tasks</div>
+                  <div className="text-[10px] text-neutral-500 font-bold tracking-widest">Total Tasks</div>
                   <div className="text-2xl font-black text-white">{activeMonthData?.tasks.length}</div>
                </div>
             </div>
@@ -788,10 +805,10 @@ export default function App() {
                           {checkedItems[task.id] ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className={`w-5 h-5 shrink-0 ${style.color}`} />}
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className={`text-[11px] md:text-xs font-bold leading-tight ${checkedItems[task.id] ? 'text-neutral-500 line-through' : 'text-neutral-200'}`}>{task.text}</span>
-                              {!checkedItems[task.id] && !style.icon.name?.includes('Circle') && <StyleIcon className={`w-3 h-3 ${style.color} opacity-50`} />}
+                              <span className={`text-sm font-semibold leading-tight ${checkedItems[task.id] ? 'text-neutral-600 line-through' : 'text-neutral-300'}`}>{task.text}</span>
+                              {!checkedItems[task.id] && !style.icon.name?.includes('Circle') && <StyleIcon className={`w-3.5 h-3.5 ${style.color} opacity-50`} />}
                             </div>
-                            {task.isOverdue && <div className="text-[9px] font-bold text-red-500 mt-1 uppercase tracking-widest flex items-center gap-1"><AlertTriangle className="w-2 h-2" /> Overdue from {task.sourceMonth}</div>}
+                            {task.isOverdue && <div className="text-xs font-bold text-red-500 mt-1 tracking-widest flex items-center gap-1"><AlertTriangle className="w-2.5 h-2.5" /> Overdue from {task.sourceMonth}</div>}
                           </div>
                         </div>
                       );
@@ -809,7 +826,7 @@ export default function App() {
                           {groupedTasks.strategy.map((task, idx) => (
                              <div key={`strat-${idx}`} className="flex gap-4 items-start">
                                 <div className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-                                <span className="text-xs md:text-sm text-blue-100 font-bold leading-relaxed">
+                                <span className="text-xs md:text-sm text-blue-200/90 font-medium leading-relaxed">
                                   {task.text}
                                 </span>
                              </div>
@@ -821,7 +838,7 @@ export default function App() {
 
                 {/* Targets Section */}
                 <div className="pt-6 border-t border-neutral-800">
-                  <h4 className="text-[10px] font-black text-red-500 mb-4 uppercase tracking-[0.3em]">Critical Ranks</h4>
+                  <h4 className="text-xs font-black text-red-500 mb-4 uppercase tracking-[0.3em]">Critical Ranks</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {activeMonthData.smartTargets.map((target, idx) => {
                       const arcanaKey = target.arc.split(' (')[0];
@@ -831,21 +848,21 @@ export default function App() {
                       return (
                         <div 
                           key={`${target.arc}-${idx}`} 
-                          className={`p-3 rounded-xl text-[10px] font-bold border transition-all ${
+                          className={`p-3 rounded-xl text-xs font-bold border transition-all ${
                             !isBehind 
                               ? 'bg-green-950/20 border-green-900/40 text-green-500' 
                               : 'bg-red-950/20 border-red-900/40 text-red-500 shadow-inner'
                           }`}
                         >
                           <div className="flex justify-between items-start">
-                            <span>{target.arc}</span>
+                            <span className="truncate">{target.arc}</span>
                             {isBehind && !target.isCurrent && (
-                              <span className="bg-red-600 text-black px-1.5 py-0.5 rounded-[4px] text-[8px] font-black uppercase">Catch Up</span>
+                              <span className="bg-red-600 text-black px-1.5 py-0.5 rounded-[4px] text-[10px] font-black uppercase shrink-0 ml-1">Catch Up</span>
                             )}
                           </div>
                           <div className="mt-1 flex items-baseline gap-1">
-                            <span className="text-sm font-black italic">Target: {target.r}</span>
-                            <span className="opacity-50">(Curr: {currentRank})</span>
+                            <span className="text-base font-black italic">Target: {target.r}</span>
+                            <span className="opacity-50 text-[10px]">(Curr: {currentRank})</span>
                           </div>
                         </div>
                       );
@@ -924,23 +941,23 @@ export default function App() {
                           <div className="pt-4 border-t border-neutral-800 space-y-3">
                              {/* Best Gifts */}
                              <div>
-                                <h5 className="text-[9px] font-black text-blue-500 uppercase mb-2 flex items-center gap-1"><Gift className="w-3 h-3" /> Best Gifts</h5>
-                                <div className="flex flex-wrap gap-1">
+                                <h5 className="text-xs font-black text-blue-500 uppercase mb-2 flex items-center gap-1"><Gift className="w-3.5 h-3.5" /> Best Gifts</h5>
+                                <div className="flex flex-wrap gap-1.5">
                                   {CONFIDANT_INTERACTIONS[c.arcana].bestGifts.map(g => (
-                                    <span key={g} className="px-2 py-1 bg-neutral-800 rounded text-[9px] text-neutral-300 border border-neutral-700">{g}</span>
+                                    <span key={g} className="px-2.5 py-1 bg-neutral-800 rounded text-[11px] text-neutral-300 border border-neutral-700">{g}</span>
                                   ))}
                                 </div>
                              </div>
 
                              {/* Best Responses */}
                              <div>
-                                <h5 className="text-[9px] font-black text-red-500 uppercase mb-2 flex items-center gap-1"><MessageCircle className="w-3 h-3" /> Best Responses (Rank {rank + 1})</h5>
+                                <h5 className="text-xs font-black text-red-500 uppercase mb-2 flex items-center gap-1"><MessageCircle className="w-3.5 h-3.5" /> Best Responses (Rank {rank + 1})</h5>
                                 <div className="bg-neutral-900 p-3 rounded-lg border border-neutral-800 space-y-2">
                                   {Array.isArray(CONFIDANT_INTERACTIONS[c.arcana].ranks[rank + 1]) 
                                     ? CONFIDANT_INTERACTIONS[c.arcana].ranks[rank + 1].map((step, idx) => (
-                                        <p key={idx} className="text-[10px] text-neutral-300 border-b border-neutral-800 last:border-0 pb-1 last:pb-0">{step}</p>
+                                        <p key={idx} className="text-sm text-neutral-300 border-b border-neutral-800 last:border-0 pb-1.5 last:pb-0">{step}</p>
                                       ))
-                                    : <p className="text-[10px] text-neutral-500 italic">No dialogue data for this rank.</p>
+                                    : <p className="text-xs text-neutral-500 italic">No dialogue data for this rank.</p>
                                   }
                                 </div>
                              </div>
@@ -958,9 +975,9 @@ export default function App() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-black border-b border-neutral-800">
-                    <th className="p-8 text-[10px] font-black text-neutral-500 uppercase italic tracking-[0.2em]">Entity</th>
-                    <th className="p-8 text-[10px] font-black text-neutral-500 uppercase italic tracking-[0.2em] text-center">Current Rank</th>
-                    <th className="p-8 text-[10px] font-black text-neutral-500 uppercase italic tracking-[0.2em]">Notes</th>
+                    <th className="p-8 text-xs font-black text-neutral-500 uppercase italic tracking-[0.2em]">Entity</th>
+                    <th className="p-8 text-xs font-black text-neutral-500 uppercase italic tracking-[0.2em] text-center">Current Rank</th>
+                    <th className="p-8 text-xs font-black text-neutral-500 uppercase italic tracking-[0.2em]">Notes</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-800/50">
@@ -974,7 +991,7 @@ export default function App() {
                           <div className="flex items-center gap-4">
                             <div>
                               <div className="font-black text-red-600 italic text-2xl tracking-tighter group-hover:translate-x-2 transition-transform">{c.arcana}</div>
-                              <div className="text-[10px] text-neutral-400 font-bold uppercase tracking-widest mt-1">{c.name}</div>
+                              <div className="text-xs text-neutral-400 font-bold uppercase tracking-widest mt-1">{c.name}</div>
                               
                               {/* Stat Gate Warning (Desktop) */}
                               {(() => {
@@ -982,8 +999,8 @@ export default function App() {
                                 if (gate) {
                                   return (
                                     <div className="mt-2 inline-flex items-center gap-1.5 bg-red-950/30 border border-red-900/50 px-2 py-1 rounded-lg">
-                                      <AlertTriangle className="w-3 h-3 text-red-500" />
-                                      <span className="text-[8px] font-black uppercase text-red-500 tracking-wider">Blocked: {gate.stat} Lv.{gate.lvl} Required</span>
+                                      <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
+                                      <span className="text-[10px] font-black uppercase text-red-500 tracking-wider">Blocked: {gate.stat} Lv.{gate.lvl} Required</span>
                                     </div>
                                   );
                                 }
@@ -1038,9 +1055,9 @@ export default function App() {
                                             const isSelected = currentMonth === mId;
                                             return (
                                               <div key={mId} className={`flex items-center gap-3 px-4 py-2 rounded-xl border transition-all ${isSelected ? 'border-yellow-500 bg-yellow-500/10' : 'border-neutral-800 bg-neutral-900/50 opacity-60'}`}>
-                                                <span className={`text-[10px] uppercase font-black ${isSelected ? 'text-yellow-500' : 'text-neutral-500'}`}>{monthName}</span>
+                                                <span className={`text-xs uppercase font-black ${isSelected ? 'text-yellow-500' : 'text-neutral-500'}`}>{monthName}</span>
                                                 <div className="flex items-center gap-2">
-                                                  <span className="text-xs font-black italic">Rank {rank}</span>
+                                                  <span className="text-sm font-black italic">Rank {rank}</span>
                                                   {isMet ? <CheckCircle2 className="w-4 h-4 text-green-500" /> : <Circle className="w-2 h-2 text-neutral-700" />}
                                                 </div>
                                               </div>
@@ -1062,7 +1079,7 @@ export default function App() {
                                        : <p className="text-xs text-neutral-400 italic">No data for this rank or max rank reached.</p>
                                      }
                                   </div>
-                                  <p className="text-[10px] text-neutral-600 italic mt-4">{CONFIDANT_INTERACTIONS[c.arcana].tips}</p>
+                                  <p className="text-xs text-neutral-600 italic mt-4">{CONFIDANT_INTERACTIONS[c.arcana].tips}</p>
                                </div>
                             </div>
                           </td>
@@ -1140,30 +1157,30 @@ export default function App() {
                          {expandedPalace === idx && (
                            <div className="p-4 md:p-8 pt-0 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 bg-black/40 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
                              <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-                                <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><MapPin className="w-4 h-4 md:w-5 md:h-5" /> Will Seed Coords</h4>
+                                <h4 className="text-xs font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><MapPin className="w-4 h-4 md:w-5 md:h-5" /> Will Seed Coords</h4>
                                 <div className="space-y-2 md:space-y-3">
                                   {p.seeds.map((s, si) => (
                                     <div key={si} onClick={() => toggleItem(s.id)} className={`p-3 md:p-4 rounded-xl border flex items-center gap-3 md:gap-4 cursor-pointer transition-all ${checkedItems[s.id] ? 'opacity-30 border-neutral-800 bg-black/20' : 'bg-neutral-900/80 border-l-4 border-l-red-600 border-neutral-800 hover:bg-neutral-800'}`}>
-                                       {checkedItems[s.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4 text-green-500 flex-shrink-0" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4 text-neutral-600 flex-shrink-0" />}
-                                       <div className="text-[10px] md:text-[11px] text-neutral-300 leading-tight">{s.text}</div>
+                                       {checkedItems[s.id] ? <CheckSquare className="w-4 h-4 text-green-500 flex-shrink-0" /> : <Square className="w-4 h-4 text-neutral-600 flex-shrink-0" />}
+                                       <div className="text-sm text-neutral-300 leading-tight">{s.text}</div>
                                     </div>
                                   ))}
                                 </div>
                              </div>
                              <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-                                <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Target className="w-4 h-4 md:w-5 md:h-5" /> Palace Personas</h4>
+                                <h4 className="text-xs font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Target className="w-4 h-4 md:w-5 md:h-5" /> Palace Personas</h4>
                                 <div className="grid gap-2">
                                    {p.personas.map(pers => (
-                                     <div key={pers.id} onClick={() => toggleItem(pers.id)} className={`p-2 md:p-3 border rounded-xl text-[10px] md:text-xs font-bold cursor-pointer transition-all flex items-center gap-2 md:gap-3 ${checkedItems[pers.id] ? 'opacity-30 bg-black/20 border-neutral-800 text-green-500' : 'bg-neutral-800 border-neutral-700 hover:border-red-600 text-neutral-200'}`}>
-                                        {checkedItems[pers.id] ? <CheckSquare className="w-3.5 h-3.5 md:w-4 md:h-4" /> : <Square className="w-3.5 h-3.5 md:w-4 md:h-4" />}
+                                     <div key={pers.id} onClick={() => toggleItem(pers.id)} className={`p-2 md:p-3 border rounded-xl text-sm font-bold cursor-pointer transition-all flex items-center gap-2 md:gap-3 ${checkedItems[pers.id] ? 'opacity-30 bg-black/20 border-neutral-800 text-green-500' : 'bg-neutral-800 border-neutral-700 hover:border-red-600 text-neutral-200'}`}>
+                                        {checkedItems[pers.id] ? <CheckSquare className="w-4 h-4 text-green-500" /> : <Square className="w-4 h-4 text-neutral-600" />}
                                         {pers.name}
                                      </div>
                                    ))}
                                 </div>
                              </div>
                              <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-                                <h4 className="text-[9px] md:text-[10px] font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Search className="w-4 h-4 md:w-5 md:h-5" /> Field Intel</h4>
-                                <p className="text-[10px] md:text-sm italic text-neutral-400 leading-relaxed bg-red-950/10 p-4 md:p-6 border border-red-900/20 rounded-2xl ring-1 ring-red-500/10">"{p.tips}"</p>
+                                <h4 className="text-xs font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2"><Search className="w-4 h-4 md:w-5 md:h-5" /> Field Intel</h4>
+                                <p className="text-sm italic text-neutral-400 leading-relaxed bg-red-950/10 p-4 md:p-6 border border-red-900/20 rounded-2xl ring-1 ring-red-500/10">"{p.tips}"</p>
                              </div>
                            </div>
                          )}
@@ -1207,9 +1224,9 @@ export default function App() {
                                   >
                                     <div className="flex items-center justify-between w-full pr-4">
                                       <div>
-                                        <h3 className="text-sm font-black italic uppercase text-neutral-400 tracking-tighter">{mem.path}</h3>
+                                        <h3 className="text-base font-black italic uppercase text-neutral-400 tracking-tighter">{mem.path}</h3>
                                       </div>
-                                      <div className="text-[10px] font-black text-neutral-600 border border-neutral-800 px-2 py-0.5 rounded">LVL {mem.targetLvl}</div>
+                                      <div className="text-xs font-black text-neutral-600 border border-neutral-800 px-2 py-0.5 rounded">LVL {mem.targetLvl}</div>
                                     </div>
                                     <ChevronRight className={`transition-transform w-4 h-4 text-neutral-600 ${expandedMementos === `hist-${idx}` ? 'rotate-90' : ''}`} />
                                   </div>
@@ -1221,10 +1238,10 @@ export default function App() {
                                           {mem.requests.map(req => (
                                             <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-3 border rounded-xl cursor-pointer ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800'}`}>
                                               <div className="flex items-center gap-2 italic mb-1">
-                                                  {checkedItems[req.id] ? <CheckSquare className="w-3 h-3 text-green-500" /> : <Square className="w-3 h-3 text-neutral-700" />}
-                                                  <span className="text-xs font-black text-white uppercase tracking-tighter">{req.name}</span>
+                                                  {checkedItems[req.id] ? <CheckSquare className="w-3.5 h-3.5 text-green-500" /> : <Square className="w-3.5 h-3.5 text-neutral-700" />}
+                                                  <span className="text-sm font-black text-white uppercase tracking-tighter">{req.name}</span>
                                               </div>
-                                              <div className="text-[9px] font-black text-red-600 uppercase ml-5">Reward: {req.reward}</div>
+                                              <div className="text-xs font-black text-red-600 ml-5">Reward: {req.reward}</div>
                                             </div>
                                           ))}
                                         </div>
@@ -1250,7 +1267,7 @@ export default function App() {
                         <div className="flex items-center justify-between w-full pr-4 md:pr-8">
                           <div>
                             <h3 className="text-lg md:text-4xl font-black italic uppercase text-red-600 tracking-tighter">{mem.path}</h3>
-                            <p className="text-neutral-500 text-[9px] md:text-[10px] font-black mt-1 uppercase tracking-widest">Timing: {mem.timing}</p>
+                            <p className="text-neutral-500 text-xs font-black mt-1 tracking-widest">Timing: {mem.timing}</p>
                           </div>
                           <div className="bg-black px-3 py-1 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-2xl font-black border border-red-900 text-red-500 shadow-[2px_2px_0px_0px_rgba(153,27,27,1)] md:shadow-[4px_4px_0px_0px_rgba(153,27,27,1)]">LVL {mem.targetLvl}</div>
                         </div>
@@ -1260,18 +1277,18 @@ export default function App() {
                       {expandedMementos === idx && (
                         <div className="p-4 md:p-8 pt-0 space-y-4 md:space-y-6 bg-black/20 border-t border-neutral-800 animate-in zoom-in-95 duration-300">
                           <div className="mt-4 md:mt-6">
-                            <h4 className="text-[9px] md:text-xs font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3 mb-4 md:mb-6"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
+                            <h4 className="text-xs md:text-sm font-black text-neutral-400 uppercase tracking-[0.4em] flex items-center gap-2 md:gap-3 mb-4 md:mb-6"><Target className="w-4 h-4 md:w-5 md:h-5 text-red-600" /> Key Missions</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                               {mem.requests.map(req => (
                                 <div key={req.id} onClick={() => toggleItem(req.id)} className={`bg-black/50 p-4 md:p-6 border rounded-3xl transition-all cursor-pointer group ${checkedItems[req.id] ? 'opacity-30 border-neutral-800' : 'border-neutral-800 hover:border-red-600'}`}>
                                   <div className="flex justify-between items-center mb-2 md:mb-4">
                                      <div className="flex items-center gap-2 md:gap-3 italic">
                                         {checkedItems[req.id] ? <CheckSquare className="w-4 h-4 md:w-5 md:h-5 text-green-500" /> : <Square className="w-4 h-4 md:w-5 md:h-5 text-neutral-700" />}
-                                        <span className="text-sm md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
+                                        <span className="text-base md:text-xl font-black text-white group-hover:text-red-500 transition-colors uppercase tracking-tighter">{req.name}</span>
                                      </div>
                                   </div>
-                                  <p className="text-[10px] md:text-xs text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
-                                  <div className="text-[9px] md:text-[10px] font-black text-red-600 uppercase ml-6 md:ml-8">Reward: {req.reward}</div>
+                                  <p className="text-sm text-neutral-500 mb-4 md:mb-6 italic leading-relaxed ml-6 md:ml-8">"{req.tip}"</p>
+                                  <div className="text-xs font-black text-red-600 ml-6 md:ml-8">Reward: {req.reward}</div>
                                 </div>
                               ))}
                             </div>
@@ -1286,37 +1303,123 @@ export default function App() {
           </div>
         )}
 
+        {/* RESOURCES VIEW */}
+        {activeTab === 'resources' && (
+          <div className="space-y-12 animate-in fade-in duration-500">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-5xl font-black italic text-white uppercase tracking-tighter mb-4">Command Center</h2>
+              <p className="text-xs md:text-sm text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">
+                A curated index of community tools and archives to supplement your journey.
+              </p>
+            </div>
+
+            <div className="space-y-12">
+              {RESOURCE_DATA.map((section) => {
+                const SectionIcon = RESOURCE_ICONS[section.icon] || Info;
+                return (
+                  <div key={section.id} className="space-y-6">
+                    {/* Section Header - Vertical Stack */}
+                    <div className="flex items-center gap-3 border-b border-neutral-800 pb-4">
+                      <div className={`p-2 rounded-xl bg-neutral-900 border border-neutral-800 ${section.color}`}>
+                        <SectionIcon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg md:text-2xl font-black uppercase text-white tracking-tight leading-none">{section.title}</h3>
+                        <p className="text-xs md:text-sm text-neutral-500 font-semibold mt-1 tracking-wider">{section.description}</p>
+                      </div>
+                    </div>
+
+                    {/* Items Grid - Horizontal layout within section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                      {section.items.map((item, idx) => {
+                        const FormatIcon = FORMAT_ICONS[item.format] || Info;
+                        let hostname = 'EXTERNAL';
+                        try {
+                           if (item.isLocked) {
+                             hostname = 'COMING SOON';
+                           } else if (item.url) {
+                             hostname = new URL(item.url).hostname.replace('www.', '');
+                           }
+                        } catch (e) {
+                           console.warn('Invalid URL:', item.url);
+                        }
+                        
+                        return (
+                          <a 
+                            key={idx}
+                            href={item.isLocked ? undefined : item.url}
+                            target={item.isLocked ? undefined : "_blank"}
+                            rel={item.isLocked ? undefined : "noopener noreferrer"}
+                            onClick={() => !item.isLocked && trackEvent('resource-click', { title: item.title, category: section.id })}
+                            className={`group bg-neutral-900 border border-neutral-800 rounded-3xl p-6 transition-all flex flex-col justify-between ${
+                              item.isLocked 
+                                ? 'cursor-not-allowed border-neutral-800' 
+                                : item.isGold 
+                                  ? 'bg-red-600/5 border-red-600/30 hover:bg-red-600/10 hover:border-red-500' 
+                                  : 'bg-neutral-800/30 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-600'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-2">
+                                  <FormatIcon className={`w-4 h-4 ${item.isLocked ? 'text-neutral-600' : 'text-neutral-500 group-hover:text-red-500'} transition-colors`} />
+                                  <span className="text-xs font-black tracking-widest text-neutral-600">{item.format}</span>
+                                </div>
+                                {item.isLocked ? (
+                                  <div className="px-2 py-0.5 bg-neutral-800 border border-neutral-700 rounded text-[10px] font-black uppercase text-neutral-600">Upcoming</div>
+                                ) : (
+                                  <ExternalLink className="w-4 h-4 text-neutral-700 group-hover:text-white transition-colors" />
+                                )}
+                              </div>
+                              <h4 className={`text-base md:text-lg font-black uppercase mb-2 leading-tight transition-colors ${
+                                item.isLocked ? 'text-white' : 'text-white group-hover:text-red-500'
+                              }`}>
+                                {item.title}
+                              </h4>
+                              <p className={`text-sm font-medium leading-relaxed ${
+                                item.isLocked ? 'text-neutral-500' : 'text-neutral-400'
+                              }`}>
+                                {item.desc}
+                              </p>
+                            </div>
+                            
+                            <div className="mt-6 pt-4 border-t border-neutral-800/50 flex items-center justify-between">
+                              <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-600 group-hover:text-neutral-400 transition-colors flex items-center gap-2">
+                                {hostname}
+                              </span>
+                              {item.isGold && !item.isLocked && <Star className="w-4 h-4 text-red-500 fill-current" />}
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
         <div className="mt-20 pt-10 border-t border-neutral-800 text-center opacity-60 hover:opacity-100 transition-opacity">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-4 flex items-center justify-center gap-2">
+          <p className="text-[10px] tracking-[0.2em] text-neutral-500 mb-4 flex items-center justify-center gap-2">
             <span>v{APP_VERSION}</span>
             <span>•</span>
-            <button onClick={() => { setShowChangelog(true); trackEvent('changelog-open'); }} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors">What's New</button>
+            <button onClick={() => { setShowChangelog(true); trackEvent('changelog-open'); }} className="hover:text-white underline decoration-red-600 underline-offset-4 transition-colors font-bold tracking-widest uppercase">What's New</button>
             <span>•</span>
-            <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors">Roadmap</button>
+            <button onClick={() => setShowRoadmap(true)} className="hover:text-white underline decoration-blue-600 underline-offset-4 transition-colors font-bold tracking-widest uppercase">Roadmap</button>
             <span>•</span>
-            <button onClick={() => { setShowOnboarding(true); trackEvent('help-open'); }} className="hover:text-white underline decoration-yellow-500 underline-offset-4 transition-colors">Help</button>
+            <button onClick={() => { setShowOnboarding(true); trackEvent('help-open'); }} className="hover:text-white underline decoration-yellow-500 underline-offset-4 transition-colors font-bold tracking-widest uppercase">Help</button>
             <span>•</span>
             <a 
               href="https://github.com/zucram/P5Tracker#support--feedback" 
               target="_blank" 
               rel="noopener noreferrer"
               onClick={() => trackEvent('support-feedback-click')}
-              className="hover:text-white underline decoration-neutral-600 underline-offset-4 transition-colors"
+              className="hover:text-white underline decoration-neutral-600 underline-offset-4 transition-colors font-bold tracking-widest uppercase"
             >
               Support & Feedback
             </a>
-            {import.meta.env.DEV && (
-              <>
-                <span>•</span>
-                <button 
-                  onClick={() => { localStorage.clear(); window.location.reload(); }}
-                  className="text-red-500 font-black hover:text-white transition-colors"
-                >
-                  [DEV: RESET]
-                </button>
-              </>
-            )}
           </p>
           <a 
             href="https://ko-fi.com/K3K11RWTSL" 
@@ -1341,19 +1444,19 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                  <button onClick={exportFile} className="p-8 bg-red-600 hover:bg-white text-black font-black rounded-3xl transition-all flex flex-col items-center gap-3 shadow-xl group">
                     <Download className="w-10 h-10" />
-                    <span className="uppercase text-xs tracking-widest">Download Save</span>
+                    <span className="text-xs tracking-widest font-bold">Download Save</span>
                  </button>
                  <div className="flex flex-col gap-3">
-                    <button onClick={handleCopy} className="p-4 bg-neutral-800 hover:bg-neutral-700 text-white font-black rounded-2xl transition-all flex items-center justify-center gap-3 uppercase text-xs tracking-widest">
+                    <button onClick={handleCopy} className="p-4 bg-neutral-800 hover:bg-neutral-700 text-white font-black rounded-2xl transition-all flex items-center justify-center gap-3 text-xs tracking-widest font-bold">
                        {copied ? <ClipboardCheck className="text-green-500" /> : <Copy />}
                        {copied ? "Memory Synced!" : "Copy Data String"}
                     </button>
                     <textarea placeholder="Paste save data here..." value={importText} onChange={(e) => setImportText(e.target.value)} className="w-full h-32 bg-black border border-neutral-800 rounded-2xl p-4 font-mono text-[10px] text-red-500 outline-none focus:border-red-600 mb-6" />
-                    <button onClick={handleImport} className="w-full bg-white text-black p-4 rounded-2xl text-xs font-black uppercase tracking-widest">Apply Import</button>
+                    <button onClick={handleImport} className="w-full bg-white text-black p-4 rounded-2xl text-xs font-bold tracking-widest">Apply Import</button>
                  </div>
               </div>
               <input type="text" ref={hiddenInputRef} className="opacity-0 absolute pointer-events-none" />
-              <button onClick={() => setSaveModal(false)} className="w-full text-neutral-600 hover:text-red-500 uppercase text-[10px] font-black tracking-[0.5em] transition-colors">Close Terminal</button>
+              <button onClick={() => setSaveModal(false)} className="w-full text-neutral-600 hover:text-red-500 text-[10px] font-black tracking-[0.5em] transition-colors uppercase">Close Terminal</button>
            </div>
         </div>
       )}
@@ -1387,7 +1490,7 @@ export default function App() {
                 ))}
               </div>
 
-              <button onClick={() => setShowChangelog(false)} className="w-full mt-8 bg-white text-black p-4 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-colors">
+              <button onClick={() => setShowChangelog(false)} className="w-full mt-8 bg-white text-black p-4 rounded-xl text-xs font-bold tracking-widest hover:bg-red-600 hover:text-white transition-colors">
                 Acknowledged
               </button>
            </div>
@@ -1426,7 +1529,7 @@ export default function App() {
                 ))}
               </div>
 
-              <button onClick={() => setShowRoadmap(false)} className="w-full mt-8 bg-blue-600 text-white p-4 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
+              <button onClick={() => setShowRoadmap(false)} className="w-full mt-8 bg-blue-600 text-white p-4 rounded-xl text-xs font-bold tracking-widest hover:bg-white hover:text-black transition-colors">
                 Close Roadmap
               </button>
            </div>
@@ -1456,21 +1559,13 @@ export default function App() {
 
               <button 
                 onClick={completeOnboarding}
-                className="w-full mt-10 py-4 rounded-2xl bg-red-600 text-black font-black uppercase text-xs hover:bg-white transition-all shadow-lg shadow-red-900/20"
+                className="w-full mt-10 py-4 rounded-2xl bg-red-600 text-black font-bold text-xs hover:bg-white transition-all shadow-lg shadow-red-900/20"
               >
                 Understood
               </button>
            </div>
         </div>
       )}
-
-      {/* SMART SUPPORT TOAST */}
-      <SupportToast 
-        show={showToast} 
-        type={toastType} 
-        onDismiss={handleDismiss} 
-        onSupport={handleSupport} 
-      />
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -1504,8 +1599,8 @@ function OnboardingItem({ icon: Icon, color, title, text }) {
         <Icon className="w-4 h-4" />
       </div>
       <div className="text-left">
-        <div className="font-black text-white uppercase text-[10px] tracking-widest">{title}</div>
-        <div className="text-[10px] text-neutral-500 leading-tight mt-0.5">{text}</div>
+        <div className="font-black text-white uppercase text-xs tracking-widest">{title}</div>
+        <div className="text-sm text-neutral-500 leading-tight mt-1">{text}</div>
       </div>
     </div>
   );

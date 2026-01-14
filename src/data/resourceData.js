@@ -172,5 +172,35 @@ export const RESOURCE_DATA = [
         url: 'https://www.reddit.com/r/Persona5/comments/1cjlilu/persona_5s_subreddit_faq/'
       }
     ]
+  },
+  {
+    id: 'future',
+    title: 'Future Operations',
+    icon: 'Zap',
+    color: 'text-neutral-400',
+    description: 'Planned intelligence modules for other cognitive explorations.',
+    items: [
+      {
+        title: 'Persona 3 Reload Tracker',
+        desc: 'Strategic module for the SEES operation in Tatsumi Port Island. Coming soon.',
+        format: 'guide',
+        url: 'https://github.com/zucram/P5Tracker',
+        isLocked: true
+      },
+      {
+        title: 'Metaphor: ReFantazio Tracker',
+        desc: 'Tactical assistance for the United Kingdom of Euchronia. In development.',
+        format: 'guide',
+        url: 'https://github.com/zucram/P5Tracker',
+        isLocked: true
+      },
+      {
+        title: 'Persona 4 Remake Tracker',
+        desc: 'Targeting the Inaba investigation team protocols upon release.',
+        format: 'guide',
+        url: 'https://github.com/zucram/P5Tracker',
+        isLocked: true
+      }
+    ]
   }
 ];
