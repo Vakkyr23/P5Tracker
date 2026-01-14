@@ -1,5 +1,29 @@
 export const RELEASE_NOTES = [
   {
+    version: "2.2.3",
+    date: "2026-01-13",
+    title: "The Library Update",
+    description: "Introduced the Reference Library and performed a massive readability overhaul across the entire app.",
+    sections: [
+      {
+        title: "📚 Reference Library",
+        items: [
+          "**Curated Intel:** Added a new Library tab featuring community-standard tools, calculators, and detailed archives.",
+          "**Future Operations:** Added placeholders for upcoming P3R, Metaphor, and P4R trackers.",
+          "**Mobile Optimization:** Refined the layout to ensure external tools are easy to access on any device."
+        ]
+      },
+      {
+        title: "👁️ Readability Overhaul",
+        items: [
+          "**Typography Upgrade:** Increased global font sizes across all tabs for better accessibility and couch-play legibility.",
+          "**Visual Hierarchy:** Shifted from all-caps to sentence case for body text, making instructions and notes significantly faster to scan.",
+          "**Functional Colors:** Improved contrast by reserving pure white for key data and using muted greys for descriptions, reducing eye strain."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.2.2",
     date: "2026-01-12",
     title: "The Phantom Signal",
