@@ -154,6 +154,59 @@ export default function App() {
     localStorage.setItem('p5r_confidantRanks', JSON.stringify(confidantRanks));
   }, [confidantRanks]);
 
+  const migrateCrosswords = (items) => {
+    const allKeys = Object.keys(items);
+    
+    // Count different types of legacy indicators
+    // 1. Old date-based keys (apr_cw1, etc)
+    const legacyDateCount = allKeys.filter(k => k.includes('_cw') && !k.startsWith('cw_')).length;
+    // 2. Failed migration keys (cw1, cw2...)
+    const failedMigrationCount = allKeys.filter(k => k.match(/^cw\d+$/)).length;
+    // 3. Valid new keys (cw_1, cw_2...)
+    const validSequenceCount = allKeys.filter(k => k.startsWith('cw_')).length;
+    // 4. Very old August keys (aug_q1...)
+    const oldAugCount = allKeys.filter(k => k.startsWith('aug_q')).length;
+
+    // Use the HIGHEST count found to determine progress
+    const maxProgress = Math.max(legacyDateCount + oldAugCount, failedMigrationCount, validSequenceCount);
+
+    if (maxProgress > 0) {
+      // Check if we need to clean up (if we have any "bad" keys)
+      const hasGarbage = legacyDateCount > 0 || failedMigrationCount > 0 || oldAugCount > 0;
+      
+      // If we found a valid sequence but it's "shorter" than legacy data (e.g. user imported old data on top of new),
+      // we should probably trust the legacy data count.
+      
+      if (hasGarbage || maxProgress > validSequenceCount) {
+        const next = { ...items };
+        
+        // 1. Enforce the correct sequence
+        for (let i = 1; i <= maxProgress; i++) {
+          next[`cw_${i}`] = true;
+        }
+
+        // 2. Delete all legacy/garbage keys
+        allKeys.forEach(k => {
+          if (
+            (k.includes('_cw') && !k.startsWith('cw_')) || 
+            k.startsWith('aug_q') || 
+            k.match(/^cw\d+$/)
+          ) {
+            delete next[k];
+          }
+        });
+        
+        return next;
+      }
+    }
+    return items;
+  };
+
+  // --- Legacy Crossword Migration (On Mount) ---
+  useEffect(() => {
+    setCheckedItems(prev => migrateCrosswords(prev));
+  }, []);
+
   const [showChangelog, setShowChangelog] = useState(false);
   const [changelogFullHistory, setChangelogFullHistory] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
@@ -218,73 +271,34 @@ export default function App() {
     return socialStats[gate.stat] < gate.lvl ? gate : false;
   };
 
-  // --- Crossword System ---
-  const crosswordTaskIds = useMemo(() => {
-    return APP_DATA.months.flatMap(m => m.tasks)
-      .filter(t => t.text.toLowerCase().includes('crossword'))
-      .map(t => t.id);
-  }, []);
-
-  const libraryCwCount = useMemo(() => {
-    return Array.isArray(CROSSWORD_DATA) ? CROSSWORD_DATA.filter(cw => checkedItems[cw.id]).length : 0;
-  }, [checkedItems]);
-
   const isTaskChecked = (task) => {
     return checkedItems[task.id];
   };
 
-  useEffect(() => {
-    // Migration: transfer legacy roadmap checks to library sequence
-    const legacyCheckedCount = crosswordTaskIds.filter(id => checkedItems[id]).length;
-    if (legacyCheckedCount > libraryCwCount) {
-      const newItems = { ...checkedItems };
-      for (let i = 0; i < legacyCheckedCount; i++) {
-        if (CROSSWORD_DATA[i]) newItems[CROSSWORD_DATA[i].id] = true;
-      }
-      setCheckedItems(newItems);
-    }
-  }, [crosswordTaskIds]);
-
-  const bulkCheckCrosswords = (count) => {
-    const newItems = { ...checkedItems };
-    // 1. Clear current sequence
-    CROSSWORD_DATA.forEach(cw => delete newItems[cw.id]);
-    // 2. Clear current roadmap boxes
-    crosswordTaskIds.forEach(id => delete newItems[id]);
-    
-    // 3. Apply new count to both
-    CROSSWORD_DATA.forEach((cw, idx) => {
-      if (idx < count) {
-        newItems[cw.id] = true;
-        if (crosswordTaskIds[idx]) newItems[crosswordTaskIds[idx]] = true;
-      }
-    });
-    setCheckedItems(newItems);
-  };
-
   const toggleItem = (id) => {
-    const cwIndex = crosswordTaskIds.indexOf(id);
-    if (cwIndex !== -1) {
+    // Crossword Sequential Logic
+    if (id.startsWith('cw_')) {
+      const num = parseInt(id.split('_')[1]);
       const isChecking = !checkedItems[id];
-      if (isChecking) {
-        const nextCw = CROSSWORD_DATA.find(cw => !checkedItems[cw.id]);
-        setCheckedItems(prev => ({
-          ...prev,
-          [id]: true,
-          ...(nextCw ? { [nextCw.id]: true } : {})
-        }));
-      } else {
-        const lastCheckedCw = [...CROSSWORD_DATA].reverse().find(cw => checkedItems[cw.id]);
-        setCheckedItems(prev => {
-          const next = { ...prev };
-          delete next[id];
-          if (lastCheckedCw) delete next[lastCheckedCw.id];
-          return next;
-        });
-      }
+      
+      setCheckedItems(prev => {
+        const next = { ...prev };
+        if (isChecking) {
+          // Bulk check all up to this number
+          for (let i = 1; i <= num; i++) {
+            next[`cw_${i}`] = true;
+          }
+        } else {
+          // Bulk uncheck all from this number forward
+          for (let i = num; i <= 38; i++) {
+            delete next[`cw_${i}`];
+          }
+        }
+        return next;
+      });
       return;
     }
-    
+
     setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
@@ -312,7 +326,11 @@ export default function App() {
   const handleImport = () => {
     try {
       const parsed = JSON.parse(importText);
-      if (parsed.checkedItems) setCheckedItems(parsed.checkedItems);
+      if (parsed.checkedItems) {
+        // Run migration immediately on the imported data
+        const migratedItems = migrateCrosswords(parsed.checkedItems);
+        setCheckedItems(migratedItems);
+      }
       if (parsed.confidantRanks) setConfidantRanks(parsed.confidantRanks);
       if (parsed.socialStats) setSocialStats(parsed.socialStats);
       if (parsed.anchoredMonth) {
@@ -395,12 +413,6 @@ export default function App() {
   };
 
   const activeMonthData = getSmartMonthData(currentMonth);
-
-  // --- Crossword Logic ---
-  const nextCrossword = useMemo(() => {
-    if (!Array.isArray(CROSSWORD_DATA)) return null;
-    return CROSSWORD_DATA.find(cw => !checkedItems[cw.id]);
-  }, [checkedItems]);
 
   // --- Bottleneck detection ---
   const bottleneckStats = useMemo(() => {
@@ -939,8 +951,10 @@ export default function App() {
                             <div className="flex items-center gap-2">
                               <span className={`text-sm font-semibold leading-tight ${isTaskChecked(task) ? 'text-neutral-600 line-through' : 'text-neutral-300'}`}>
                                 {task.text}
-                                {!isTaskChecked(task) && task.text.includes('Crossword') && nextCrossword && (
-                                  <span className="text-red-500 ml-2 font-black italic">Next: "{nextCrossword.a}"</span>
+                                {!isTaskChecked(task) && task.text.includes('Crossword') && (
+                                  <span className="text-red-500 ml-2 font-black italic">
+                                    Next: "{CROSSWORD_DATA.find(cw => cw.id === task.id)?.a || '???'}"
+                                  </span>
                                 )}
                               </span>
                               {!checkedItems[task.id] && !style.icon.name?.includes('Circle') && <StyleIcon className={`w-3.5 h-3.5 ${style.color} opacity-50`} />}
