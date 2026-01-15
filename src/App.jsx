@@ -84,70 +84,118 @@ const trackEvent = (eventName, eventData = {}) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState(() => {
-    const saved = localStorage.getItem('p5r_activeTab') || 'cheatsheet';
-    if (saved === 'library') return 'library_view';
-    if (saved === 'registry') return 'registry_view';
-    if (saved === 'palaces' || saved === 'mementos') return 'metaverse';
-    return saved;
-  });
-  const [metaverseView, setMetaverseView] = useState('palaces');
-  const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
-  const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
-  const [searchTerm, setSearchTerm] = useState('');
+    const [activeTab, setActiveTab] = useState(() => {
+      // 1. Try URL Hash first
+      const hash = window.location.hash.replace('#', '');
+      const hashMap = {
+        'briefing': 'cheatsheet',
+        'calendar': 'months',
+        'confidants': 'confidants',
+        'metaverse': 'metaverse',
+        'more': 'more',
+        'registry': 'registry_view',
+        'reference': 'library_view'
+      };
+      if (hash && hashMap[hash]) return hashMap[hash];
   
-  // Data State
-  const [checkedItems, setCheckedItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem('p5r_checkedItems');
-      return saved ? JSON.parse(saved) : {};
-    } catch (e) { return {}; }
-  });
-
-  const [socialStats, setSocialStats] = useState(() => {
-    try {
-      const saved = localStorage.getItem('p5r_socialStats');
-      return saved ? JSON.parse(saved) : { Knowledge: 1, Guts: 1, Proficiency: 1, Kindness: 1, Charm: 1 };
-    } catch (e) { return { Knowledge: 1, Guts: 1, Proficiency: 1, Kindness: 1, Charm: 1 }; }
-  });
+      // 2. Fallback to Local Storage
+      const saved = localStorage.getItem('p5r_activeTab') || 'cheatsheet';
+      if (saved === 'library') return 'library_view';
+      if (saved === 'registry') return 'registry_view';
+      if (saved === 'palaces' || saved === 'mementos') return 'metaverse';
+      return saved;
+    });
   
-  const [confidantRanks, setConfidantRanks] = useState(() => {
-    try {
-      const saved = localStorage.getItem('p5r_confidantRanks');
-      if (saved) return JSON.parse(saved);
-    } catch (e) {}
-    
-    const initial = {};
-    APP_DATA.confidants.forEach(c => initial[c.arcana] = 0);
-    return initial;
-  });
-
-  const [expandedGuides, setExpandedGuides] = useState({});
-  const [expandedPalace, setExpandedPalace] = useState(null);
-  const [expandedMementos, setExpandedMementos] = useState(null);
-  const [showArchived, setShowArchived] = useState(false);
-  const [saveModal, setSaveModal] = useState(false);
-  const [importText, setImportText] = useState('');
-  const [copied, setCopied] = useState(false);
-  const hiddenInputRef = useRef(null);
-
-  useEffect(() => {
-    if (import.meta.env.DEV) {
-      document.title = 'P5Tracker - DEV';
-    } else {
-      document.title = 'P5 Tracker';
-    }
-  }, []);
-
-  const toggleGuide = (arcana) => {
-    setExpandedGuides(prev => ({ ...prev, [arcana]: !prev[arcana] }));
-  };
-
-  // Persist State to Local Storage
-  useEffect(() => {
-    localStorage.setItem('p5r_activeTab', activeTab);
-  }, [activeTab]);
-
+    // Sync state to URL hash
+    useEffect(() => {
+      const stateToHash = {
+        'cheatsheet': 'briefing',
+        'months': 'calendar',
+        'confidants': 'confidants',
+        'metaverse': 'metaverse',
+        'more': 'more',
+        'registry_view': 'registry',
+        'library_view': 'reference'
+      };
+      if (stateToHash[activeTab]) {
+        window.location.hash = stateToHash[activeTab];
+      }
+      localStorage.setItem('p5r_activeTab', activeTab);
+    }, [activeTab]);
+  
+    // Sync URL hash to state (Back/Forward support)
+    useEffect(() => {
+      const handleHashChange = () => {
+        const hash = window.location.hash.replace('#', '');
+        const hashMap = {
+          'briefing': 'cheatsheet',
+          'calendar': 'months',
+          'confidants': 'confidants',
+          'metaverse': 'metaverse',
+          'more': 'more',
+          'registry': 'registry_view',
+          'reference': 'library_view'
+        };
+        if (hash && hashMap[hash]) {
+          setActiveTab(hashMap[hash]);
+        }
+      };
+  
+          window.addEventListener('hashchange', handleHashChange);
+          return () => window.removeEventListener('hashchange', handleHashChange);
+        }, []);
+      
+        const [metaverseView, setMetaverseView] = useState('palaces');
+        const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
+        const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
+        const [searchTerm, setSearchTerm] = useState('');
+        
+        // Data State
+        const [checkedItems, setCheckedItems] = useState(() => {
+          try {
+            const saved = localStorage.getItem('p5r_checkedItems');
+            return saved ? JSON.parse(saved) : {};
+          } catch (e) { return {}; }
+        });
+      
+        const [socialStats, setSocialStats] = useState(() => {
+          try {
+            const saved = localStorage.getItem('p5r_socialStats');
+            return saved ? JSON.parse(saved) : { Knowledge: 1, Guts: 1, Proficiency: 1, Kindness: 1, Charm: 1 };
+          } catch (e) { return { Knowledge: 1, Guts: 1, Proficiency: 1, Kindness: 1, Charm: 1 }; }
+        });
+        
+        const [confidantRanks, setConfidantRanks] = useState(() => {
+          try {
+            const saved = localStorage.getItem('p5r_confidantRanks');
+            if (saved) return JSON.parse(saved);
+          } catch (e) {}
+          
+          const initial = {};
+          APP_DATA.confidants.forEach(c => initial[c.arcana] = 0);
+          return initial;
+        });
+      
+        const [expandedGuides, setExpandedGuides] = useState({});
+        const [expandedPalace, setExpandedPalace] = useState(null);
+        const [expandedMementos, setExpandedMementos] = useState(null);
+        const [showArchived, setShowArchived] = useState(false);
+        const [saveModal, setSaveModal] = useState(false);
+        const [importText, setImportText] = useState('');
+        const [copied, setCopied] = useState(false);
+        const hiddenInputRef = useRef(null);
+      
+        useEffect(() => {
+          if (import.meta.env.DEV) {
+            document.title = 'P5Tracker - DEV';
+          } else {
+            document.title = 'P5 Tracker';
+          }
+        }, []);
+      
+        const toggleGuide = (arcana) => {
+          setExpandedGuides(prev => ({ ...prev, [arcana]: !prev[arcana] }));
+        };
   useEffect(() => {
     localStorage.setItem('p5r_anchoredMonth', anchoredMonth);
   }, [anchoredMonth]);
@@ -1479,83 +1527,104 @@ export default function App() {
 
         {/* MORE VIEW (System Menu) */}
         {activeTab === 'more' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500">
+            {/* Mobile List / Desktop Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
               
               {/* Registry Access */}
               <button 
                 onClick={() => setActiveTab('registry_view')}
-                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-red-600 transition-all shadow-xl relative overflow-hidden"
+                className="group bg-neutral-900 border border-neutral-800 p-4 md:p-8 rounded-2xl md:rounded-3xl text-left hover:border-red-600 transition-all shadow-xl relative overflow-hidden flex md:block items-center gap-4"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-5 md:opacity-10 group-hover:opacity-20 transition-opacity hidden md:block">
                   <Ghost className="w-24 h-24" />
                 </div>
-                <Ghost className="w-8 h-8 text-red-600 mb-4" />
-                <h3 className="text-xl font-black uppercase italic text-white mb-2">Persona Registry</h3>
-                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
-                  Track captured Personas and Treasure Demons.
-                  <span className="block mt-2 text-red-600">{PERSONA_DATA.treasureDemons.length} Rare Targets</span>
-                </p>
+                <div className="p-3 bg-neutral-800 rounded-xl md:bg-transparent md:p-0">
+                  <Ghost className="w-5 h-5 md:w-8 md:h-8 text-red-600 md:mb-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm md:text-xl font-black uppercase italic text-white md:mb-2">Persona Registry</h3>
+                  <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase tracking-widest leading-tight">
+                    Captured Specimens & Demons
+                    <span className="hidden md:block mt-2 text-red-600">{PERSONA_DATA.treasureDemons.length} Rare Targets</span>
+                  </p>
+                </div>
               </button>
 
               {/* Reference Hub Access */}
               <button 
                 onClick={() => setActiveTab('library_view')}
-                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-blue-600 transition-all shadow-xl relative overflow-hidden"
+                className="group bg-neutral-900 border border-neutral-800 p-4 md:p-8 rounded-2xl md:rounded-3xl text-left hover:border-blue-600 transition-all shadow-xl relative overflow-hidden flex md:block items-center gap-4"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-5 md:opacity-10 group-hover:opacity-20 transition-opacity hidden md:block">
                   <Library className="w-24 h-24" />
                 </div>
-                <Library className="w-8 h-8 text-blue-500 mb-4" />
-                <h3 className="text-xl font-black uppercase italic text-white mb-2">Reference Hub</h3>
-                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
-                  Classroom answers, Fusion calculators, and external guides.
-                </p>
+                <div className="p-3 bg-neutral-800 rounded-xl md:bg-transparent md:p-0">
+                  <Library className="w-5 h-5 md:w-8 md:h-8 text-blue-500 md:mb-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm md:text-xl font-black uppercase italic text-white md:mb-2">Reference Hub</h3>
+                  <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase tracking-widest leading-tight">
+                    Answers, Calculators, & Guides
+                  </p>
+                </div>
               </button>
 
               {/* What's New */}
               <button 
                 onClick={() => { setChangelogFullHistory(true); setShowChangelog(true); trackEvent('changelog-open'); }}
-                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-yellow-600 transition-all shadow-xl relative overflow-hidden"
+                className="group bg-neutral-900 border border-neutral-800 p-4 md:p-8 rounded-2xl md:rounded-3xl text-left hover:border-yellow-600 transition-all shadow-xl relative overflow-hidden flex md:block items-center gap-4"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-5 md:opacity-10 group-hover:opacity-20 transition-opacity hidden md:block">
                   <Zap className="w-24 h-24" />
                 </div>
-                <Zap className="w-8 h-8 text-yellow-500 mb-4" />
-                <h3 className="text-xl font-black uppercase italic text-white mb-2">What's New</h3>
-                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
-                  Check recent updates and version history.
-                </p>
+                <div className="p-3 bg-neutral-800 rounded-xl md:bg-transparent md:p-0">
+                  <Zap className="w-5 h-5 md:w-8 md:h-8 text-yellow-500 md:mb-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm md:text-xl font-black uppercase italic text-white md:mb-2">What's New</h3>
+                  <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase tracking-widest leading-tight">
+                    Update History & Notes
+                  </p>
+                </div>
               </button>
 
               {/* Roadmap */}
               <button 
                 onClick={() => { setShowRoadmap(true); trackEvent('roadmap-open'); }}
-                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-blue-500 transition-all shadow-xl relative overflow-hidden"
+                className="group bg-neutral-900 border border-neutral-800 p-4 md:p-8 rounded-2xl md:rounded-3xl text-left hover:border-blue-500 transition-all shadow-xl relative overflow-hidden flex md:block items-center gap-4"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-5 md:opacity-10 group-hover:opacity-20 transition-opacity hidden md:block">
                   <Trophy className="w-24 h-24" />
                 </div>
-                <Trophy className="w-8 h-8 text-blue-500 mb-4" />
-                <h3 className="text-xl font-black uppercase italic text-white mb-2">Roadmap</h3>
-                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
-                  See upcoming features and development plans.
-                </p>
+                <div className="p-3 bg-neutral-800 rounded-xl md:bg-transparent md:p-0">
+                  <Trophy className="w-5 h-5 md:w-8 md:h-8 text-blue-500 md:mb-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm md:text-xl font-black uppercase italic text-white md:mb-2">Roadmap</h3>
+                  <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase tracking-widest leading-tight">
+                    Future Features & Plans
+                  </p>
+                </div>
               </button>
 
               {/* Help */}
               <button 
                 onClick={() => { setShowOnboarding(true); trackEvent('help-open'); }}
-                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-neutral-400 transition-all shadow-xl relative overflow-hidden"
+                className="group bg-neutral-900 border border-neutral-800 p-4 md:p-8 rounded-2xl md:rounded-3xl text-left hover:border-neutral-400 transition-all shadow-xl relative overflow-hidden flex md:block items-center gap-4"
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="absolute top-0 right-0 p-4 opacity-5 md:opacity-10 group-hover:opacity-20 transition-opacity hidden md:block">
                   <Info className="w-24 h-24" />
                 </div>
-                <Info className="w-8 h-8 text-neutral-400 mb-4" />
-                <h3 className="text-xl font-black uppercase italic text-white mb-2">Help Guide</h3>
-                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
-                  View the app manual and onboarding tips.
-                </p>
+                <div className="p-3 bg-neutral-800 rounded-xl md:bg-transparent md:p-0">
+                  <Info className="w-5 h-5 md:w-8 md:h-8 text-neutral-400 md:mb-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm md:text-xl font-black uppercase italic text-white md:mb-2">Help Guide</h3>
+                  <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase tracking-widest leading-tight">
+                    Manual & Onboarding Tips
+                  </p>
+                </div>
               </button>
 
             </div>
@@ -1581,35 +1650,35 @@ export default function App() {
 
         {/* SUB-VIEW: REFERENCE */}
         {activeTab === 'library_view' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-            <button onClick={() => setActiveTab('more')} className="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors mb-4 font-bold text-xs uppercase tracking-widest">
+          <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
+            <button onClick={() => setActiveTab('more')} className="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors mb-2 md:mb-4 font-bold text-[10px] md:text-xs uppercase tracking-widest">
                 <ChevronRight className="w-4 h-4 rotate-180" /> Back to System Menu
             </button>
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <h2 className="text-3xl md:text-5xl font-black italic text-white uppercase tracking-tighter mb-4">Command Center</h2>
-              <p className="text-xs md:text-sm text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">
+            <div className="text-center max-w-2xl mx-auto mb-6 md:mb-12">
+              <h2 className="text-2xl md:text-5xl font-black italic text-white uppercase tracking-tighter mb-2 md:mb-4">Command Center</h2>
+              <p className="text-[10px] md:text-sm text-neutral-500 font-bold uppercase tracking-widest leading-relaxed px-4">
                 External tools and curated community intelligence.
               </p>
             </div>
 
-            <div className="space-y-12">
+            <div className="space-y-8 md:space-y-12">
               {Array.isArray(RESOURCE_DATA) && RESOURCE_DATA.map((section) => {
                 const SectionIcon = RESOURCE_ICONS[section.icon] || Info;
                 return (
-                  <div key={section.id} className="space-y-6">
+                  <div key={section.id} className="space-y-4 md:space-y-6">
                     {/* Section Header - Vertical Stack */}
-                    <div className="flex items-center gap-3 border-b border-neutral-800 pb-4">
-                      <div className={`p-2 rounded-xl bg-neutral-900 border border-neutral-800 ${section.color}`}>
-                        <SectionIcon className="w-5 h-5" />
+                    <div className="flex items-center gap-3 border-b border-neutral-800 pb-3 md:pb-4 mx-2 md:mx-0">
+                      <div className={`p-1.5 md:p-2 rounded-lg md:rounded-xl bg-neutral-900 border border-neutral-800 ${section.color}`}>
+                        <SectionIcon className="w-4 h-4 md:w-5 md:h-5" />
                       </div>
                       <div>
-                        <h3 className="text-lg md:text-2xl font-black uppercase text-white tracking-tight leading-none">{section.title}</h3>
-                        <p className="text-xs md:text-sm text-neutral-500 font-semibold mt-1 tracking-wider">{section.description}</p>
+                        <h3 className="text-base md:text-2xl font-black uppercase text-white tracking-tight leading-none">{section.title}</h3>
+                        <p className="text-[10px] md:text-sm text-neutral-500 font-semibold mt-1 tracking-wider">{section.description}</p>
                       </div>
                     </div>
 
                     {/* Items Grid - Horizontal layout within section */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 px-2 md:px-0">
                       {section.items.map((item, idx) => {
                         const FormatIcon = FORMAT_ICONS[item.format] || Info;
                         let hostname = 'EXTERNAL';
@@ -1630,7 +1699,7 @@ export default function App() {
                             target={item.isLocked ? undefined : "_blank"}
                             rel={item.isLocked ? undefined : "noopener noreferrer"}
                             onClick={() => !item.isLocked && trackEvent('resource-click', { title: item.title, category: 'library' })}
-                            className={`group bg-neutral-900 border border-neutral-800 rounded-3xl p-6 transition-all flex flex-col justify-between ${
+                            className={`group bg-neutral-900 border border-neutral-800 rounded-2xl md:rounded-3xl p-4 md:p-6 transition-all flex flex-col justify-between ${
                               item.isLocked 
                                 ? 'cursor-not-allowed border-neutral-800' 
                                 : item.isGold 
@@ -1639,34 +1708,34 @@ export default function App() {
                             }`}
                           >
                             <div>
-                              <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center justify-between mb-3 md:mb-4">
                               <div className="flex items-center gap-2">
-                                  <FormatIcon className={`w-4 h-4 ${item.isLocked ? 'text-neutral-600' : 'text-neutral-500 group-hover:text-red-500'} transition-colors`} />
-                                  <span className="text-xs font-black tracking-widest text-neutral-600">{item.format}</span>
+                                  <FormatIcon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${item.isLocked ? 'text-neutral-600' : 'text-neutral-500 group-hover:text-red-500'} transition-colors`} />
+                                  <span className="text-[10px] font-black tracking-widest text-neutral-600">{item.format}</span>
                                 </div>
                                 {item.isLocked ? (
-                                  <div className="px-2 py-0.5 bg-neutral-800 border border-neutral-700 rounded text-[10px] font-black uppercase text-neutral-600">Upcoming</div>
+                                  <div className="px-1.5 py-0.5 bg-neutral-800 border border-neutral-700 rounded text-[9px] font-black uppercase text-neutral-600">Upcoming</div>
                                 ) : (
-                                  <ExternalLink className="w-4 h-4 text-neutral-700 group-hover:text-white transition-colors" />
+                                  <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4 text-neutral-700 group-hover:text-white transition-colors" />
                                 )}
                               </div>
-                              <h4 className={`text-base md:text-lg font-black uppercase mb-2 leading-tight transition-colors ${
+                              <h4 className={`text-sm md:text-lg font-black uppercase mb-1 md:mb-2 leading-tight transition-colors ${
                                 item.isLocked ? 'text-white' : 'text-white group-hover:text-red-500'
                               }`}>
                                 {item.title}
                               </h4>
-                              <p className={`text-sm font-medium leading-relaxed ${
+                              <p className={`text-[11px] md:text-sm font-medium leading-relaxed ${
                                 item.isLocked ? 'text-neutral-500' : 'text-neutral-400'
                               }`}>
                                 {item.desc}
                               </p>
                             </div>
                             
-                            <div className="mt-6 pt-4 border-t border-neutral-800/50 flex items-center justify-between">
-                              <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-600 group-hover:text-neutral-400 transition-colors flex items-center gap-2">
+                            <div className="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-neutral-800/50 flex items-center justify-between">
+                              <span className="text-[9px] md:text-xs font-bold uppercase tracking-[0.2em] text-neutral-600 group-hover:text-neutral-400 transition-colors flex items-center gap-2">
                                 {hostname}
                               </span>
-                              {item.isGold && !item.isLocked && <Star className="w-4 h-4 text-red-500 fill-current" />}
+                              {item.isGold && !item.isLocked && <Star className="w-3.5 h-3.5 md:w-4 md:h-4 text-red-500 fill-current" />}
                             </div>
                           </a>
                         );

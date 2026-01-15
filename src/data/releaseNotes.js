@@ -1,5 +1,38 @@
 export const RELEASE_NOTES = [
   {
+    version: "2.3.0",
+    date: "2026-01-15",
+    title: "The Navigation Overhaul",
+    description: "Unified the Metaverse view and introduced the System Menu to streamline your tactical experience.",
+    sections: [
+      {
+        title: "⚔️ Unified Metaverse",
+        items: [
+          "**Consolidated View:** Palaces and Mementos are now found under a single **Metaverse** tab.",
+          "**Toggle Switch:** Easily switch between Palace intel and Mementos requests with the new top-bar toggle.",
+          "**Backlog Sync:** Mementos history and Palace progress still auto-manage based on your anchored month."
+        ]
+      },
+      {
+        title: "📂 The 'More' Menu",
+        items: [
+          "**System Hub:** Created a dedicated 'More' menu to house utility features and future expansion content.",
+          "**Registry Placeholder:** Added a new **Persona Registry** section (under construction) to eventually track your Compendium progress.",
+          "**Reference Hub:** Moved external links and calculators into the System Hub for a cleaner primary navigation.",
+          "**UX Polish:** Redesigned the System Hub to be extremely mobile-friendly with a compact list-style layout."
+        ]
+      },
+      {
+        title: "🛠️ System Improvements",
+        items: [
+          "**Browser Navigation:** Implemented hash-based routing (#calendar, #metaverse), enabling the use of browser Back/Forward buttons.",
+          "**State Migration:** Existing users will be automatically redirected to the correct new views if they had legacy tabs saved.",
+          "**Header Cleanup:** Restored the Sync Terminal to its original position for easier access while maintaining a clean UI."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.2.4",
     date: "2026-01-13",
     title: "The Intelligence Update",
