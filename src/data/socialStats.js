@@ -11,7 +11,7 @@ export const CONFIDANT_STAT_GATES = {
   'Devil': { 1: { stat: 'Charm', lvl: 3 } },
   'Tower': { 1: { stat: 'Kindness', lvl: 3 } },
   'Star': { 1: { stat: 'Charm', lvl: 3 }, 8: { stat: 'Knowledge', lvl: 5 } },
-  'Justice': { 3: { stat: 'Knowledge', lvl: 3 }, 3: { stat: 'Charm', lvl: 3 }, 7: { stat: 'Knowledge', lvl: 4 } },
+  'Justice': { 3: { stat: 'Knowledge', lvl: 3 }, 7: { stat: 'Knowledge', lvl: 4 } },
   'Moon': {}, // Unlocked by mission
   'Sun': {}, // Unlocked by mission
   'Judgement': {}, // Automatic

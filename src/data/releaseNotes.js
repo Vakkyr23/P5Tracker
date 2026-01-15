@@ -146,7 +146,7 @@ export const RELEASE_NOTES = [
         title: "🛠️ Fixes & Improvements",
         items: [
           "**Dynamic Versioning:** App now shows the live version number.",
-          "Fixed 'Path of Da\'at' history bug.",
+          "Fixed 'Path of Da'at' history bug.",
           "Fixed auto-expansion logic for multi-month Palaces.",
           "Added 'Support' button for Ko-fi."
         ]
