@@ -1,6 +1,6 @@
 export const RELEASE_NOTES = [
   {
-    version: "2.3.0",
+    version: "2.2.5",
     date: "2026-01-15",
     title: "The Navigation Overhaul",
     description: "Unified the Metaverse view and introduced the System Menu to streamline your tactical experience.",
