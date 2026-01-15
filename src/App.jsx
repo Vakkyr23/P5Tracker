@@ -37,10 +37,12 @@ import {
   Cpu,
   PlayCircle,
   FileText,
-  MessageSquare
+  MessageSquare,
+  Ghost
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
+import { PERSONA_DATA } from './data/personaData';
 import { APP_VERSION } from './data/version';
 import { RESOURCE_DATA } from './data/resourceData';
 import { CROSSWORD_DATA } from './data/crosswordData';
@@ -82,6 +84,7 @@ const trackEvent = (eventName, eventData = {}) => {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('p5r_activeTab') || 'cheatsheet');
+  const [metaverseView, setMetaverseView] = useState('palaces');
   const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
   const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
   const [searchTerm, setSearchTerm] = useState('');
@@ -563,9 +566,9 @@ export default function App() {
         <TabButton active={activeTab === 'cheatsheet'} onClick={() => setActiveTab('cheatsheet')} label="Briefing" icon={BookOpen} />
         <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Calendar" icon={Calendar} />
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
+        <TabButton active={activeTab === 'metaverse'} onClick={() => setActiveTab('metaverse')} label="Metaverse" icon={Sword} />
+        <TabButton active={activeTab === 'registry'} onClick={() => setActiveTab('registry')} label="Registry" icon={Ghost} />
         <TabButton active={activeTab === 'library'} onClick={() => setActiveTab('library')} label="Reference" icon={Library} />
-        <TabButton active={activeTab === 'palaces'} onClick={() => setActiveTab('palaces')} label="Palaces" icon={MapPin} />
-        <TabButton active={activeTab === 'mementos'} onClick={() => setActiveTab('mementos')} label="Mementos" icon={Target} />
       </nav>
 
       <main className="max-w-6xl mx-auto pb-48 md:pb-24">
@@ -1236,8 +1239,30 @@ export default function App() {
           </div>
         )}
 
-        {/* PALACES VIEW */}
-        {activeTab === 'palaces' && (
+        {/* METAVERSE VIEW */}
+        {activeTab === 'metaverse' && (
+          <div className="animate-in fade-in duration-500 mb-6">
+            <div className="flex justify-center">
+              <div className="bg-neutral-900 p-1 rounded-xl border border-neutral-800 flex gap-1">
+                <button 
+                  onClick={() => setMetaverseView('palaces')}
+                  className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${metaverseView === 'palaces' ? 'bg-red-600 text-white shadow-lg' : 'text-neutral-500 hover:text-white'}`}
+                >
+                  <MapPin className="w-4 h-4" /> Palaces
+                </button>
+                <button 
+                  onClick={() => setMetaverseView('mementos')}
+                  className={`flex items-center gap-2 px-4 md:px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${metaverseView === 'mementos' ? 'bg-red-600 text-white shadow-lg' : 'text-neutral-500 hover:text-white'}`}
+                >
+                  <Target className="w-4 h-4" /> Mementos
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PALACES CONTENT */}
+        {activeTab === 'metaverse' && metaverseView === 'palaces' && (
           <div className="space-y-6 animate-in fade-in duration-500">
              {(() => {
                const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
@@ -1336,8 +1361,8 @@ export default function App() {
           </div>
         )}
 
-        {/* MEMENTOS VIEW */}
-        {activeTab === 'mementos' && (
+        {/* MEMENTOS CONTENT */}
+        {activeTab === 'metaverse' && metaverseView === 'mementos' && (
           <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
             {(() => {
               const { history: historyMem, active: activeMem } = mementosGroups;
@@ -1443,6 +1468,25 @@ export default function App() {
                 </>
               );
             })()}
+          </div>
+        )}
+
+        {/* REGISTRY VIEW */}
+        {activeTab === 'registry' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+             <div className="text-center py-20">
+                <div className="w-20 h-20 bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-neutral-800">
+                  <Ghost className="w-10 h-10 text-neutral-600" />
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black italic text-neutral-700 uppercase tracking-tighter mb-4">Persona Registry</h2>
+                <p className="text-neutral-500 font-bold uppercase tracking-widest text-xs">Access Restricted • Construction in Progress</p>
+                <p className="text-[10px] text-neutral-600 font-mono mt-4 uppercase">Database: {PERSONA_DATA.treasureDemons.length} Rare Specimens Loaded</p>
+                <div className="mt-8 flex justify-center gap-2">
+                   <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse" />
+                   <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse delay-100" />
+                   <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse delay-200" />
+                </div>
+             </div>
           </div>
         )}
 
