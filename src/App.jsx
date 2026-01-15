@@ -560,6 +560,12 @@ export default function App() {
               <Heart className="w-3 md:w-4 h-3 md:h-4 fill-current group-hover:text-red-500 transition-colors" /> 
               <span className="hidden md:inline">Support the Dev</span><span className="md:hidden">Support</span>
             </a>
+            <button 
+              onClick={() => { setSaveModal(true); trackEvent('sync-terminal-open'); }} 
+              className="flex items-center gap-2 bg-red-600 hover:bg-white text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 active:scale-95 border-b-2 md:border-b-4 border-red-900"
+            >
+              <Save className="w-3 md:w-4 h-3 md:h-4" /> <span className="hidden md:inline">Sync Terminal</span><span className="md:hidden">Sync</span>
+            </button>
         </div>
       </header>
 
@@ -1507,18 +1513,48 @@ export default function App() {
                 </p>
               </button>
 
-              {/* Sync Terminal Access */}
+              {/* What's New */}
               <button 
-                onClick={() => { setSaveModal(true); trackEvent('sync-terminal-open'); }}
-                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-green-600 transition-all shadow-xl relative overflow-hidden"
+                onClick={() => { setChangelogFullHistory(true); setShowChangelog(true); trackEvent('changelog-open'); }}
+                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-yellow-600 transition-all shadow-xl relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Save className="w-24 h-24" />
+                  <Zap className="w-24 h-24" />
                 </div>
-                <Save className="w-8 h-8 text-green-500 mb-4" />
-                <h3 className="text-xl font-black uppercase italic text-white mb-2">Sync Terminal</h3>
+                <Zap className="w-8 h-8 text-yellow-500 mb-4" />
+                <h3 className="text-xl font-black uppercase italic text-white mb-2">What's New</h3>
                 <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
-                  Backup your save data or transfer to another device.
+                  Check recent updates and version history.
+                </p>
+              </button>
+
+              {/* Roadmap */}
+              <button 
+                onClick={() => { setShowRoadmap(true); trackEvent('roadmap-open'); }}
+                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-blue-500 transition-all shadow-xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Trophy className="w-24 h-24" />
+                </div>
+                <Trophy className="w-8 h-8 text-blue-500 mb-4" />
+                <h3 className="text-xl font-black uppercase italic text-white mb-2">Roadmap</h3>
+                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
+                  See upcoming features and development plans.
+                </p>
+              </button>
+
+              {/* Help */}
+              <button 
+                onClick={() => { setShowOnboarding(true); trackEvent('help-open'); }}
+                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-neutral-400 transition-all shadow-xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Info className="w-24 h-24" />
+                </div>
+                <Info className="w-8 h-8 text-neutral-400 mb-4" />
+                <h3 className="text-xl font-black uppercase italic text-white mb-2">Help Guide</h3>
+                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
+                  View the app manual and onboarding tips.
                 </p>
               </button>
 
