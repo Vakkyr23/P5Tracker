@@ -38,7 +38,8 @@ import {
   PlayCircle,
   FileText,
   MessageSquare,
-  Ghost
+  Ghost,
+  Menu
 } from 'lucide-react';
 
 import { APP_DATA } from './data/gameData';
@@ -83,7 +84,13 @@ const trackEvent = (eventName, eventData = {}) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('p5r_activeTab') || 'cheatsheet');
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = localStorage.getItem('p5r_activeTab') || 'cheatsheet';
+    if (saved === 'library') return 'library_view';
+    if (saved === 'registry') return 'registry_view';
+    if (saved === 'palaces' || saved === 'mementos') return 'metaverse';
+    return saved;
+  });
   const [metaverseView, setMetaverseView] = useState('palaces');
   const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
   const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
@@ -553,12 +560,6 @@ export default function App() {
               <Heart className="w-3 md:w-4 h-3 md:h-4 fill-current group-hover:text-red-500 transition-colors" /> 
               <span className="hidden md:inline">Support the Dev</span><span className="md:hidden">Support</span>
             </a>
-            <button 
-              onClick={() => { setSaveModal(true); trackEvent('sync-terminal-open'); }} 
-              className="flex items-center gap-2 bg-red-600 hover:bg-white text-black px-3 py-1.5 md:px-6 md:py-3 font-black uppercase text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 active:scale-95 border-b-2 md:border-b-4 border-red-900"
-            >
-              <Save className="w-3 md:w-4 h-3 md:h-4" /> <span className="hidden md:inline">Sync Terminal</span><span className="md:hidden">Sync</span>
-            </button>
         </div>
       </header>
 
@@ -567,8 +568,7 @@ export default function App() {
         <TabButton active={activeTab === 'months'} onClick={() => setActiveTab('months')} label="Calendar" icon={Calendar} />
         <TabButton active={activeTab === 'confidants'} onClick={() => setActiveTab('confidants')} label="Confidants" icon={Users} />
         <TabButton active={activeTab === 'metaverse'} onClick={() => setActiveTab('metaverse')} label="Metaverse" icon={Sword} />
-        <TabButton active={activeTab === 'registry'} onClick={() => setActiveTab('registry')} label="Registry" icon={Ghost} />
-        <TabButton active={activeTab === 'library'} onClick={() => setActiveTab('library')} label="Reference" icon={Library} />
+        <TabButton active={activeTab === 'more' || activeTab === 'registry_view' || activeTab === 'library_view'} onClick={() => setActiveTab('more')} label="More" icon={Menu} />
       </nav>
 
       <main className="max-w-6xl mx-auto pb-48 md:pb-24">
@@ -1471,9 +1471,67 @@ export default function App() {
           </div>
         )}
 
-        {/* REGISTRY VIEW */}
-        {activeTab === 'registry' && (
+        {/* MORE VIEW (System Menu) */}
+        {activeTab === 'more' && (
           <div className="space-y-6 animate-in fade-in duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              
+              {/* Registry Access */}
+              <button 
+                onClick={() => setActiveTab('registry_view')}
+                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-red-600 transition-all shadow-xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Ghost className="w-24 h-24" />
+                </div>
+                <Ghost className="w-8 h-8 text-red-600 mb-4" />
+                <h3 className="text-xl font-black uppercase italic text-white mb-2">Persona Registry</h3>
+                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
+                  Track captured Personas and Treasure Demons.
+                  <span className="block mt-2 text-red-600">{PERSONA_DATA.treasureDemons.length} Rare Targets</span>
+                </p>
+              </button>
+
+              {/* Reference Hub Access */}
+              <button 
+                onClick={() => setActiveTab('library_view')}
+                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-blue-600 transition-all shadow-xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Library className="w-24 h-24" />
+                </div>
+                <Library className="w-8 h-8 text-blue-500 mb-4" />
+                <h3 className="text-xl font-black uppercase italic text-white mb-2">Reference Hub</h3>
+                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
+                  Classroom answers, Fusion calculators, and external guides.
+                </p>
+              </button>
+
+              {/* Sync Terminal Access */}
+              <button 
+                onClick={() => { setSaveModal(true); trackEvent('sync-terminal-open'); }}
+                className="group bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl text-left hover:border-green-600 transition-all shadow-xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Save className="w-24 h-24" />
+                </div>
+                <Save className="w-8 h-8 text-green-500 mb-4" />
+                <h3 className="text-xl font-black uppercase italic text-white mb-2">Sync Terminal</h3>
+                <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">
+                  Backup your save data or transfer to another device.
+                </p>
+              </button>
+
+            </div>
+          </div>
+        )}
+
+        {/* SUB-VIEW: REGISTRY */}
+        {activeTab === 'registry_view' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+             <button onClick={() => setActiveTab('more')} className="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors mb-4 font-bold text-xs uppercase tracking-widest">
+                <ChevronRight className="w-4 h-4 rotate-180" /> Back to System Menu
+             </button>
              <div className="text-center py-20">
                 <div className="w-20 h-20 bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-neutral-800">
                   <Ghost className="w-10 h-10 text-neutral-600" />
@@ -1481,18 +1539,16 @@ export default function App() {
                 <h2 className="text-3xl md:text-5xl font-black italic text-neutral-700 uppercase tracking-tighter mb-4">Persona Registry</h2>
                 <p className="text-neutral-500 font-bold uppercase tracking-widest text-xs">Access Restricted • Construction in Progress</p>
                 <p className="text-[10px] text-neutral-600 font-mono mt-4 uppercase">Database: {PERSONA_DATA.treasureDemons.length} Rare Specimens Loaded</p>
-                <div className="mt-8 flex justify-center gap-2">
-                   <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse" />
-                   <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse delay-100" />
-                   <span className="w-2 h-2 rounded-full bg-neutral-800 animate-pulse delay-200" />
-                </div>
              </div>
           </div>
         )}
 
-        {/* REFERENCE VIEW */}
-        {activeTab === 'library' && (
-          <div className="space-y-12 animate-in fade-in duration-500">
+        {/* SUB-VIEW: REFERENCE */}
+        {activeTab === 'library_view' && (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <button onClick={() => setActiveTab('more')} className="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors mb-4 font-bold text-xs uppercase tracking-widest">
+                <ChevronRight className="w-4 h-4 rotate-180" /> Back to System Menu
+            </button>
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-5xl font-black italic text-white uppercase tracking-tighter mb-4">Command Center</h2>
               <p className="text-xs md:text-sm text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">
