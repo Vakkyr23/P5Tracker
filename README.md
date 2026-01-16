@@ -45,6 +45,11 @@ Feedback, bug reports, and strategy corrections are welcome via [GitHub Issues](
 *   **Will Seed Locator:** Step-by-step guides to find every Will Seed.
 *   **Boss Strategy:** Key tips and recommended Personas for every major boss.
 
+### 📖 Persona Registry
+*   **Complete Database:** A fully searchable compendium of all 232 Royal Personas.
+*   **Smart Tracking:** Filter by Arcana and track your collection percentage directly from the new Registry view.
+*   **Metaverse Sync:** Catching a Persona in a Palace guide automatically marks it as 'Registered'.
+
 ### 🧠 Social Stat Dashboard
 *   Track your Knowledge, Guts, Proficiency, Kindness, and Charm.
 *   See real-time feedback on which stats are bottlenecking your relationships.
@@ -52,7 +57,6 @@ Feedback, bug reports, and strategy corrections are welcome via [GitHub Issues](
 ## 🚀 Future Roadmap
 
 *   **Resources & Reference Hub:** Centralized links to proven 100% walkthroughs and a searchable Classroom/Exam/Crossword cheat sheet.
-*   **Persona Compendium:** A lightweight tracker for Compendium completion and early-game fusion essentials.
 *   **PWA Support:** Full offline access and installable app experience for iOS and Android.
 *   **Fusion Calculator:** Integrated tool for checking fusion recipes and skill requirements.
 
