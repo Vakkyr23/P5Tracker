@@ -1,5 +1,35 @@
 export const RELEASE_NOTES = [
   {
+    version: "2.3.0",
+    date: "2026-01-16",
+    title: "The Compendium Update",
+    description: "The Persona Registry is finally here! Track your collection and sync your progress across the Metaverse.",
+    sections: [
+      {
+        title: "📖 Persona Registry",
+        items: [
+          "**Complete Database:** A fully searchable compendium of all 232 Royal Personas.",
+          "**Smart Tracking:** Filter by Arcana and track your collection percentage directly from the new Registry view.",
+          "**Integrated Intel:** Includes data for Special Fusions, DLC content, and Treasure Demons."
+        ]
+      },
+      {
+        title: "🔄 Metaverse Sync",
+        items: [
+          "**Cross-Tracking:** Catching a Persona in a Palace guide automatically marks it as 'Registered' in your Compendium.",
+          "**Unified Progress:** Your collection status is shared globally across the app."
+        ]
+      },
+      {
+        title: "📱 Mobile Polish",
+        items: [
+          "**Sticky Controls:** The Registry features a new sticky-header layout for effortless browsing on mobile.",
+          "**Fluid Scrolling:** Optimized the list view to feel native and responsive on touchscreens."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.2.5",
     date: "2026-01-15",
     title: "The Navigation Overhaul",

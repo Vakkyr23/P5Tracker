@@ -149,6 +149,8 @@ export default function App() {
         const [anchoredMonth, setAnchoredMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
         const [currentMonth, setCurrentMonth] = useState(() => localStorage.getItem('p5r_anchoredMonth') || 'april');
         const [searchTerm, setSearchTerm] = useState('');
+        const [registrySearch, setRegistrySearch] = useState('');
+        const [registryFilter, setRegistryFilter] = useState('All');
         
         // Data State
         const [checkedItems, setCheckedItems] = useState(() => {
@@ -492,6 +494,36 @@ export default function App() {
         .map(t => ({ ...t, month: m.name }))
     );
   }, []);
+
+  const filteredPersonas = useMemo(() => {
+    return PERSONA_DATA.registry.filter(p => {
+      const matchesSearch = p.name.toLowerCase().includes(registrySearch.toLowerCase()) || 
+                            p.arcana.toLowerCase().includes(registrySearch.toLowerCase());
+      const matchesFilter = registryFilter === 'All' || p.arcana === registryFilter;
+      return matchesSearch && matchesFilter;
+    });
+  }, [registrySearch, registryFilter]);
+
+  const personasByArcana = useMemo(() => {
+    const groups = {};
+    const sortedArcanas = [...new Set(PERSONA_DATA.registry.map(p => p.arcana))].sort();
+    
+    sortedArcanas.forEach(arc => {
+      const items = filteredPersonas.filter(p => p.arcana === arc);
+      if (items.length > 0) groups[arc] = items;
+    });
+    return groups;
+  }, [filteredPersonas]);
+
+  const registryStats = useMemo(() => {
+    const total = PERSONA_DATA.registry.length;
+    const completed = PERSONA_DATA.registry.filter(p => checkedItems[`p_${p.name}`]).length;
+    return { 
+      total, 
+      completed, 
+      percent: total > 0 ? Math.round((completed / total) * 100) : 0 
+    };
+  }, [checkedItems]);
 
   // Auto-expand relevant palace
   useEffect(() => {
@@ -1546,7 +1578,7 @@ export default function App() {
                   <h3 className="text-sm md:text-xl font-black uppercase italic text-white md:mb-2">Persona Registry</h3>
                   <p className="text-[10px] md:text-xs text-neutral-500 font-bold uppercase tracking-widest leading-tight">
                     Captured Specimens & Demons
-                    <span className="hidden md:block mt-2 text-red-600">{PERSONA_DATA.treasureDemons.length} Rare Targets</span>
+                    <span className="hidden md:block mt-2 text-red-600">{registryStats.percent}% Completed</span>
                   </p>
                 </div>
               </button>
@@ -1633,17 +1665,124 @@ export default function App() {
 
         {/* SUB-VIEW: REGISTRY */}
         {activeTab === 'registry_view' && (
-          <div className="space-y-6 animate-in fade-in duration-500">
-             <button onClick={() => setActiveTab('more')} className="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors mb-4 font-bold text-xs uppercase tracking-widest">
-                <ChevronRight className="w-4 h-4 rotate-180" /> Back to System Menu
-             </button>
-             <div className="text-center py-20">
-                <div className="w-20 h-20 bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-neutral-800">
-                  <Ghost className="w-10 h-10 text-neutral-600" />
+          <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 min-h-screen">
+             {/* Header Section */}
+             <div className="flex justify-between items-center gap-4 px-1 md:px-0">
+               <button onClick={() => setActiveTab('more')} className="flex items-center gap-2 text-neutral-500 hover:text-white transition-colors font-bold text-xs uppercase tracking-widest py-2">
+                  <ChevronRight className="w-5 h-5 rotate-180" /> <span className="hidden md:inline">Back to System Menu</span><span className="md:hidden">Back</span>
+               </button>
+               
+               <div className="bg-neutral-900 border border-neutral-800 px-3 py-1.5 md:px-4 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-3 md:gap-4 shadow-sm">
+                  <div className="flex flex-col items-end">
+                    <span className="text-[8px] md:text-[10px] font-black text-neutral-500 uppercase tracking-widest">Progress</span>
+                    <span className="text-lg md:text-xl font-black text-red-600 italic leading-none">{registryStats.percent}%</span>
+                  </div>
+                  <div className="w-16 md:w-24 h-1.5 md:h-2 bg-neutral-800 rounded-full overflow-hidden border border-neutral-700">
+                    <div className="h-full bg-red-600 transition-all duration-1000" style={{ width: `${registryStats.percent}%` }} />
+                  </div>
+               </div>
+             </div>
+
+             <div className="bg-neutral-900 border border-neutral-800 rounded-3xl shadow-2xl relative">
+                {/* Background Decor */}
+                <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+                   <div className="absolute top-0 right-0 p-8 opacity-5">
+                     <Ghost className="w-32 h-32 md:w-64 md:h-64" />
+                   </div>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-black italic text-neutral-700 uppercase tracking-tighter mb-4">Persona Registry</h2>
-                <p className="text-neutral-500 font-bold uppercase tracking-widest text-xs">Access Restricted • Construction in Progress</p>
-                <p className="text-[10px] text-neutral-600 font-mono mt-4 uppercase">Database: {PERSONA_DATA.treasureDemons.length} Rare Specimens Loaded</p>
+
+                <div className="relative z-10">
+                  {/* Sticky Controls */}
+                  <div className="sticky top-0 z-30 bg-neutral-900/95 backdrop-blur-xl border-b border-neutral-800 p-4 md:p-6 space-y-4 rounded-t-3xl shadow-sm">
+                      <div className="flex flex-col md:flex-row gap-3">
+                        <div className="relative flex-1">
+                          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                          <input 
+                            type="text" 
+                            placeholder="Search specimens..." 
+                            value={registrySearch}
+                            onChange={(e) => setRegistrySearch(e.target.value)}
+                            className="w-full bg-black border border-neutral-800 rounded-xl py-3 pl-10 pr-4 text-sm font-bold text-white focus:border-red-600 outline-none transition-colors shadow-inner"
+                          />
+                        </div>
+                        <div className="relative">
+                          <select 
+                            value={registryFilter}
+                            onChange={(e) => setRegistryFilter(e.target.value)}
+                            className="w-full md:w-auto bg-neutral-800 border border-neutral-700 rounded-xl pl-4 pr-10 py-3 text-xs font-black uppercase tracking-widest text-white outline-none focus:border-red-600 appearance-none shadow-sm"
+                          >
+                            <option value="All">All Arcanas</option>
+                            {[...new Set(PERSONA_DATA.registry.map(p => p.arcana))].sort().map(arc => (
+                              <option key={arc} value={arc}>{arc}</option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      {/* Legend */}
+                      <div className="flex flex-wrap gap-2 justify-start">
+                        <div className="flex items-center gap-1.5 opacity-80">
+                          <span className="text-[8px] font-black uppercase text-yellow-500 tracking-tighter bg-yellow-900/20 px-1.5 py-0.5 rounded border border-yellow-900/50">Special</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 opacity-80">
+                          <span className="text-[8px] font-black uppercase text-blue-500 tracking-tighter bg-blue-900/20 px-1.5 py-0.5 rounded border border-blue-900/50">DLC</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 opacity-80">
+                          <span className="text-[8px] font-black uppercase text-purple-500 tracking-tighter bg-purple-900/20 px-1.5 py-0.5 rounded border border-purple-900/50">Rare</span>
+                        </div>
+                      </div>
+                  </div>
+
+                  {/* List */}
+                  <div className="p-4 md:p-6 space-y-8 min-h-[50vh]">
+                    {Object.entries(personasByArcana).map(([arc, personas]) => (
+                      <div key={arc} className="space-y-3">
+                        <h4 className="text-xs font-black text-red-600 uppercase tracking-[0.4em] flex items-center gap-2 border-b border-neutral-800 pb-2">
+                          <Star className="w-3 h-3 fill-current" /> {arc}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                          {personas.map(p => {
+                            const isChecked = checkedItems[`p_${p.name}`];
+                            return (
+                              <div 
+                                key={p.name}
+                                onClick={() => toggleItem(`p_${p.name}`)}
+                                className={`flex items-center justify-between p-3 md:p-3 rounded-xl border transition-all cursor-pointer group active:scale-[0.98] ${
+                                  isChecked 
+                                    ? 'bg-neutral-950/50 border-neutral-800 opacity-40' 
+                                    : 'bg-neutral-800/30 border-neutral-800 hover:border-neutral-600 hover:bg-neutral-800/50'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-[10px] shrink-0 ${isChecked ? 'bg-neutral-800 text-neutral-500' : 'bg-red-600 text-black'}`}>
+                                    {p.level}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className={`text-sm font-black italic truncate ${isChecked ? 'text-neutral-500 line-through' : 'text-white'}`}>{p.name}</div>
+                                    <div className="flex gap-2">
+                                      {p.special && <span className="text-[8px] font-black uppercase text-yellow-500 tracking-tighter">Special</span>}
+                                      {p.dlc && <span className="text-[8px] font-black uppercase text-blue-500 tracking-tighter">DLC</span>}
+                                      {p.rare && <span className="text-[8px] font-black uppercase text-purple-500 tracking-tighter">Rare</span>}
+                                    </div>
+                                  </div>
+                                </div>
+                                {isChecked ? <CheckSquare className="w-5 h-5 text-green-500 shrink-0" /> : <Square className="w-5 h-5 text-neutral-700 group-hover:text-neutral-500 shrink-0" />}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+
+                    {Object.keys(personasByArcana).length === 0 && (
+                      <div className="text-center py-20">
+                        <Ghost className="w-12 h-12 text-neutral-800 mx-auto mb-4" />
+                        <p className="text-neutral-500 font-bold uppercase tracking-widest text-xs">No specimens found.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
              </div>
           </div>
         )}

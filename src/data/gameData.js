@@ -455,8 +455,8 @@ export const APP_DATA = {
         { id: 'pks3', name: 'Blue Lust Seed', text: 'Secret room elevator. Pull lever behind painting.' }
       ],
       personas: [
-        { id: 'pkp1', name: 'Berith', text: 'Resistance to Phys is vital.' },
-        { id: 'pkp2', name: 'Agathion', text: 'Early source of Elec for weaknesses.' }
+        { id: 'p_Berith', name: 'Berith', text: 'Resistance to Phys is vital.' },
+        { id: 'p_Agathion', name: 'Agathion', text: 'Early source of Elec for weaknesses.' }
       ],
       tips: 'Abuse cover to ambush. Use physical skills to save SP.',
       monthId: 'april'
@@ -472,8 +472,8 @@ export const APP_DATA = {
         { id: 'pms3', name: 'Blue Vanity Seed', text: 'Museum Main Hall. Enter vent in right hallway to reach balcony.' }
       ],
       personas: [
-        { id: 'pmp1', name: 'Jack Frost', text: 'Mabufu for clones.' },
-        { id: 'pmp2', name: 'Matador', text: 'Magaru for clones.' }
+        { id: 'p_Jack Frost', name: 'Jack Frost', text: 'Mabufu for clones.' },
+        { id: 'p_Matador', name: 'Matador', text: 'Magaru for clones.' }
       ],
       tips: 'Bring all 4 basic elements. The boss is an elemental DPS check.',
       monthId: 'may'
@@ -490,8 +490,8 @@ export const APP_DATA = {
         { id: 'pks3_k', name: 'Blue Gluttony Seed', text: 'Lock room puzzle. Mini-boss weak to Ice.' }
       ],
       personas: [
-        { id: 'pkp1_k', name: 'White Rider', text: 'Triple Down is extremely powerful.' },
-        { id: 'pkp2_k', name: 'Take-Minakata', text: 'Resists Elec/Phys.' }
+        { id: 'p_White Rider', name: 'White Rider', text: 'Triple Down is extremely powerful.' },
+        { id: 'p_Take-Minakata', name: 'Take-Minakata', text: 'Resists Elec/Phys.' }
       ],
       tips: 'Throw expensive items at Piggytron to stall its ultimate attack.',
       monthId: 'june'
@@ -508,8 +508,8 @@ export const APP_DATA = {
         { id: 'p1s3', name: 'Blue Will Seed', text: 'Chamber of Sanctuary. On floating platforms, grapple up to a statue.' }
       ],
       personas: [
-        { id: 'p1p1', name: 'Isis', text: 'Nulls Bless/Curse from Anubis.' },
-        { id: 'p1p2', name: 'Thoth', text: 'Early source of Nuclear damage.' }
+        { id: 'p_Isis', name: 'Isis', text: 'Nulls Bless/Curse from Anubis.' },
+        { id: 'p_Thoth', name: 'Thoth', text: 'Early source of Nuclear damage.' }
       ],
       tips: 'Cure Despair immediately. If it lasts 3 turns, you die instantly.',
       monthId: 'july'
@@ -526,7 +526,7 @@ export const APP_DATA = {
         { id: 'p2s3', name: 'Blue Will Seed', text: 'Transfer Line. Guarded by mini-boss in airlock maze.' }
       ],
       personas: [
-        { id: 'p2p1', name: 'Girimehkala', text: 'REPEL PHYSICAL. Makes the boss mobs much easier.' }
+        { id: 'p_Girimehkala', name: 'Girimehkala', text: 'REPEL PHYSICAL. Makes the boss mobs much easier.' }
       ],
       tips: 'SWITCH TO MERCILESS. Weakness damage becomes 3x. Use items for Baton Passes.',
       monthId: 'september'
@@ -543,7 +543,7 @@ export const APP_DATA = {
         { id: 'p3s3', name: 'Blue Will Seed', text: 'High Limit Area. Behind column on far right of entrance stairs.' }
       ],
       personas: [
-        { id: 'p3p1', name: 'Rangda', text: 'Repel Phys/Gun. Makes the arena matches trivial.' }
+        { id: 'p_Rangda', name: 'Rangda', text: 'Repel Phys/Gun. Makes the arena matches trivial.' }
       ],
       tips: 'Do not attack during roulette spin. If you lose, she drains HP/SP.',
       monthId: 'october'
@@ -560,7 +560,7 @@ export const APP_DATA = {
         { id: 'p4s3', name: 'Blue Will Seed', text: 'Side Deck. Climb up the side of the ship and grapple backward.' }
       ],
       personas: [
-        { id: 'p4p1', name: 'Trumpeter', text: 'Must have Debilitate to reduce boss stats.' }
+        { id: 'p_Trumpeter', name: 'Trumpeter', text: 'Must have Debilitate to reduce boss stats.' }
       ],
       tips: 'Use the Ring of Pride for free Charge. Debilitate the boss every 3 turns.',
       monthId: 'november'
@@ -576,8 +576,8 @@ export const APP_DATA = {
         { id: 'p5s3', name: 'Blue Will Seed', text: 'Twilight Corridor. Complex floating platform puzzle at end.' }
       ],
       personas: [
-        { id: 'p5p1', name: 'Yoshitsune', text: 'Hassou Tobi is the strongest physical move.' },
-        { id: 'p5p2', name: 'Maria', text: 'Best healer for endurance fight.' }
+        { id: 'p_Yoshitsune', name: 'Yoshitsune', text: 'Hassou Tobi is the strongest physical move.' },
+        { id: 'p_Maria', name: 'Maria', text: 'Best healer for endurance fight.' }
       ],
       tips: 'Max Baton Pass required. Break tentacles with elements to reach the boss.',
       monthId: 'january'
