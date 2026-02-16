@@ -665,7 +665,7 @@ export default function App() {
               href="https://ko-fi.com/K3K11RWTSL" 
               target="_blank" 
               rel="noopener noreferrer"
-              onClick={() => trackEvent('support-link-click')}
+              onClick={() => trackEvent('support-link-click', { location: 'header' })}
               className="flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-3 py-1.5 md:px-6 md:py-3 font-bold text-[10px] md:text-xs transition-all italic shadow-xl shadow-red-900/20 border-b-2 md:border-b-4 border-[#c44040] hover:border-neutral-300 group"
               title="Support the Dev"
             >
@@ -1947,6 +1947,7 @@ export default function App() {
             href="https://ko-fi.com/K3K11RWTSL" 
             target="_blank" 
             rel="noopener noreferrer"
+            onClick={() => trackEvent('support-link-click', { location: 'footer' })}
             className="inline-flex items-center gap-2 bg-[#FF5E5B] hover:bg-[#FF5E5B]/90 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-transform hover:scale-105 shadow-lg"
           >
             <Heart className="w-3 h-3 fill-current" />
