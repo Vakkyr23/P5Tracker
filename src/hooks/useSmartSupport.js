@@ -16,7 +16,7 @@ export function useSmartSupport(stats) {
   // Track Views
   useEffect(() => {
     if (showToast) {
-      trackEvent('support_toast_view', { type: toastType });
+      trackEvent('support_toast_view', { type: toastType, location: 'toast' });
     }
   }, [showToast, toastType]);
 
@@ -62,7 +62,7 @@ export function useSmartSupport(stats) {
   const handleSupport = () => {
     setShowToast(false);
     // Timestamp already set on trigger
-    if (window.umami) window.umami.track('support_toast_click', { type: toastType });
+    if (window.umami) window.umami.track('support_toast_click', { type: toastType, location: 'toast' });
     window.open('https://ko-fi.com/K3K11RWTSL', '_blank');
   };
 
