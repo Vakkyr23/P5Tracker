@@ -83,6 +83,38 @@ const trackEvent = (eventName, eventData = {}) => {
   }
 };
 
+function SupportCard({ location }) {
+  return (
+    <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 md:p-6 shadow-xl">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="p-2.5 rounded-xl bg-red-600/10 border border-red-900/30">
+            <Heart className="w-5 h-5 text-red-500" />
+          </div>
+          <div>
+            <h4 className="text-sm md:text-base font-black uppercase tracking-wider text-white">
+              Support This Project
+            </h4>
+            <p className="text-[11px] md:text-xs text-neutral-400 leading-relaxed max-w-xl">
+              P5 Tracker is free and ad-free. If it saves you time, consider supporting the dev.
+            </p>
+          </div>
+        </div>
+        <a
+          href="https://ko-fi.com/K3K11RWTSL"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackEvent('support-card-click', { location })}
+          className="inline-flex items-center gap-2 bg-[#FF5E5B] hover:bg-white text-white hover:text-black px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all border-b-2 border-[#c44040] hover:border-neutral-300"
+        >
+          <Heart className="w-3.5 h-3.5 fill-current" />
+          Support on Ko-fi
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
     const [activeTab, setActiveTab] = useState(() => {
       // 1. Try URL Hash first
@@ -733,6 +765,8 @@ export default function App() {
               </div>
             </div>
 
+            <SupportCard location="briefing" />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8">
              <div className="space-y-3 md:space-y-8">
                 <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 md:p-6">
@@ -966,6 +1000,7 @@ export default function App() {
         {/* ROADMAP VIEW */}
         {activeTab === 'months' && activeMonthData && (
           <div className="space-y-8 animate-in fade-in duration-500">
+            <SupportCard location="calendar" />
             <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col border-t-4 border-t-red-600">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
