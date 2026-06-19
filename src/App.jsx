@@ -50,6 +50,9 @@ import { CROSSWORD_DATA } from './data/crosswordData';
 import { CONFIDANT_STAT_GATES, SOCIAL_STATS } from './data/socialStats';
 import { RELEASE_NOTES } from './data/releaseNotes';
 import { ROADMAP } from './data/roadmap';
+import CalendarView from './components/CalendarView';
+import CommandSuite from './components/CommandSuite';
+import MetaverseAids from './components/MetaverseAids';
 
 const STAT_ICONS = {
   Knowledge: Book,
@@ -692,6 +695,9 @@ export default function App() {
       <main className="max-w-6xl mx-auto pb-48 md:pb-24">
         
         {/* CHEATSHEET VIEW */}
+        {activeTab === 'months' && <CalendarView />}
+        {activeTab === 'confidants' && <CommandSuite />}
+        {activeTab === 'metaverse' && <MetaverseAids />}
         {activeTab === 'cheatsheet' && (
           <div className="space-y-6 md:space-y-12 animate-in fade-in duration-500">
             {/* Protagonist Dashboard */}
@@ -929,7 +935,7 @@ export default function App() {
         )}
 
         {/* Calendar Header Navigation */}
-        {activeTab === 'months' && (
+        {false && activeTab === 'months' && (
           <div className="mb-4 md:mb-8 bg-neutral-900 border border-neutral-800 rounded-3xl p-3 md:p-6 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
               <Calendar className="w-20 h-20 md:w-32 md:h-32" />
@@ -998,7 +1004,7 @@ export default function App() {
         )}
         
         {/* ROADMAP VIEW */}
-        {activeTab === 'months' && activeMonthData && (
+        {false && activeTab === 'months' && activeMonthData && (
           <div className="space-y-8 animate-in fade-in duration-500">
             <SupportCard location="calendar" />
             <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col border-t-4 border-t-red-600">
@@ -1142,7 +1148,7 @@ export default function App() {
         )}
 
         {/* CONFIDANTS VIEW */}
-        {activeTab === 'confidants' && (
+        {false && activeTab === 'confidants' && (
           <div className="animate-in fade-in duration-500">
             {/* Mobile Compact List View */}
             <div className="flex flex-col gap-2 md:hidden">
@@ -1361,7 +1367,7 @@ export default function App() {
         )}
 
         {/* METAVERSE VIEW */}
-        {activeTab === 'metaverse' && (
+        {false && activeTab === 'metaverse' && (
           <div className="animate-in fade-in duration-500 mb-6">
             <div className="flex justify-center">
               <div className="bg-neutral-900 p-1 rounded-xl border border-neutral-800 flex gap-1">
@@ -1383,7 +1389,7 @@ export default function App() {
         )}
 
         {/* PALACES CONTENT */}
-        {activeTab === 'metaverse' && metaverseView === 'palaces' && (
+        {false && activeTab === 'metaverse' && metaverseView === 'palaces' && (
           <div className="space-y-6 animate-in fade-in duration-500">
              {(() => {
                const anchoredMonthIdx = APP_DATA.months.findIndex(m => m.id === anchoredMonth);
@@ -1483,7 +1489,7 @@ export default function App() {
         )}
 
         {/* MEMENTOS CONTENT */}
-        {activeTab === 'metaverse' && metaverseView === 'mementos' && (
+        {false && activeTab === 'metaverse' && metaverseView === 'mementos' && (
           <div className="space-y-4 md:space-y-8 animate-in fade-in duration-500">
             {(() => {
               const { history: historyMem, active: activeMem } = mementosGroups;
