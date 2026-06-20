@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-06-21
+### Added
+- **Full Save System:** The Sync Terminal now backs up the entire app state — all progress, every tab's checklists (Calendar, Confidants, Will Seeds, NG+), route, and theme — in a single dated `.json` file, instead of only four App-level slices.
+
+### Changed
+- **Safe Restore:** Imports are validated, confirm before overwriting, then reload so every tab rehydrates from storage. Legacy `.txt` saves still import.
+- **Royal Legibility:** White text on red surfaces (Royal Readiness card, palace banners, active tabs/pills) now carries a crisp comic-style edge to stop the red/white shimmer; the active main tab gains a hard keyline.
+
+### Removed
+- Redundant header "Support zucram" button (the Briefing banner and footer Ko-fi links remain).
+
+## [3.0.0] - 2026-06-19
+### Added
+- **100% Completion Overhaul:** Day-by-day spoiler-gated calendar (4/9 → 2/3, incl. third semester) replacing the month grid, with Story-Safe / Spoiler-Free / Reveal All modes.
+- **Command Suite:** Deadline dashboard, full Confidant schedule, and Thieves' Den (P-Medal) tracker.
+- **Metaverse Aids:** Recommended fusion path, all 24 Will Seeds, and an NG+ / romance-rotation planner.
+- **Royal & Night Themes:** CSS-variable-driven scarlet/black and cool-blue skins via a single header toggle.
+
+### Changed
+- JP-corrected stat values reconciled against the Japanese all-Confidant chart.
+
+### Removed
+- Umami analytics and the support-nudge subsystem (static Ko-fi credit links retained).
+
 ## [2.2.0] - 2026-01-10
 ### Added
 - **Priority Roadmap:** Redesigned the monthly checklist into "Mission Critical" and "Timeline" sections.

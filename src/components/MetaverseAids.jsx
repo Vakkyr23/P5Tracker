@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { usePersistentState } from "../hooks/usePersistentState";
 import { FUSION_PATH as FUSION } from "../data/fusionPathData";
 import { WILL_SEEDS as WILL } from "../data/willSeedData";
 import { NGPLUS, ROMANCE_ROSTER as ROSTER } from "../data/ngplusData";
@@ -37,6 +38,7 @@ const CSS = `
 .p5m .pal{margin-bottom:16px;}
 .p5m .palhd{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .p5m .palhd h3{font-family:var(--fd);font-weight:800;font-style:italic;font-size:20px;text-transform:uppercase;margin:0;color:var(--wc);background:var(--red);padding:4px 13px 6px;transform:skewX(-9deg);clip-path:polygon(0 0,100% 0,95% 100%,0 100%);}
+.p5m .logo,.p5m .palhd h3,.p5m .tabbtn[aria-pressed="true"],.p5m .toggle button[aria-pressed="true"]{text-shadow:0 1px 1px rgba(0,0,0,.55);}
 .p5m .palct{font-family:var(--fd);font-size:12px;color:var(--mut);}
 .p5m .seed{display:flex;align-items:flex-start;gap:11px;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:7px;}
 .p5m .seed .h{font-size:12.5px;line-height:1.45;}
@@ -67,13 +69,13 @@ function FusionPath({checked,toggle}){
       <div className="fus" key={i}>
         <div className={"box"+(on?" on":"")} role="button" tabIndex={0} onClick={()=>toggle(id)} onKeyDown={e=>(e.key==="Enter"||e.key===" ")&&toggle(id)}>{on?"\u2713":""}</div>
         <div className="step">{i+1}</div>
-        <div className="grow"><span className="res">{f.result}</span><span className="achip">{f.arcana} {f.level}</span>{f.alt&&<span className="altb">alt</span>}<div className="rec">&#8592; {f.recipe}</div></div>
+        <div className="grow"><span className="res">{f.result}</span><span className="achip" title={`Result Persona — ${f.arcana} Arcana, base level ${f.level}`}>{f.arcana} {f.level}</span>{f.alt&&<span className="altb" title="Off-path alternative — a substitute fusion if you've strayed from the recommended order.">alt</span>}<div className="rec">&#8592; {f.recipe}</div></div>
       </div>);})}
   </div>);
 }
 function WillSeeds({checked,toggle}){
   return (<div>
-    <div className="note">Source: PSNProfiles — these are the seeds needing <b>non-obvious navigation</b>. Straightforward seeds and full 3-per-Palace coverage are a later refinement.</div>
+    <div className="note">All 24 Will Seeds, three per Palace. Each set fuses into a crystal — trade it to <b>Jose</b> in Mementos for that Palace's accessory. None are missable, and the 8th Palace has none.</div>
     {WILL.map((p,pi)=>(
       <div className="pal" key={pi}>
         <div className="palhd"><h3>{p.palace}</h3><span className="palct">{p.month} &middot; {p.seeds.length} listed</span></div>
@@ -100,11 +102,10 @@ function NGPlanner({status,cycle}){
       </div>);})}
   </div>);
 }
-export default function MetaverseAids(){
-  const [theme,setTheme]=useState("royal");
-  const [tab,setTab]=useState("fusion");
-  const [checked,setChecked]=useState({});
-  const [status,setStatus]=useState({"Futaba Sakura":"done"});
+export default function MetaverseAids({ theme = "royal" }){
+  const [tab,setTab]=usePersistentState("p5r_meta_tab","fusion");
+  const [checked,setChecked]=usePersistentState("p5r_meta_checked",{});
+  const [status,setStatus]=usePersistentState("p5r_meta_status",{});
   const toggle=id=>setChecked(s=>({...s,[id]:!s[id]}));
   const cycle=(k,a)=>setStatus(s=>{const cur=s[k]||"none";return {...s,[k]:a[(a.indexOf(cur)+1)%a.length]};});
   return (<div className="p5m" data-theme={theme}>
@@ -113,7 +114,6 @@ export default function MetaverseAids(){
       <div className="logo">P5<b>R</b></div>
       <div><div className="title">Metaverse Aids + NG&#43;</div><div className="sub">Integrated Strategy Compendium</div></div>
       <span className="proto">PREVIEW</span><div className="spacer"/>
-      <div className="toggle"><button aria-pressed={theme==="royal"} onClick={()=>setTheme("royal")}>Royal</button><button aria-pressed={theme==="night"} onClick={()=>setTheme("night")}>Night</button></div>
     </div>
     <div className="tabs">
       <button className="tabbtn" aria-pressed={tab==="fusion"} onClick={()=>setTab("fusion")}>Fusion Path</button>
@@ -123,6 +123,6 @@ export default function MetaverseAids(){
     {tab==="fusion"&&<FusionPath checked={checked} toggle={toggle}/>}
     {tab==="seeds"&&<WillSeeds checked={checked} toggle={toggle}/>}
     {tab==="ngplus"&&<NGPlanner status={status} cycle={cycle}/>}
-    <div className="foot"><b>Preview</b> of the final three tabs on real data: {FUSION.length} fusion steps, Will Seeds across {WILL.length} Palaces, NG+ carry-over + {ROSTER.length}-route romance planner (Futaba pre-marked Done).</div>
+    <div className="foot"><b>Preview</b> of the final three tabs on real data: {FUSION.length} fusion steps, Will Seeds across {WILL.length} Palaces, NG+ carry-over + {ROSTER.length}-route romance planner.</div>
   </div>);
 }

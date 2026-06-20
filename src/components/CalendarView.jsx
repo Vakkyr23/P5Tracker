@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { usePersistentState } from "../hooks/usePersistentState";
 import { CALENDAR } from "../data/calendarData";
 import { STAT, STAT_DESC, ARC_NAME, ROMANCE, routeOf } from "../data/routeData";
 
@@ -96,6 +97,7 @@ const CSS = `
 .p5x .month h2{ font-family:var(--fd); font-weight:800; font-style:italic; font-size:34px; line-height:.85; text-transform:uppercase;
   letter-spacing:1px; margin:0; color:var(--whitecard); background:var(--red); padding:6px 18px 8px; transform:skewX(-9deg);
   clip-path:polygon(0 0,100% 0,96% 100%,0 100%); box-shadow:var(--shadow); }
+.p5x .logo,.p5x .month h2,.p5x .seg button[aria-pressed="true"],.p5x .reveal{text-shadow:0 1px 1px rgba(0,0,0,.55);}
 .p5x .month .rule{ flex:1; height:3px; background:linear-gradient(90deg,var(--red),transparent); }
 
 .p5x .day{ display:flex; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--surf);
@@ -130,6 +132,7 @@ const CSS = `
 .p5x .chip{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px;
   border:1px solid var(--line); background:var(--surf2); white-space:nowrap; }
 .p5x .chip.hastip{ cursor:help; }
+.p5x .phase.hastip{ cursor:help; }
 .p5x .chip .dot{ width:8px; height:8px; border-radius:50%; }
 .p5x .chip.cap{ font-family:var(--fd); letter-spacing:1px; text-transform:uppercase; font-weight:700; }
 .p5x .chip.trophy{ color:#f5c542; border-color:#7a5e15; }
@@ -165,7 +168,7 @@ const CSS = `
 .p5x .foot{ margin-top:26px; font-size:11.5px; color:var(--mut); line-height:1.6; border-top:1px solid var(--line); padding-top:14px; }
 .p5x .foot b{ color:var(--ink); }
 
-.p5x button:focus-visible, .p5x .check:focus-visible, .p5x .chip:focus-visible{ outline:2px solid var(--rose); outline-offset:2px; }
+.p5x button:focus-visible, .p5x .check:focus-visible, .p5x .chip:focus-visible, .p5x .phase.hastip:focus-visible{ outline:2px solid var(--rose); outline-offset:2px; }
 @media (max-width:560px){
   .p5x .day{ flex-direction:column; }
   .p5x .rail{ width:auto; flex:none; flex-direction:row; border-right:none; border-bottom:1px solid var(--line); }
@@ -200,13 +203,23 @@ function chipTip(c, day) {
   }
 }
 
+const PHASE_TIP = {
+  Free: "Free day — spend your time as you like: Confidants, stats, Mementos, shopping.",
+  Story: "Story day — scripted events only; no free activities.",
+  Palace: "Palace day — infiltration progress. Stock SP items and gear beforehand.",
+  Exam: "Exam period — daytime is locked to exams; the correct answers are listed here.",
+  Boss: "Boss day — a major fight. Prepare equipment, healing and SP first.",
+};
+
+const tipHandlers = (tip, tipApi) => tip
+  ? { tabIndex: 0,
+      onMouseEnter: (e) => tipApi.show(tip, e), onMouseMove: (e) => tipApi.show(tip, e),
+      onMouseLeave: tipApi.hide, onFocus: (e) => tipApi.show(tip, e), onBlur: tipApi.hide }
+  : {};
+
 function Chip({ c, day, tipApi }) {
   const tip = chipTip(c, day);
-  const H = tip
-    ? { tabIndex: 0,
-        onMouseEnter: (e) => tipApi.show(tip, e), onMouseMove: (e) => tipApi.show(tip, e),
-        onMouseLeave: tipApi.hide, onFocus: (e) => tipApi.show(tip, e), onBlur: tipApi.hide }
-    : {};
+  const H = tipHandlers(tip, tipApi);
   let cls = "chip" + (tip ? " hastip" : "");
   let content = null;
   if (c.k === "stat") { content = <><span className="dot" style={{ background: STAT[c.s] }} />{c.s} +{c.v}</>; }
@@ -257,12 +270,15 @@ function DayCard({ day, locked, mode, isActive, checked, route, onCheck, onUnloc
     }
   }
   const allChips = [...day.chips, ...extra];
+  const phaseTip = locked
+    ? "Locked — beyond your active day. Set this day active or reveal it to view."
+    : (PHASE_TIP[day.phase] || null);
 
   return (
     <div className={"day" + (isActive ? " active" : "")}>
       <div className="rail">
         <div><div className="dnum">{day.date.split("/")[1]}</div><div className="wd">{day.wd}</div></div>
-        <span className={"phase " + day.phase}>{locked ? "???" : day.phase}</span>
+        <span className={"phase " + day.phase + (phaseTip ? " hastip" : "")} {...tipHandlers(phaseTip, tipApi)}>{locked ? "???" : day.phase}</span>
         {isActive
           ? <span className="setactive" style={{ color: "var(--red)", borderColor: "var(--red)" }}>You are here</span>
           : <button className="setactive" onClick={onSetActive}>Set active</button>}
@@ -294,13 +310,11 @@ function DayCard({ day, locked, mode, isActive, checked, route, onCheck, onUnloc
   );
 }
 
-export default function CalendarView() {
-  const [theme, setTheme] = useState("royal");
-  const [mode, setMode] = useState("safe");
-  const [activeIdx, setActiveIdx] = useState(0); // game start
-  const [checked, setChecked] = useState({});
-  const [peeked, setPeeked] = useState({});
-  const [route, setRoute] = useState("Platonic");
+export default function CalendarView({ theme = "royal", route = "Platonic", setRoute = () => {} }) {
+  const [mode, setMode] = usePersistentState("p5r_cal_mode", "safe");
+  const [activeIdx, setActiveIdx] = usePersistentState("p5r_cal_activeIdx", 0); // game start
+  const [checked, setChecked] = usePersistentState("p5r_cal_checked", {});
+  const [peeked, setPeeked] = usePersistentState("p5r_cal_peeked", {});
   const [pickerOpen, setPickerOpen] = useState(false);
   const [tip, setTip] = useState(null);
 
@@ -363,13 +377,6 @@ export default function CalendarView() {
       </div>
 
       <div className="controls">
-        <div className="panel">
-          <div className="lab">Theme</div>
-          <div className="seg">
-            <button aria-pressed={theme === "royal"} onClick={() => setTheme("royal")}>Royal</button>
-            <button aria-pressed={theme === "night"} onClick={() => setTheme("night")}>Night</button>
-          </div>
-        </div>
         <div className="panel">
           <div className="lab">Spoiler mode</div>
           <div className="seg">

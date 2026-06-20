@@ -2,12 +2,100 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===================== Theme tokens =====================
+   Royal (default) and Night. Color channels are space-separated RGB so the
+   var-backed Tailwind colors support opacity modifiers (e.g. bg-neutral-900/90).
+   Only the fork shell uses these; the Calendar/Confidants/Metaverse components
+   self-theme via their own scoped variables. */
+:root {
+  /* surfaces / borders — byte-aligned with the components' scoped Royal palette
+     (--bg/--surf/--surf2/--line) so the shell and tabs read identically. */
+  --c-neutral-700: 64 22 31;   /* --line  #40161f (scarlet-tinted edge) */
+  --c-neutral-800: 34 16 26;   /* --surf2 #22101a (raised surface) */
+  --c-neutral-900: 25 11 16;   /* --surf  #190b10 (card surface) */
+  --c-neutral-950: 8 5 10;     /* --bg    #08050a (deepest panel) */
+  /* text scale — warm rose-grey, anchored on --ink (#f7eef1) and --mut (#b58e98)
+     so shell body/label text matches the tabs instead of falling back to cold grey. */
+  --c-neutral-100: 247 238 241; /* --ink   #f7eef1 */
+  --c-neutral-200: 232 215 221; /* #e8d7dd */
+  --c-neutral-300: 211 186 195; /* #d3bac3 */
+  --c-neutral-400: 181 142 152; /* --mut   #b58e98 */
+  --c-neutral-500: 150 113 123; /* #96717b */
+  --c-neutral-600: 112 80 90;   /* #70505a */
+  /* scarlet accents — anchored on the canonical P5R menu red #ff1733 */
+  --c-red-400: 255 88 122;     /* --rose  #ff587a */
+  --c-red-500: 255 23 51;      /* --red   #ff1733 (primary scarlet) */
+  --c-red-600: 255 23 51;      /* --red   #ff1733 (primary fill — matches tabs) */
+  --c-red-700: 192 13 31;      /* --red2  #c00d1f (deeper border/hover) */
+  --c-red-900: 122 10 24;      /* deep scarlet #7a0a18 (shadow tint) */
+  /* page background + ink + scrollbar */
+  --bg-grad-1: rgba(255, 23, 51, 0.13);
+  --bg-grad-from: #15080c;
+  --bg-grad-to: #08050a;
+  --ink: #f4eef0;
+  --scrollbar-thumb: #5a1620;
+  --scrollbar-thumb-hover: #ff1733;
+}
+
+[data-theme="night"] {
+  /* neutrals already match the components' scoped Night palette */
+  --c-neutral-700: 50 60 72;   /* --line  #323c48 */
+  --c-neutral-800: 35 43 53;   /* --surf2 #232b35 */
+  --c-neutral-900: 29 35 44;   /* --surf  #1d232c */
+  --c-neutral-950: 18 21 27;   /* --bg    #12151b */
+  /* text scale — cool blue-grey, anchored on --ink (#e4e8ee) and --mut (#8d97a4) */
+  --c-neutral-100: 228 232 238; /* --ink   #e4e8ee */
+  --c-neutral-200: 205 211 220; /* #cdd3dc */
+  --c-neutral-300: 170 180 192; /* #aab4c0 */
+  --c-neutral-400: 141 151 164; /* --mut   #8d97a4 */
+  --c-neutral-500: 110 121 134; /* #6e7986 */
+  --c-neutral-600: 81 91 104;   /* #515b68 */
+  --c-red-400: 221 144 156;    /* --rose  #dd909c */
+  --c-red-500: 217 107 117;    /* --red   #d96b75 (primary) */
+  --c-red-600: 217 107 117;    /* --red   #d96b75 (primary fill — was the muted --red2) */
+  --c-red-700: 177 84 93;      /* --red2  #b1545d (deeper border/hover) */
+  --c-red-900: 94 43 48;       /* deep    #5e2b30 (shadow tint) */
+  --bg-grad-1: rgba(217, 107, 117, 0.10);
+  --bg-grad-from: #171b22;
+  --bg-grad-to: #12151b;
+  --ink: #e4e8ee;
+  --scrollbar-thumb: #2c3642;
+  --scrollbar-thumb-hover: #4a5564;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(120% 70% at 100% 0%, var(--bg-grad-1) 0%, transparent 55%),
+      linear-gradient(160deg, var(--bg-grad-from) 0%, var(--bg-grad-to) 60%);
+    background-attachment: fixed;
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    text-wrap: pretty;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Saira Condensed', 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+}
+
 @layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 8px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+  .custom-scrollbar { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+
+  /* Crisp dark text-rim for white/black text on saturated red — the comic-style
+     hard edge (not a glow) that stops red/white chromatic vibration. Inherits, so
+     applying it to a red-filled container covers all its text. */
+  .edge-ink { text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55); }
 }

@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
+import { usePersistentState } from "../hooks/usePersistentState";
 import { DEADLINES } from "../data/deadlineData";
 import { CONFIDANT_SCHEDULE as CONFIDANTS } from "../data/confidantScheduleData";
 import { THIEVES_DEN } from "../data/thievesDenData";
+import { routeOf } from "../data/routeData";
 
 /* P5R — COMMAND SUITE (preview): Deadline Dashboard · Confidant Command Center · Thieves' Den.
    Authentic data from the project's modules. In-memory state (full app persists via localStorage). */
 
-const ROUTE_ARCANA = "Hermit"; // Futaba
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -39,7 +40,7 @@ const CSS = `
 .p5s .summary{font-family:var(--fd);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin:0 0 12px;}
 .p5s .summary b{color:var(--rose);}
 /* cards / rows */
-.p5s .row{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:9px;box-shadow:var(--shadow);}
+.p5s .row{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:9px;box-shadow:var(--shadow);}
 .p5s .due{font-family:var(--fd);font-weight:800;font-size:20px;min-width:54px;text-align:center;line-height:1;}
 .p5s .due small{display:block;font-size:9px;letter-spacing:1px;color:var(--mut);font-weight:600;}
 .p5s .grow{flex:1;min-width:0;}
@@ -54,7 +55,7 @@ const CSS = `
 .p5s .box{width:19px;height:19px;border:2px solid var(--mut);border-radius:5px;display:grid;place-items:center;font-size:13px;color:var(--wc);cursor:pointer;flex:0 0 auto;}
 .p5s .box.on{background:var(--red);border-color:var(--red);}
 /* confidant */
-.p5s .conf{background:var(--surf);border:1px solid var(--line);border-radius:11px;margin-bottom:9px;box-shadow:var(--shadow);overflow:hidden;}
+.p5s .conf{background:var(--surf);border:1px solid var(--line);border-radius:10px;margin-bottom:9px;box-shadow:var(--shadow);overflow:hidden;}
 .p5s .conf .head{display:flex;align-items:center;gap:12px;padding:11px 13px;cursor:pointer;}
 .p5s .arc{font-family:var(--fd);font-weight:800;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);min-width:96px;}
 .p5s .cname{font-size:13.5px;flex:1;}
@@ -70,6 +71,7 @@ const CSS = `
 .p5s .catsec{margin-bottom:18px;}
 .p5s .cathd{display:flex;align-items:center;gap:12px;margin-bottom:9px;}
 .p5s .cathd h3{font-family:var(--fd);font-weight:800;font-style:italic;font-size:22px;text-transform:uppercase;margin:0;color:var(--wc);background:var(--red);padding:4px 14px 6px;transform:skewX(-9deg);clip-path:polygon(0 0,100% 0,95% 100%,0 100%);}
+.p5s .logo,.p5s .cathd h3,.p5s .tabbtn[aria-pressed="true"],.p5s .toggle button[aria-pressed="true"]{text-shadow:0 1px 1px rgba(0,0,0,.55);}
 .p5s .bar3{flex:1;height:8px;background:var(--surf2);border-radius:99px;overflow:hidden;}
 .p5s .bar3 i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--red));}
 .p5s .medals{font-family:var(--fd);font-weight:700;font-size:12px;color:var(--mut);white-space:nowrap;}
@@ -112,10 +114,10 @@ function Deadlines({activeIdx,checked,toggle}){
   </div>);
 }
 
-function Confidants({activeIdx,expanded,setExpanded}){
+function Confidants({activeIdx,expanded,setExpanded,romArcana,romName}){
   const maxed=CONFIDANTS.filter(c=>{const last=c.ranks.filter(r=>(AXI[r.date]??999)<=activeIdx).pop();return last&&/10|11|MAX|EX/.test(String(last.rank));}).length;
   return (<div>
-    <p className="summary">Confidants maxed by your day: <b>{maxed}/{CONFIDANTS.length}</b> &nbsp;·&nbsp; Romance: <b>Futaba</b></p>
+    <p className="summary">Confidants maxed by your day: <b>{maxed}/{CONFIDANTS.length}</b> &nbsp;·&nbsp; Romance: <b>{romName}</b></p>
     {CONFIDANTS.map(c=>{
       const reached=c.ranks.filter(r=>(AXI[r.date]??999)<=activeIdx);
       const cur=reached.length?reached[reached.length-1].rank:"—";
@@ -130,8 +132,9 @@ function Confidants({activeIdx,expanded,setExpanded}){
         </div>
         {open&&<div className="sched">{c.ranks.map((r,i)=>{
           const hit=(AXI[r.date]??999)<=activeIdx;
-          const rom=String(r.rank)==="9"&&c.arcana===ROUTE_ARCANA;
-          return <span className={"rk"+(hit?" hit":"")+(rom?" rom":"")} key={i}>{r.date} <b>R{r.rank}</b>{r.auto?" ·a":""}{rom?" ♥":""}</span>;
+          const rom=String(r.rank)==="9"&&romArcana&&c.arcana===romArcana;
+          const ann=[r.auto?"·a = automatic rank, granted by the story":null,rom?"♥ = romance rank — choose the Lover reply here":null].filter(Boolean).join(" · ");
+          return <span title={ann||undefined} className={"rk"+(hit?" hit":"")+(rom?" rom":"")} key={i}>{r.date} <b>R{r.rank}</b>{r.auto?" ·a":""}{rom?" ♥":""}</span>;
         })}</div>}
       </div>);
     })}
@@ -146,25 +149,27 @@ function ThievesDen({checked,toggle}){
       const totalM=cat.awards.reduce((s,a)=>s+(parseInt((a.pMedals||"").replace(/\D/g,""))||0),0);
       const gotM=cat.awards.reduce((s,a,i)=>s+(checked[ids[i]]?(parseInt((a.pMedals||"").replace(/\D/g,""))||0):0),0);
       return (<div className="catsec" key={cat.category}>
-        <div className="cathd"><h3>{cat.category}</h3><div className="bar3"><i style={{width:(got/cat.awards.length*100)+"%"}}/></div><span className="medals">{got}/{cat.awards.length} · {gotM}/{totalM}P</span></div>
+        <div className="cathd"><h3>{cat.category}</h3><div className="bar3"><i style={{width:(got/cat.awards.length*100)+"%"}}/></div><span className="medals" title="Awards completed / total · P-Medals earned / available in this category">{got}/{cat.awards.length} · {gotM}/{totalM}P</span></div>
         {cat.awards.map((a,i)=>{const on=!!checked[ids[i]];return (
           <div className="award" key={i}>
             <div className={"box"+(on?" on":"")} role="button" tabIndex={0} onClick={()=>toggle(ids[i])} onKeyDown={e=>(e.key==="Enter"||e.key===" ")&&toggle(ids[i])}>{on?"✓":""}</div>
-            <div className="grow"><span className="nm">{a.award}</span>{a.pMedals&&<span className="pm">{a.pMedals}</span>}{a.how&&<div className="how">{a.how}{a.notes?" — "+a.notes:""}</div>}</div>
+            <div className="grow"><span className="nm">{a.award}</span>{a.pMedals&&<span className="pm" title="P-Medals reward — Thieves' Den currency spent on hideout features.">{a.pMedals}</span>}{a.how&&<div className="how">{a.how}{a.notes?" — "+a.notes:""}</div>}</div>
           </div>);})}
       </div>);
     })}
   </div>);
 }
 
-export default function CommandSuite(){
-  const [theme,setTheme]=useState("royal");
-  const [tab,setTab]=useState("deadlines");
-  const [activeIdx,setActiveIdx]=useState(AXI["9/1"]||140);
-  const [checked,setChecked]=useState({});
+export default function CommandSuite({ theme = "royal", route = "Platonic" }){
+  const [tab,setTab]=usePersistentState("p5r_cmd_tab","deadlines");
+  const [activeIdx,setActiveIdx]=usePersistentState("p5r_cmd_activeIdx",0);
+  const [checked,setChecked]=usePersistentState("p5r_cmd_checked",{});
   const [expanded,setExpanded]=useState(null);
   const toggle=id=>setChecked(s=>({...s,[id]:!s[id]}));
   const at=AXIS[activeIdx];
+  const R=routeOf(route);
+  const romArcana=R.arcana;
+  const romName=route==="Platonic"?"None":R.name.split(" ")[0];
   return (<div className="p5s" data-theme={theme}>
     <style>{CSS}</style>
     <div className="bar">
@@ -172,8 +177,7 @@ export default function CommandSuite(){
       <div><div className="title">Command Suite</div><div className="sub">Integrated Strategy Compendium</div></div>
       <span className="proto">PREVIEW</span>
       <div className="spacer"/>
-      <div className="route"><span>♥ Route · Futaba</span></div>
-      <div className="toggle"><button aria-pressed={theme==="royal"} onClick={()=>setTheme("royal")}>Royal</button><button aria-pressed={theme==="night"} onClick={()=>setTheme("night")}>Night</button></div>
+      <div className="route"><span>♥ Route · {R.name.split(" ")[0]}</span></div>
     </div>
     <div className="tabs">
       <button className="tabbtn" aria-pressed={tab==="deadlines"} onClick={()=>setTab("deadlines")}>Deadlines</button>
@@ -188,7 +192,7 @@ export default function CommandSuite(){
       <button className="nav" onClick={()=>setActiveIdx(i=>Math.min(AXIS.length-1,i+1))}>›</button>
     </div>}
     {tab==="deadlines"&&<Deadlines activeIdx={activeIdx} checked={checked} toggle={toggle}/>}
-    {tab==="confidants"&&<Confidants activeIdx={activeIdx} expanded={expanded} setExpanded={setExpanded}/>}
+    {tab==="confidants"&&<Confidants activeIdx={activeIdx} expanded={expanded} setExpanded={setExpanded} romArcana={romArcana} romName={romName}/>}
     {tab==="thievesden"&&<ThievesDen checked={checked} toggle={toggle}/>}
     <div className="foot"><b>Preview</b> of three tabs on real project data: {DEADLINES.length} deadlines, {CONFIDANTS.length} confidants, {THIEVES_DEN.reduce((s,c)=>s+c.awards.length,0)} Thieves' Den awards. Slide <b>Your day</b> to watch deadlines count down and confidant ranks fill in. Fusion Path, Will-Seed locator and NG+ planner tabs come next.</div>
   </div>);

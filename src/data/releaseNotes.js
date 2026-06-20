@@ -1,5 +1,68 @@
 export const RELEASE_NOTES = [
   {
+    version: "3.1.0",
+    date: "2026-06-21",
+    title: "Bulletproof Saves",
+    description: "The Sync Terminal is now a complete backup \u2014 one file captures your entire run \u2014 plus a sharper Royal look.",
+    sections: [
+      {
+        title: "\ud83d\udcbe Full Backup",
+        items: [
+          "**Everything In One File:** The Sync Terminal now backs up your whole run \u2014 all progress, every tab's checklists, plus your route and theme \u2014 not just the headline stats.",
+          "**Safe Restore:** Importing validates the file first and asks before overwriting, then reloads so every tab comes back exactly as you left it.",
+          "**Portable & Compatible:** Saves download as dated .json files, and older .txt saves still import cleanly."
+        ]
+      },
+      {
+        title: "\ud83c\udfa8 Royal Polish",
+        items: [
+          "**Sharper Reds:** White text on the scarlet panels, banners, and tabs now has a crisp edge, ending the shimmer against the dark background.",
+          "**Tidier Header:** Removed the redundant \"Support zucram\" button \u2014 the Briefing banner and footer links stay."
+        ]
+      }
+    ]
+  },
+  {
+    version: "3.0.0",
+    date: "2026-06-19",
+    title: "The 100% Heist Update",
+    description: "A full completion overhaul: a day-by-day calendar, exact deadline & Confidant tracking, and Metaverse aids \u2014 all rebuilt around finishing P5R at 100%.",
+    sections: [
+      {
+        title: "\ud83d\udcc5 Day-by-Day Calendar",
+        items: [
+          "**Daily Walkthrough:** The monthly roadmap is replaced with a true day-by-day schedule (4/9 \u2192 2/3), including the third semester.",
+          "**Spoiler Control:** Story and mechanics stay hidden on days you haven't reached \u2014 switch between Story-Safe, Spoiler-Free, and Reveal All.",
+          "**Route Picker:** Choose your romance (or stay Platonic) and the calendar adapts the decision days.",
+          "**JP-Corrected Stats:** Every stat gain was reconciled against the Japanese all-Confidant chart for accurate point values."
+        ]
+      },
+      {
+        title: "\ud83c\udfad Command Suite",
+        items: [
+          "**Deadline Dashboard:** Every hard deadline (Palaces, key Confidants, the 12/24 point of no return) with a live countdown from your active day.",
+          "**Confidant Schedule:** All 23 Confidants with the exact date each rank is reached, romance markers, and auto-rank flags.",
+          "**Thieves' Den Tracker:** All 52 P-Medal awards across four categories with running totals."
+        ]
+      },
+      {
+        title: "\u2694\ufe0f Metaverse Aids",
+        items: [
+          "**Fusion Path:** A clean, ordered recommended-fusion list toward the Confidant ultimates.",
+          "**Will Seed Locator:** All 24 Will Seeds, three per Palace, with concise directions.",
+          "**NG+ Planner:** A carry-over reference plus a romance-rotation planner for seeing every route."
+        ]
+      },
+      {
+        title: "\ud83c\udfa8 Royal Look",
+        items: [
+          "**Faithful Theme:** A scarlet-and-black 'Royal' skin with an easy-on-the-eyes 'Night' mode toggle.",
+          "**Built to Extend:** The new tabs share one design system, so the tracker can be reused as a template for other games."
+        ]
+      }
+    ]
+  },
+  {
     version: "2.3.0",
     date: "2026-01-16",
     title: "The Compendium Update",
