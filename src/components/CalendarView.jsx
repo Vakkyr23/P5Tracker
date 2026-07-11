@@ -1,20 +1,23 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
+import DatePlate from "./DatePlate";
 import { usePersistentState } from "../hooks/usePersistentState";
+import { useTooltip, tipHandlers, tipCss } from "../hooks/useTooltip";
 import { CALENDAR } from "../data/calendarData";
+import { DAY_INDEX } from "../data/timeline";
 import { STAT, STAT_DESC, ARC_NAME, ROMANCE, routeOf } from "../data/routeData";
 
 /* =========================================================================
-   P5R — 100% PHANTOM CHART  ·  Daily Spoiler-Calendar PROTOTYPE  (v2)
-   New in v2:
-   - Chip tooltips (hover/focus): which Arcana to equip, what a Trophy is, etc.
-   - Clickable Route picker: default Platonic; choose a romance target and the
-     calendar adapts (romance↔friendship flags, Christmas partner). Mid-run
-     warning + a live route summary.
-   Prototype only: state is in-memory; the full app uses localStorage + all 297 days.
+   P5R — 100% PHANTOM CHART  ·  Daily Spoiler Calendar
+   The curated 297-day walkthrough tab. Chip tooltips (hover/focus) explain
+   which Arcana to equip, what a Trophy is, etc. The clickable Route picker
+   (default Platonic) adapts the calendar to a romance target — romance ↔
+   friendship flags, Christmas partner — with a mid-run warning + live route
+   summary. Spoiler modes: Story-Safe / Spoiler-Free / Reveal All.
+   State persists via usePersistentState; the current day is the shared
+   p5r_day owned by App.
    ========================================================================= */
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 .p5x *{ box-sizing:border-box; }
 .p5x{
@@ -31,11 +34,11 @@ const CSS = `
   --glow:rgba(255,23,51,.16); --shadow:0 14px 34px rgba(0,0,0,.65);
   --stamp:#ff1733; --whitecard:#ffffff; --whiteink:#0a0508;
 }
-.p5x[data-theme="night"]{
-  --bg:#12151b; --bg2:#171b22; --surf:#1d232c; --surf2:#232b35; --line:#323c48;
-  --red:#d96b75; --red2:#b1545d; --rose:#dd909c; --ink:#e4e8ee; --mut:#8d97a4;
-  --glow:rgba(217,107,117,.10); --shadow:0 10px 26px rgba(0,0,0,.45);
-  --stamp:#cf6e76; --whitecard:#e9ecf1; --whiteink:#10141a;
+.p5x[data-theme="clinic"]{
+  --bg:#090d15; --bg2:#0b1220; --surf:#0f1520; --surf2:#151d2b; --line:#243042;
+  --red:#406aff; --red2:#284acd; --rose:#7e9cff; --ink:#e2ecf6; --mut:#8a9ab2;
+  --glow:rgba(64,106,255,.12); --shadow:0 10px 26px rgba(0,0,0,.5);
+  --stamp:#406aff; --whitecard:#ffffff; --whiteink:#0a1020;
 }
 
 .p5x .bar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
@@ -106,8 +109,18 @@ const CSS = `
 .p5x .day.active{ outline:2px solid var(--red); }
 .p5x .rail{ width:96px; flex:0 0 96px; background:var(--surf2); border-right:1px solid var(--line);
   display:flex; flex-direction:column; align-items:center; padding:12px 6px; gap:8px; }
-.p5x .rail .dnum{ font-family:var(--fd); font-weight:800; font-size:26px; line-height:.9; }
+.p5x .rail .dnum{ font-family:var(--fd); font-weight:800; font-size:26px; line-height:.9; position:relative; }
 .p5x .rail .wd{ font-size:10px; letter-spacing:2px; color:var(--mut); text-transform:uppercase; }
+/* v4.0.1 in-list polish — the DatePlate convention lands in the list itself:
+   Sun = warm red, Sat = cyan; the active day carries a diamond marker; days
+   behind the active day take the game's elapsed slash. Display-only. */
+.p5x .day.sun .dnum, .p5x .day.sun .wd{ color:rgb(var(--c-weak)); }
+.p5x .day.sat .dnum, .p5x .day.sat .wd{ color:rgb(var(--c-sat)); }
+.p5x .day .dia{ position:absolute; top:-3px; right:-13px; width:8px; height:8px; background:var(--red);
+  transform:rotate(45deg); box-shadow:1px 1px 0 rgba(0,0,0,.45); }
+.p5x .day.elapsed .dnum::after{ content:""; position:absolute; left:-5px; right:-5px; top:52%; height:2px;
+  background:var(--red); opacity:.8; transform:rotate(-9deg); pointer-events:none; }
+.p5x .day.elapsed .dnum, .p5x .day.elapsed .wd{ opacity:.55; }
 .p5x .phase{ font-family:var(--fd); font-weight:700; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; padding:3px 7px; border-radius:5px; color:#fff; }
 .p5x .phase.Story{ background:#7c2d12; } .p5x .phase.Palace{ background:#6d28d9; }
 .p5x .phase.Free{ background:#0e7490; } .p5x .phase.Boss{ background:var(--red2); } .p5x .phase.Exam{ background:#a16207; }
@@ -118,7 +131,7 @@ const CSS = `
 .p5x .body{ flex:1; padding:12px 14px; min-width:0; }
 .p5x .grp{ margin-bottom:9px; } .p5x .grp:last-child{ margin-bottom:0; }
 .p5x .gl{ font-family:var(--fd); font-weight:700; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--red); display:inline-block; margin-bottom:3px; }
-.p5x[data-theme="night"] .gl{ color:var(--rose); }
+.p5x[data-theme="clinic"] .gl{ color:var(--rose); }
 .p5x .ln{ font-size:13.5px; line-height:1.5; padding-left:14px; position:relative; }
 .p5x .ln::before{ content:"›"; position:absolute; left:0; color:var(--mut); }
 .p5x .ln.story{ color:var(--ink); font-weight:500; } .p5x .ln.mech{ color:var(--ink); } .p5x .ln.info{ color:var(--mut); }
@@ -131,8 +144,6 @@ const CSS = `
 .p5x .chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
 .p5x .chip{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px;
   border:1px solid var(--line); background:var(--surf2); white-space:nowrap; }
-.p5x .chip.hastip{ cursor:help; }
-.p5x .phase.hastip{ cursor:help; }
 .p5x .chip .dot{ width:8px; height:8px; border-radius:50%; }
 .p5x .chip.cap{ font-family:var(--fd); letter-spacing:1px; text-transform:uppercase; font-weight:700; }
 .p5x .chip.trophy{ color:#f5c542; border-color:#7a5e15; }
@@ -146,6 +157,8 @@ const CSS = `
 
 .p5x .blurtok{ filter:blur(5px); cursor:pointer; border-radius:3px; background:var(--surf2); transition:filter .25s ease; padding:0 2px; }
 .p5x .blurtok:hover{ filter:blur(3px); } .p5x .blurtok.shown{ filter:none; background:transparent; cursor:default; }
+.p5x .chips.chipblur{ filter:blur(5px); cursor:pointer; transition:filter .25s ease; }
+.p5x .chips.chipblur:hover{ filter:blur(3px); } .p5x .chips.chipblur > *{ pointer-events:none; }
 
 .p5x .locked{ position:relative; flex:1; min-height:108px; display:grid; place-items:center; padding:14px;
   background:repeating-linear-gradient(135deg, var(--surf) 0 18px, var(--surf2) 18px 36px); }
@@ -162,9 +175,6 @@ const CSS = `
   background:transparent; border:1px solid var(--line); border-radius:5px; padding:2px 7px; cursor:pointer; }
 .p5x .relock:hover{ color:var(--red); border-color:var(--red); }
 
-.p5x .tipbubble{ position:fixed; z-index:9999; transform:translate(-50%, calc(-100% - 12px)); background:var(--surf2); color:var(--ink);
-  border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:11.5px; line-height:1.4; max-width:260px; box-shadow:var(--shadow); pointer-events:none; }
-
 .p5x .foot{ margin-top:26px; font-size:11.5px; color:var(--mut); line-height:1.6; border-top:1px solid var(--line); padding-top:14px; }
 .p5x .foot b{ color:var(--ink); }
 
@@ -175,7 +185,7 @@ const CSS = `
   .p5x .month h2{ font-size:26px; } .p5x .logo{ font-size:24px; }
 }
 @media (prefers-reduced-motion:reduce){ .p5x .day{ animation:none; } .p5x .blurtok{ transition:none; } }
-`;
+` + tipCss(".p5x");
 
 
 
@@ -211,12 +221,6 @@ const PHASE_TIP = {
   Boss: "Boss day — a major fight. Prepare equipment, healing and SP first.",
 };
 
-const tipHandlers = (tip, tipApi) => tip
-  ? { tabIndex: 0,
-      onMouseEnter: (e) => tipApi.show(tip, e), onMouseMove: (e) => tipApi.show(tip, e),
-      onMouseLeave: tipApi.hide, onFocus: (e) => tipApi.show(tip, e), onBlur: tipApi.hide }
-  : {};
-
 function Chip({ c, day, tipApi }) {
   const tip = chipTip(c, day);
   const H = tipHandlers(tip, tipApi);
@@ -238,20 +242,37 @@ function Chip({ c, day, tipApi }) {
 
 function StoryBlur({ text }) {
   const [shown, setShown] = useState(false);
-  return <span className={"blurtok" + (shown ? " shown" : "")} onClick={() => setShown(true)} title={shown ? "" : "Tap to reveal"}>{text}</span>;
+  return (
+    <span className={"blurtok" + (shown ? " shown" : "")} onClick={() => setShown(true)}
+      {...(!shown && { role: "button", tabIndex: 0, "aria-label": "Reveal hidden text",
+        onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setShown(true); } } })}>
+      {text}
+    </span>
+  );
 }
-function Group({ label, lines, blurStory }) {
+function Group({ label, lines, blur }) {
   if (!lines || !lines.length) return null;
   return (
     <div className="grp"><span className="gl">{label}</span>
       {lines.map(([type, text], i) => (
-        <div key={i} className={"ln " + type}>{blurStory && type === "story" ? <StoryBlur text={text} /> : text}</div>
+        <div key={i} className={"ln " + type}>{blur ? <StoryBlur text={text} /> : text}</div>
       ))}
     </div>
   );
 }
 
-function DayCard({ day, locked, mode, isActive, checked, route, onCheck, onUnlock, onRelock, onSetActive, tipApi }) {
+function BlurChips({ chips, day, tipApi }) {
+  const [shown, setShown] = useState(false);
+  return (
+    <div className={"chips" + (shown ? "" : " chipblur")} onClick={() => !shown && setShown(true)}
+      {...(!shown && { role: "button", tabIndex: 0, "aria-label": "Reveal hidden chips",
+        onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setShown(true); } } })}>
+      {chips.map((c, i) => <Chip key={i} c={c} day={day} tipApi={tipApi} />)}
+    </div>
+  );
+}
+
+function DayCard({ day, locked, blur, isActive, elapsed, checked, route, onCheck, onUnlock, onRelock, onSetActive, tipApi }) {
   const extra = [];
   if (day.romanceRank) {
     const selArc = routeOf(route).arcana;
@@ -275,9 +296,15 @@ function DayCard({ day, locked, mode, isActive, checked, route, onCheck, onUnloc
     : (PHASE_TIP[day.phase] || null);
 
   return (
-    <div className={"day" + (isActive ? " active" : "")}>
+    <div className={"day" + (isActive ? " active" : "") + (elapsed ? " elapsed" : "") + (day.wd === "Sun" ? " sun" : day.wd === "Sat" ? " sat" : "")}>
       <div className="rail">
-        <div><div className="dnum">{day.date.split("/")[1]}</div><div className="wd">{day.wd}</div></div>
+        <div>
+          <div className="dnum">
+            {isActive && <span className="dia" aria-hidden="true" />}
+            {day.date.split("/")[1]}
+          </div>
+          <div className="wd">{day.wd}</div>
+        </div>
         <span className={"phase " + day.phase + (phaseTip ? " hastip" : "")} {...tipHandlers(phaseTip, tipApi)}>{locked ? "???" : day.phase}</span>
         {isActive
           ? <span className="setactive" style={{ color: "var(--red)", borderColor: "var(--red)" }}>You are here</span>
@@ -295,12 +322,14 @@ function DayCard({ day, locked, mode, isActive, checked, route, onCheck, onUnloc
       ) : (
         <div className="body">
           {day._peeked && <button className="relock" onClick={onRelock}>Re-hide</button>}
-          <Group label="Day" lines={day.d} blurStory={mode === "free"} />
-          <Group label="Night" lines={day.n} blurStory={mode === "free"} />
-          <Group label="Notes" lines={day.x} blurStory={mode === "free"} />
-          {allChips.length > 0 && <div className="chips">{allChips.map((c, i) => <Chip key={i} c={c} day={day} tipApi={tipApi} />)}</div>}
-          <div className={"check" + (checked ? " on" : "")} role="button" tabIndex={0}
-            onClick={onCheck} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onCheck()}>
+          <Group label="Day" lines={day.d} blur={blur} />
+          <Group label="Night" lines={day.n} blur={blur} />
+          <Group label="Notes" lines={day.x} blur={blur} />
+          {allChips.length > 0 && (blur
+            ? <BlurChips chips={allChips} day={day} tipApi={tipApi} />
+            : <div className="chips">{allChips.map((c, i) => <Chip key={i} c={c} day={day} tipApi={tipApi} />)}</div>)}
+          <div className={"check" + (checked ? " on" : "")} role="checkbox" aria-checked={!!checked} tabIndex={0}
+            onClick={onCheck} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onCheck(); } }}>
             <span className="box">{checked ? "✓" : ""}</span>
             <span className="ct">{checked ? "Day complete" : "Mark day complete"}</span>
           </div>
@@ -310,23 +339,34 @@ function DayCard({ day, locked, mode, isActive, checked, route, onCheck, onUnloc
   );
 }
 
-export default function CalendarView({ theme = "royal", route = "Platonic", setRoute = () => {} }) {
+export default function CalendarView({ theme = "royal", route = "Platonic", setRoute = () => {}, currentDay = "4/9", setCurrentDay = () => {} }) {
   const [mode, setMode] = usePersistentState("p5r_cal_mode", "safe");
-  const [activeIdx, setActiveIdx] = usePersistentState("p5r_cal_activeIdx", 0); // game start
   const [checked, setChecked] = usePersistentState("p5r_cal_checked", {});
   const [peeked, setPeeked] = usePersistentState("p5r_cal_peeked", {});
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [tip, setTip] = useState(null);
-
-  const tipApi = useMemo(() => ({
-    show: (text, e) => {
-      let x, y;
-      if (e && typeof e.clientX === "number" && e.type !== "focus") { x = e.clientX; y = e.clientY; }
-      else if (e && e.currentTarget) { const r = e.currentTarget.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top; }
-      setTip({ text, x, y });
-    },
-    hide: () => setTip(null),
-  }), []);
+  // Route-picker keyboard nav (v3.7.0): Arrow keys move focus among the
+  // role="menuitemradio" options (wrapping; ArrowDown from the trigger enters
+  // the list), Home/End jump, Escape closes and returns focus to the trigger.
+  const routeBtnRef = useRef(null);
+  const pickerRef = useRef(null);
+  const onPickerKeys = (e) => {
+    if (!pickerOpen) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setPickerOpen(false);
+      routeBtnRef.current?.focus();
+      return;
+    }
+    const opts = pickerRef.current ? [...pickerRef.current.querySelectorAll(".popt")] : [];
+    if (!opts.length) return;
+    const i = opts.indexOf(document.activeElement);
+    const focusAt = (j) => opts[(j + opts.length) % opts.length].focus();
+    if (e.key === "ArrowDown") { e.preventDefault(); focusAt(i === -1 ? 0 : i + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); focusAt(i === -1 ? opts.length - 1 : i - 1); }
+    else if (e.key === "Home") { e.preventDefault(); focusAt(0); }
+    else if (e.key === "End") { e.preventDefault(); focusAt(opts.length - 1); }
+  };
+  const { tip, tipApi, bubbleRef } = useTooltip();
 
   const months = useMemo(() => {
     const m = [];
@@ -338,6 +378,21 @@ export default function CalendarView({ theme = "royal", route = "Platonic", setR
     return m;
   }, []);
 
+  // The shared day may be a date the curated calendar skips (e.g. 12/26–29);
+  // map it to the latest calendar day at or before it.
+  const activeIdx = useMemo(() => {
+    const target = DAY_INDEX[currentDay] ?? 0;
+    let best = 0;
+    for (let i = 0; i < DAYS.length; i++) {
+      if ((DAY_INDEX[DAYS[i].date] ?? 0) <= target) best = i; else break;
+    }
+    return best;
+  }, [currentDay]);
+  const setActiveIdx = (v) => {
+    const idx = typeof v === "function" ? v(activeIdx) : v;
+    setCurrentDay(DAYS[Math.max(0, Math.min(DAYS.length - 1, idx))].date);
+  };
+
   const active = DAYS[activeIdx];
   const R = routeOf(route);
 
@@ -347,19 +402,20 @@ export default function CalendarView({ theme = "royal", route = "Platonic", setR
 
       <div className="bar">
         <div className="logo">P5<b>R</b></div>
+        <DatePlate currentDay={currentDay} />
         <div className="titlewrap">
           <div className="title">100% Phantom Chart</div>
           <div className="sub">Integrated Strategy Compendium</div>
         </div>
         <div className="spacer" />
-        <div className="routewrap">
-          <button className="route" onClick={() => setPickerOpen((o) => !o)} aria-expanded={pickerOpen}>
+        <div className="routewrap" onKeyDown={onPickerKeys}>
+          <button ref={routeBtnRef} className="route" onClick={() => setPickerOpen((o) => !o)} aria-expanded={pickerOpen} aria-haspopup="menu">
             <span>♥ Route · {R.name.split(" ")[0]}</span>
           </button>
           {pickerOpen && (
             <>
               <div className="backdrop" onClick={() => setPickerOpen(false)} />
-              <div className="picker" role="menu">
+              <div ref={pickerRef} className="picker" role="menu">
                 <div className="warn">⚠ Set this before your first romance rank-up. In game, a romance locks once you pick the Lover line — switching targets later (or dating several) triggers the Valentine's confrontation and can desync this tracker.</div>
                 {ROMANCE.map((r) => (
                   <button key={r.key} role="menuitemradio" aria-checked={route === r.key}
@@ -404,7 +460,7 @@ export default function CalendarView({ theme = "royal", route = "Platonic", setR
 
       <div className="legend">
         <span><b>Story-Safe</b> locks every day after your active day (story + mechanics).</span>
-        <span><b>Spoiler-Free</b> keeps plot beats blurred even on reached days — tap to peek.</span>
+        <span><b>Spoiler-Free</b> blurs every day after your active day (tap any line or chip to peek); past &amp; current days stay clear.</span>
         <span><b>Hover any chip</b> for details: which Arcana to equip, what a Trophy unlocks, etc.</span>
       </div>
 
@@ -416,7 +472,8 @@ export default function CalendarView({ theme = "royal", route = "Platonic", setR
             return (
               <DayCard key={day.id}
                 day={{ ...day, _peeked: !!peeked[day.id] && idx > activeIdx }}
-                locked={locked} mode={mode} isActive={idx === activeIdx}
+                locked={locked} blur={mode === "free" && idx > activeIdx} isActive={idx === activeIdx}
+                elapsed={idx < activeIdx}
                 checked={!!checked[day.id]} route={route}
                 onCheck={() => setChecked((s) => ({ ...s, [day.id]: !s[day.id] }))}
                 onUnlock={() => setPeeked((s) => ({ ...s, [day.id]: true }))}
@@ -428,9 +485,9 @@ export default function CalendarView({ theme = "royal", route = "Platonic", setR
         </section>
       ))}
 
-      <div className="foot">Daily walkthrough built from the allchart spine · {DAYS.length} days. Will-Seed, Fusion-Path and JP stat-value refinements arrive in later passes.</div>
+      <div className="foot">Daily walkthrough built from the allchart spine · {DAYS.length} days · JP-verified stat values. Will Seeds and the Fusion Path live in the <b>Metaverse</b> tab.</div>
 
-      {tip && <div className="tipbubble" style={{ left: tip.x, top: tip.y }}>{tip.text}</div>}
+      {tip && <div ref={bubbleRef} className="tipbubble" style={{ left: tip.x, top: tip.y }}>{tip.text}</div>}
     </div>
   );
 }

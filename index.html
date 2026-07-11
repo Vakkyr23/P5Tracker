@@ -2,10 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="theme-color" content="#08050a" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>P5 Tracker</title>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="7fae2edd-7137-49ac-8ec6-714a18a48e3f" data-domains="zucram.github.io"></script>
+    <title>P5R — 100% Phantom Chart</title>
+    <script>
+      // No-flash theme: apply the saved theme before first paint so reloads
+      // don't flash the default Royal palette before React hydrates.
+      try {
+        var t = localStorage.getItem('p5r_theme');
+        if (t) document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { /* storage unavailable */ }
+    </script>
   </head>
   <body>
     <div id="root"></div>

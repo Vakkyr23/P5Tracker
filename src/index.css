@@ -1,3 +1,40 @@
+/* ---- Self-hosted fonts (latin subset, v3.6.0) ----
+   Was Google Fonts (index.html <link> + per-tab @imports); self-hosted for offline/PWA
+   durability and zero third-party requests. Files are the unmodified fonts.gstatic.com
+   woff2s. Inter ships as one variable file covering 400–800. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/Inter-Variable.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/SairaCondensed-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/SairaCondensed-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/SairaCondensed-800.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,32 +72,49 @@
   --ink: #f4eef0;
   --scrollbar-thumb: #5a1620;
   --scrollbar-thumb-hover: #ff1733;
+  /* Phantom Chrome semantics (v4.0.0) — pinned per theme, never per view */
+  --c-gold: 250 205 54;   /* reward-yellow — maxed/complete states ONLY (D8) */
+  --c-weak: 255 23 51;    /* danger stays warm in every theme */
+  --c-good: 126 231 135;  /* registered-stamp green (matches the Metaverse stamp) */
+  --c-focus: 70 196 222;  /* focus-ring counter-color (D16) */
+  --c-sat: 70 196 222;    /* Saturday cyan (calendar convention) */
+  --chip-ink: #000;                 /* ink on accent fills: bright → black */
+  --chip-line: rgba(0, 0, 0, 0.4);  /* keyline on accent fills */
 }
 
-[data-theme="night"] {
-  /* neutrals already match the components' scoped Night palette */
-  --c-neutral-700: 50 60 72;   /* --line  #323c48 */
-  --c-neutral-800: 35 43 53;   /* --surf2 #232b35 */
-  --c-neutral-900: 29 35 44;   /* --surf  #1d232c */
-  --c-neutral-950: 18 21 27;   /* --bg    #12151b */
-  /* text scale — cool blue-grey, anchored on --ink (#e4e8ee) and --mut (#8d97a4) */
-  --c-neutral-100: 228 232 238; /* --ink   #e4e8ee */
-  --c-neutral-200: 205 211 220; /* #cdd3dc */
-  --c-neutral-300: 170 180 192; /* #aab4c0 */
-  --c-neutral-400: 141 151 164; /* --mut   #8d97a4 */
-  --c-neutral-500: 110 121 134; /* #6e7986 */
-  --c-neutral-600: 81 91 104;   /* #515b68 */
-  --c-red-400: 221 144 156;    /* --rose  #dd909c */
-  --c-red-500: 217 107 117;    /* --red   #d96b75 (primary) */
-  --c-red-600: 217 107 117;    /* --red   #d96b75 (primary fill — was the muted --red2) */
-  --c-red-700: 177 84 93;      /* --red2  #b1545d (deeper border/hover) */
-  --c-red-900: 94 43 48;       /* deep    #5e2b30 (shadow tint) */
-  --bg-grad-1: rgba(217, 107, 117, 0.10);
-  --bg-grad-from: #171b22;
-  --bg-grad-to: #12151b;
-  --ink: #e4e8ee;
-  --scrollbar-thumb: #2c3642;
-  --scrollbar-thumb-hover: #4a5564;
+[data-theme="clinic"] {
+  /* Clinic (v4.0.0) — Takemi's calm register replaces Night: deep-navy
+     surfaces + screenshot-tuned cobalt. Deep-fill convention: white ink +
+     LIGHT keyline (bright fills keep black ink + dark keyline). Legacy
+     stored "night" maps forward in the theme hook initializer. */
+  --c-neutral-700: 36 48 66;    /* --line  #243042 */
+  --c-neutral-800: 21 29 43;    /* --surf2 #151d2b */
+  --c-neutral-900: 15 21 32;    /* --surf  #0f1520 */
+  --c-neutral-950: 9 13 21;     /* --bg    #090d15 */
+  --c-neutral-100: 226 236 246; /* --ink   #e2ecf6 */
+  --c-neutral-200: 202 214 228;
+  --c-neutral-300: 168 184 204;
+  --c-neutral-400: 136 154 178; /* --mut   #8a9ab2 */
+  --c-neutral-500: 104 122 146;
+  --c-neutral-600: 74 92 116;
+  --c-red-400: 126 156 255;    /* light cobalt */
+  --c-red-500: 64 106 255;     /* cobalt #406aff (primary) */
+  --c-red-600: 64 106 255;     /* cobalt (primary fill) */
+  --c-red-700: 40 74 205;      /* deeper cobalt border/hover */
+  --c-red-900: 22 44 122;      /* shadow tint */
+  --bg-grad-1: rgba(64, 106, 255, 0.10);
+  --bg-grad-from: #0b1220;
+  --bg-grad-to: #090d15;
+  --ink: #e2ecf6;
+  --scrollbar-thumb: #22314e;
+  --scrollbar-thumb-hover: #406aff;
+  --c-gold: 246 206 64;
+  --c-weak: 226 88 94;
+  --c-good: 126 231 135;
+  --c-focus: 250 214 82;
+  --c-sat: 126 210 240;
+  --chip-ink: #fff;
+  --chip-line: rgba(255, 255, 255, 0.3);
 }
 
 @layer base {
@@ -94,8 +148,131 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
   .custom-scrollbar { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
 
-  /* Crisp dark text-rim for white/black text on saturated red — the comic-style
-     hard edge (not a glow) that stops red/white chromatic vibration. Inherits, so
-     applying it to a red-filled container covers all its text. */
+  /* Crisp dark text-rim for WHITE-on-red text ONLY — the comic-style hard
+     edge (not a glow) that stops red/white chromatic vibration. Black-on-red
+     uses the inset-keyline convention instead (a dark rim muddies black text).
+     Inherits, so applying it to a red-filled container covers all its text. */
   .edge-ink { text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55); }
 }
+
+/* ===================== Phantom Chrome (v4.0.0) =====================
+   Shared angular utilities. Conventions: bright accent fills (scarlet,
+   gold, green, cyan) take black ink + dark keyline; deep fills (Clinic
+   cobalt) take white ink + light keyline — both via --chip-ink /
+   --chip-line, no per-class theme overrides. .edge-ink stays a
+   white-on-RED rim only, so Clinic disables it. ALL new motion is
+   opt-in behind [data-motion="full"] (More-menu setting; "system"
+   follows prefers-reduced-motion) — no !important anywhere. */
+
+body { position: relative; z-index: 0; }
+body::before { /* static halftone backdrop, inline (~0.3 kB) */
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Ccircle cx='2' cy='2' r='1.1' fill='%23ffffff'/%3E%3Ccircle cx='9' cy='9' r='1.1' fill='%23ffffff'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+}
+
+[data-theme="clinic"] .edge-ink { text-shadow: none; } /* rim is red-only */
+
+.pc-p5 { text-shadow: 3px 3px 0 rgba(0, 0, 0, .5); }
+.pc-plate {
+  display: inline-block; background: rgb(var(--c-red-600)); color: #fff;
+  font-family: 'Saira Condensed', 'Inter', sans-serif; font-style: italic; font-weight: 800;
+  text-transform: uppercase; padding: 2px 12px 4px;
+  transform: skewX(-9deg); clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, .45);
+}
+.pc-plate > span { display: inline-flex; align-items: center; gap: .5em; transform: skewX(9deg); }
+.pc-chip {
+  display: inline-block; background: rgb(var(--c-red-600)); color: var(--chip-ink);
+  font-style: normal; font-weight: 900; padding: 1px 8px 2px;
+  transform: skewX(-9deg); box-shadow: inset 0 0 0 1px var(--chip-line);
+}
+.pc-chip > span { display: inline-block; transform: skewX(9deg); }
+.pc-onaccent { color: var(--chip-ink); }
+.pc-skew { transform: skewX(-9deg); }
+.pc-unskew { transform: skewX(9deg); }
+.pc-hard { box-shadow: 4px 4px 0 rgba(0, 0, 0, .45), inset 0 0 0 1px var(--chip-line); }
+.pc-cut { clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%); }
+.pc-seam {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 8px;
+  background: rgb(var(--c-red-600)); clip-path: polygon(0 55%, 100% 0, 100% 45%, 0 100%);
+}
+.pc-navcut { clip-path: polygon(0 0, 100% 0, 99.4% 100%, .6% 100%); }
+.pc-stage { position: relative; overflow: clip; }
+
+/* gauges + gold-is-earned (D8): reward-yellow appears ONLY on maxed state */
+.pc-gauge { clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+.pc-goldmax { border-color: rgb(var(--c-gold)); box-shadow: 4px 4px 0 rgba(0, 0, 0, .4), inset 0 0 0 1px rgb(var(--c-gold) / .55); }
+.pc-goldmax .pc-fill { background: rgb(var(--c-gold)); }
+.pc-goldmax .pc-count { color: rgb(var(--c-gold)); text-shadow: none; }
+.pc-goldchip { background: rgb(var(--c-gold)); color: #000; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .4); }
+
+/* registered = green stamp (D9): compendium rows never dim or strike */
+.pc-stamp {
+  display: inline-flex; background: rgb(var(--c-good)); color: #000;
+  font-family: 'Saira Condensed', 'Inter', sans-serif; font-weight: 800; font-style: normal;
+  font-size: 12px; line-height: 1; padding: 4px 10px 5px;
+  transform: skewX(-9deg) rotate(-4deg); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.pc-stamp > span { display: inline-block; transform: skewX(9deg); }
+
+/* tab rail: skewed buttons + ONE traveling indicator (D1/D17) */
+.pc-tab { transform: skewX(-9deg); }
+.pc-tab[data-on] { color: var(--chip-ink); }
+.pc-tab:focus-visible { outline: none; box-shadow: inset 0 0 0 2px rgb(var(--c-focus)); }
+/* App-wide keyboard-focus sweep (v4.0.1) — D16's counter-color ring on every
+   focusable element, not just the rail. Sits after the Tailwind utilities
+   layer, so it also restores a visible ring where `outline-none` relied on
+   border-color alone. Controls with a bespoke treatment (.pc-tab above)
+   still win on specificity. */
+:focus-visible { outline: 2px solid rgb(var(--c-focus)); outline-offset: 2px; transition: none; }
+.pc-ind {
+  position: absolute; opacity: 0; pointer-events: none;
+  background: rgb(var(--c-red-600)); transform: skewX(-9deg);
+  clip-path: polygon(0 0, 88% 0, 100% 34%, 100% 100%, 0 100%);
+  box-shadow: inset 0 0 0 1px var(--chip-line), 3px 4px 0 rgba(0, 0, 0, .35);
+}
+
+/* view wipe (D5) — hidden unless firing under full motion */
+.pc-wiper {
+  display: none; position: absolute; top: -20%; bottom: -20%; left: -30%; width: 70%;
+  background: rgb(var(--c-red-600)); transform: translateX(-180%) skewX(-14deg);
+  pointer-events: none; z-index: 40;
+}
+
+.pc-star { transform: rotate(-9deg); } /* loading mark: static unless full motion */
+
+/* date plate (D3) */
+.pc-date {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: rgb(var(--c-neutral-800)); border: 1px solid rgb(var(--c-neutral-700));
+  padding: 8px 16px 8px 12px; clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, .4);
+}
+.pc-date-num {
+  font-family: 'Saira Condensed', 'Inter', sans-serif; font-weight: 800; font-style: italic;
+  font-size: 30px; line-height: .9; letter-spacing: -1px; color: rgb(var(--c-neutral-100));
+}
+.pc-date-num b { color: rgb(var(--c-red-600)); }
+.pc-date-side { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.pc-date-idx { font-family: ui-monospace, monospace; font-size: 8px; letter-spacing: .2em; color: rgb(var(--c-neutral-500)); }
+.pc-sunchip { background: rgb(var(--c-weak)); color: #fff; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35); }
+.pc-satchip { background: rgb(var(--c-sat)); color: #000; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .4); }
+
+/* save-slot chip (SyncTerminal — the Load/Save screen language) */
+.pc-slot { position: relative; padding-left: 18px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); }
+.pc-slot::before {
+  content: ""; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 4px; opacity: .5;
+  background: repeating-linear-gradient(to bottom, currentColor 0 6px, transparent 6px 12px);
+}
+
+/* ---- motion (opt-in via data-motion, D14) ---- */
+@keyframes pc-wipe { from { transform: translateX(-180%) skewX(-14deg); } to { transform: translateX(320%) skewX(-14deg); } }
+@keyframes pc-stamp-in { from { transform: skewX(-9deg) rotate(-4deg) scale(.4); opacity: 0; } to { transform: skewX(-9deg) rotate(-4deg) scale(1); opacity: 1; } }
+@keyframes pc-star-pulse { 0%, 100% { transform: rotate(-9deg) scale(1); } 50% { transform: rotate(-9deg) scale(1.1); } }
+[data-motion="full"] .pc-wiper[data-wiping] { display: block; animation: pc-wipe .2s linear; }
+[data-motion="full"] .pc-stamp { animation: pc-stamp-in .15s ease-out; }
+[data-motion="full"] .pc-star { animation: pc-star-pulse 1.6s ease-in-out infinite; }
+[data-motion="full"] .pc-ind { transition: left .18s ease, width .18s ease, top .18s ease, height .18s ease; }
+[data-motion="full"] .pc-tab { transition: color .15s ease; }
+.pc-keyline { box-shadow: inset 0 0 0 1px var(--chip-line); }

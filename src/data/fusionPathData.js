@@ -1,3 +1,14 @@
+/* Infiltration windows for the Palaces that appear on the Fusion Path.
+   Dates are sourced from the in-app CALENDAR/DEADLINES (first Palace trip → treasure
+   stolen) so the "Available now" highlight never contradicts the Calendar tab.
+   Keyed by the exact `palace` string used in FUSION_PATH below. */
+export const PALACE_WINDOWS = {
+ "Castle of Lust (Kamoshida)": { open: "4/11", close: "4/28" },
+ "Museum of Vanity (Madarame)": { open: "5/16", close: "5/25" },
+ "Pyramid of Wrath (Futaba)": { open: "7/25", close: "8/2" },
+ "Casino of Envy (Sae)": { open: "10/29", close: "11/19" }
+};
+
 /* Recommended Fusion Path (source: PSNProfiles). Ordered by appearance; alt=off-path alternative. */
 export const FUSION_PATH = [
  {

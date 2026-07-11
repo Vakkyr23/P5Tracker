@@ -184,21 +184,21 @@ export const RESOURCE_DATA = [
         title: 'Persona 3 Reload Tracker',
         desc: 'Strategic module for the SEES operation in Tatsumi Port Island. Coming soon.',
         format: 'guide',
-        url: 'https://github.com/zucram/P5Tracker',
+        url: 'https://github.com/Vakkyr23/P5Tracker',
         isLocked: true
       },
       {
         title: 'Metaphor: ReFantazio Tracker',
         desc: 'Tactical assistance for the United Kingdom of Euchronia. In development.',
         format: 'guide',
-        url: 'https://github.com/zucram/P5Tracker',
+        url: 'https://github.com/Vakkyr23/P5Tracker',
         isLocked: true
       },
       {
         title: 'Persona 4 Remake Tracker',
         desc: 'Targeting the Inaba investigation team protocols upon release.',
         format: 'guide',
-        url: 'https://github.com/zucram/P5Tracker',
+        url: 'https://github.com/Vakkyr23/P5Tracker',
         isLocked: true
       }
     ]

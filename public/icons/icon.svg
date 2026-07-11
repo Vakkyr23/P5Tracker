@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- P5R Phantom Chart app icon (v3.6.0) — original mark in the app's own tokens:
+       near-black field #08050a, scarlet #ff1733 skewed plate, jagged P5-style cut. -->
+  <rect width="512" height="512" fill="#08050a"/>
+  <g transform="rotate(-9 256 256)">
+    <polygon points="86,150 448,118 430,348 122,392 64,362 96,300 70,236" fill="#ff1733"/>
+    <polygon points="86,150 448,118 438,168 96,204" fill="#000000" opacity="0.18"/>
+  </g>
+  <g transform="rotate(-9 256 256)" font-family="DejaVu Sans" font-weight="bold" font-style="italic" text-anchor="middle">
+    <text x="252" y="308" font-size="170" fill="#0a0508" opacity="0.55" transform="translate(6,6)">P5R</text>
+    <text x="252" y="308" font-size="170" fill="#ffffff">P5R</text>
+  </g>
+</svg>

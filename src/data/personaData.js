@@ -7,7 +7,10 @@ export const PERSONA_DATA = {
     { name: "Orlov", arcana: "Strength", lvl: 30, location: "Sae's Palace", weakness: "Curse", tips: "Use Maeiga." },
     { name: "Emperor's Amulet", arcana: "Hanged", lvl: 35, location: "Shido's Palace", weakness: "Elec", tips: "Use Mazionga." },
     { name: "Hope Diamond", arcana: "Death", lvl: 40, location: "Mementos (Depths)", weakness: "Ice", tips: "Rare spawn in Depths." },
-    { name: "Crystal Skull", arcana: "Fool", lvl: 50, location: "Mementos (Qliphoth)", weakness: "Wind", tips: "Rare spawn in Qliphoth." }
+    { name: "Crystal Skull", arcana: "Fool", lvl: 50, location: "Mementos (Qliphoth)", weakness: "Wind", tips: "Rare spawn in Qliphoth." },
+    /* v4.0.1 (owner-approved addition): Royal's ninth treasure demon — the one the
+       vanilla-P5 list missed. Palace-only: it never spawns in Mementos. */
+    { name: "Orichalcum", arcana: "Faith", lvl: 60, location: "Maruki's Palace (3rd semester)", weakness: "Bless", tips: "Use Makouga — Palace only, never spawns in Mementos." }
   ],
   registry: [
   {

@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import DatePlate from "./DatePlate";
 import { usePersistentState } from "../hooks/usePersistentState";
 import { DEADLINES } from "../data/deadlineData";
 import { CONFIDANT_SCHEDULE as CONFIDANTS } from "../data/confidantScheduleData";
 import { THIEVES_DEN } from "../data/thievesDenData";
+import { DAY_AXIS as AXIS, DAY_INDEX as AXI } from "../data/timeline";
 import { routeOf } from "../data/routeData";
 
-/* P5R — COMMAND SUITE (preview): Deadline Dashboard · Confidant Command Center · Thieves' Den.
-   Authentic data from the project's modules. In-memory state (full app persists via localStorage). */
+/* P5R — COMMAND SUITE: Deadline Dashboard · Confidant Command Center · Thieves' Den.
+   Live data from the project's modules; state persisted via usePersistentState. */
 
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 .p5s *{box-sizing:border-box;}
 .p5s{--fd:'Saira Condensed',Impact,sans-serif;--fb:'Inter',system-ui,sans-serif;font-family:var(--fb);min-height:100%;color:var(--ink);
   background:radial-gradient(120% 60% at 100% 0%,var(--glow) 0%,transparent 55%),linear-gradient(160deg,var(--bg2) 0%,var(--bg) 60%);padding:18px;}
 .p5s[data-theme="royal"]{--bg:#08050a;--bg2:#15080c;--surf:#190b10;--surf2:#22101a;--line:#40161f;--red:#ff1733;--red2:#c00d1f;--rose:#ff587a;--ink:#f7eef1;--mut:#b58e98;--glow:rgba(255,23,51,.16);--shadow:0 12px 30px rgba(0,0,0,.6);--wc:#fff;--wi:#0a0508;}
-.p5s[data-theme="night"]{--bg:#12151b;--bg2:#171b22;--surf:#1d232c;--surf2:#232b35;--line:#323c48;--red:#d96b75;--red2:#b1545d;--rose:#dd909c;--ink:#e4e8ee;--mut:#8d97a4;--glow:rgba(217,107,117,.1);--shadow:0 10px 24px rgba(0,0,0,.45);--wc:#e9ecf1;--wi:#10141a;}
+.p5s[data-theme="clinic"]{--bg:#090d15;--bg2:#0b1220;--surf:#0f1520;--surf2:#151d2b;--line:#243042;--red:#406aff;--red2:#284acd;--rose:#7e9cff;--ink:#e2ecf6;--mut:#8a9ab2;--glow:rgba(64,106,255,.12);--shadow:0 10px 24px rgba(0,0,0,.5);--wc:#fff;--wi:#0a1020;}
 .p5s .bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
 .p5s .logo{font-family:var(--fd);font-weight:800;font-style:italic;font-size:30px;color:var(--wc);background:var(--red);padding:8px 14px 9px;transform:skewX(-9deg);box-shadow:var(--shadow);clip-path:polygon(0 0,100% 0,94% 100%,0 100%);}
 .p5s .logo b{color:var(--wi);}
@@ -82,30 +83,28 @@ const CSS = `
 .p5s .foot{margin-top:24px;font-size:11.5px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);padding-top:14px;}
 .p5s .foot b{color:var(--ink);}
 .p5s button:focus-visible,.p5s .box:focus-visible{outline:2px solid var(--rose);outline-offset:2px;}
-@media (max-width:560px){.p5s .arc{min-width:70px;}.p5s .logo{font-size:24px;}.p5s .cathd h3{font-size:18px;}}
+.p5s .leg{margin-left:auto;align-self:center;display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--mut);font-family:var(--fb);line-height:1.3;background:var(--surf2);border:1px solid var(--line);border-radius:8px;padding:7px 11px;box-shadow:var(--shadow);}
+.p5s .leg .mk{color:var(--ink);font-weight:700;font-family:var(--fd);letter-spacing:.5px;}
+.p5s .leg .mk.rom{color:var(--rose);}
+.p5s .leg .pmk{color:#f5c542;border:1px solid #7a5e15;border-radius:99px;padding:0 7px;font-weight:700;font-family:var(--fd);}
+.p5s .leg .sep{opacity:.45;}
+@media(max-width:560px){.p5s .leg{margin-left:0;width:100%;}.p5s .arc{min-width:70px;}.p5s .logo{font-size:24px;}.p5s .cathd h3{font-size:18px;}}
 `;
-
-function buildAxis(){
-  const ML=[[4,30],[5,31],[6,30],[7,31],[8,31],[9,30],[10,31],[11,30],[12,31],[1,31],[2,3]];
-  const ax=[]; ML.forEach(([m,len],i)=>{for(let d=(i===0?9:1);d<=len;d++)ax.push(m+"/"+d);}); return ax;
-}
-const AXIS=buildAxis();
-const AXI={}; AXIS.forEach((d,i)=>AXI[d]=i);
 
 function Deadlines({activeIdx,checked,toggle}){
   const rows=[...DEADLINES].sort((a,b)=>(AXI[a.due]??999)-(AXI[b.due]??999));
-  const done=rows.filter(r=>checked["d:"+r.due+r.item.slice(0,8)]).length;
+  const done=rows.filter(r=>checked["d:"+r.id]).length;
   return (<div>
     <p className="summary">Deadlines cleared: <b>{done}/{rows.length}</b></p>
     {rows.map((r,i)=>{
-      const id="d:"+r.due+r.item.slice(0,8); const on=!!checked[id];
+      const id="d:"+r.id; const on=!!checked[id];
       const di=AXI[r.due]??999; const diff=di-activeIdx;
       let cd,cls; if(on){cd="Done";cls="done";}
         else if(diff<0){cd="Passed";cls="past";}
         else if(diff<=10){cd="in "+diff+"d";cls="soon";}
         else {cd="in "+diff+"d";cls="far";}
       return (<div className="row" key={i}>
-        <div className={"box"+(on?" on":"")} role="button" tabIndex={0} onClick={()=>toggle(id)} onKeyDown={e=>(e.key==="Enter"||e.key===" ")&&toggle(id)}>{on?"✓":""}</div>
+        <div className={"box"+(on?" on":"")} role="checkbox" aria-checked={on} aria-label={r.item} tabIndex={0} onClick={()=>toggle(id)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(id);}}}>{on?"✓":""}</div>
         <div className="due">{r.due.split("/")[1]}<small>{["","JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][parseInt(r.due.split("/")[0])]}</small></div>
         <div className="grow"><span className={"cat "+r.category}>{r.category}</span><div className="item">{r.item}</div></div>
         <span className={"cd "+cls}>{cd}</span>
@@ -133,8 +132,7 @@ function Confidants({activeIdx,expanded,setExpanded,romArcana,romName}){
         {open&&<div className="sched">{c.ranks.map((r,i)=>{
           const hit=(AXI[r.date]??999)<=activeIdx;
           const rom=String(r.rank)==="9"&&romArcana&&c.arcana===romArcana;
-          const ann=[r.auto?"·a = automatic rank, granted by the story":null,rom?"♥ = romance rank — choose the Lover reply here":null].filter(Boolean).join(" · ");
-          return <span title={ann||undefined} className={"rk"+(hit?" hit":"")+(rom?" rom":"")} key={i}>{r.date} <b>R{r.rank}</b>{r.auto?" ·a":""}{rom?" ♥":""}</span>;
+          return <span className={"rk"+(hit?" hit":"")+(rom?" rom":"")} key={i}>{r.date} <b>R{r.rank}</b>{r.auto?" ·a":""}{rom?" ♥":""}</span>;
         })}</div>}
       </div>);
     })}
@@ -144,29 +142,47 @@ function Confidants({activeIdx,expanded,setExpanded,romArcana,romName}){
 function ThievesDen({checked,toggle}){
   return (<div>
     {THIEVES_DEN.map(cat=>{
-      const ids=cat.awards.map((a,i)=>"t:"+cat.category+i);
+      const ids=cat.awards.map(a=>"t:"+a.id);
       const got=cat.awards.filter((a,i)=>checked[ids[i]]).length;
       const totalM=cat.awards.reduce((s,a)=>s+(parseInt((a.pMedals||"").replace(/\D/g,""))||0),0);
       const gotM=cat.awards.reduce((s,a,i)=>s+(checked[ids[i]]?(parseInt((a.pMedals||"").replace(/\D/g,""))||0):0),0);
       return (<div className="catsec" key={cat.category}>
-        <div className="cathd"><h3>{cat.category}</h3><div className="bar3"><i style={{width:(got/cat.awards.length*100)+"%"}}/></div><span className="medals" title="Awards completed / total · P-Medals earned / available in this category">{got}/{cat.awards.length} · {gotM}/{totalM}P</span></div>
+        <div className="cathd"><h3>{cat.category}</h3><div className="bar3"><i style={{width:(got/cat.awards.length*100)+"%"}}/></div><span className="medals">{got}/{cat.awards.length} · {gotM}/{totalM}P</span></div>
         {cat.awards.map((a,i)=>{const on=!!checked[ids[i]];return (
           <div className="award" key={i}>
-            <div className={"box"+(on?" on":"")} role="button" tabIndex={0} onClick={()=>toggle(ids[i])} onKeyDown={e=>(e.key==="Enter"||e.key===" ")&&toggle(ids[i])}>{on?"✓":""}</div>
-            <div className="grow"><span className="nm">{a.award}</span>{a.pMedals&&<span className="pm" title="P-Medals reward — Thieves' Den currency spent on hideout features.">{a.pMedals}</span>}{a.how&&<div className="how">{a.how}{a.notes?" — "+a.notes:""}</div>}</div>
+            <div className={"box"+(on?" on":"")} role="checkbox" aria-checked={on} aria-label={a.award} tabIndex={0} onClick={()=>toggle(ids[i])} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle(ids[i]);}}}>{on?"✓":""}</div>
+            <div className="grow"><span className="nm">{a.award}</span>{a.pMedals&&<span className="pm">{a.pMedals}</span>}{a.how&&<div className="how">{a.how}{a.notes?" — "+a.notes:""}</div>}</div>
           </div>);})}
       </div>);
     })}
   </div>);
 }
 
-export default function CommandSuite({ theme = "royal", route = "Platonic" }){
+export default function CommandSuite({ theme = "royal", route = "Platonic", currentDay = "4/9", setCurrentDay = () => {} }){
   const [tab,setTab]=usePersistentState("p5r_cmd_tab","deadlines");
-  const [activeIdx,setActiveIdx]=usePersistentState("p5r_cmd_activeIdx",0);
   const [checked,setChecked]=usePersistentState("p5r_cmd_checked",{});
+  // One-time key migration (v3.5.3): deadline keys were "d:"+due+item.slice(0,8)
+  // (text-fragile — 8 of 13 rows share the same prefix) and award keys were
+  // "t:"+category+index (order-fragile). Both now key on stable data `id`s.
+  // Idempotent: legacy keys are moved then deleted, so this no-ops after one run.
+  useEffect(()=>{
+    setChecked(prev=>{
+      let changed=false; const next={...prev};
+      DEADLINES.forEach(r=>{
+        const legacy="d:"+r.due+r.item.slice(0,8), nk="d:"+r.id;
+        if(legacy!==nk && legacy in next){ if(next[legacy]&&!next[nk]) next[nk]=true; delete next[legacy]; changed=true; }
+      });
+      THIEVES_DEN.forEach(cat=>cat.awards.forEach((a,i)=>{
+        const legacy="t:"+cat.category+i, nk="t:"+a.id;
+        if(legacy!==nk && legacy in next){ if(next[legacy]&&!next[nk]) next[nk]=true; delete next[legacy]; changed=true; }
+      }));
+      return changed?next:prev;
+    });
+  },[setChecked]); // module data is static; setChecked is a stable useState setter
   const [expanded,setExpanded]=useState(null);
   const toggle=id=>setChecked(s=>({...s,[id]:!s[id]}));
-  const at=AXIS[activeIdx];
+  const activeIdx = AXI[currentDay] ?? 0;
+  const at=currentDay;
   const R=routeOf(route);
   const romArcana=R.arcana;
   const romName=route==="Platonic"?"None":R.name.split(" ")[0];
@@ -174,8 +190,8 @@ export default function CommandSuite({ theme = "royal", route = "Platonic" }){
     <style>{CSS}</style>
     <div className="bar">
       <div className="logo">P5<b>R</b></div>
+      <DatePlate currentDay={currentDay} />
       <div><div className="title">Command Suite</div><div className="sub">Integrated Strategy Compendium</div></div>
-      <span className="proto">PREVIEW</span>
       <div className="spacer"/>
       <div className="route"><span>♥ Route · {R.name.split(" ")[0]}</span></div>
     </div>
@@ -183,17 +199,19 @@ export default function CommandSuite({ theme = "royal", route = "Platonic" }){
       <button className="tabbtn" aria-pressed={tab==="deadlines"} onClick={()=>setTab("deadlines")}>Deadlines</button>
       <button className="tabbtn" aria-pressed={tab==="confidants"} onClick={()=>setTab("confidants")}>Confidants</button>
       <button className="tabbtn" aria-pressed={tab==="thievesden"} onClick={()=>setTab("thievesden")}>Thieves' Den</button>
+      {tab==="confidants"&&<span className="leg"><b className="mk">·a</b> auto-rank{romArcana&&<><span className="sep">·</span><b className="mk rom">♥</b> romance rank</>}</span>}
+      {tab==="thievesden"&&<span className="leg"><b className="mk pmk">P</b> = P-Medals<span className="sep">·</span>Thieves' Den hideout currency</span>}
     </div>
     {tab!=="thievesden"&&<div className="scrub">
       <span className="lab">Your day</span>
-      <button className="nav" onClick={()=>setActiveIdx(i=>Math.max(0,i-1))}>‹</button>
+      <button className="nav" onClick={()=>setCurrentDay(AXIS[Math.max(0,activeIdx-1)])}>‹</button>
       <div className="at">{at}</div>
-      <input type="range" min={0} max={AXIS.length-1} value={activeIdx} onChange={e=>setActiveIdx(+e.target.value)}/>
-      <button className="nav" onClick={()=>setActiveIdx(i=>Math.min(AXIS.length-1,i+1))}>›</button>
+      <input type="range" min={0} max={AXIS.length-1} value={activeIdx} onChange={e=>setCurrentDay(AXIS[+e.target.value])}/>
+      <button className="nav" onClick={()=>setCurrentDay(AXIS[Math.min(AXIS.length-1,activeIdx+1)])}>›</button>
     </div>}
     {tab==="deadlines"&&<Deadlines activeIdx={activeIdx} checked={checked} toggle={toggle}/>}
     {tab==="confidants"&&<Confidants activeIdx={activeIdx} expanded={expanded} setExpanded={setExpanded} romArcana={romArcana} romName={romName}/>}
     {tab==="thievesden"&&<ThievesDen checked={checked} toggle={toggle}/>}
-    <div className="foot"><b>Preview</b> of three tabs on real project data: {DEADLINES.length} deadlines, {CONFIDANTS.length} confidants, {THIEVES_DEN.reduce((s,c)=>s+c.awards.length,0)} Thieves' Den awards. Slide <b>Your day</b> to watch deadlines count down and confidant ranks fill in. Fusion Path, Will-Seed locator and NG+ planner tabs come next.</div>
+    <div className="foot"><b>Command Suite</b> on live project data: {DEADLINES.length} deadlines, {CONFIDANTS.length} confidants, {THIEVES_DEN.reduce((s,c)=>s+c.awards.length,0)} Thieves' Den awards. Slide <b>Your day</b> to watch deadlines count down and confidant ranks fill in.</div>
   </div>);
 }
