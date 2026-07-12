@@ -114,4 +114,11 @@ test('compendium card expands with details and never touches registration', asyn
   const registered = await page.evaluate(
     () => JSON.parse(localStorage.getItem('p5r_checkedItems') || '{}')['p_Arsène']);
   expect(registered).toBeFalsy();
+  // D10.1 (v4.1.1): panels are multi-open for comparison — a second expand
+  // must not close the first.
+  await page.fill('input[placeholder*="Search"]', 'Obariyon');
+  await page.getByRole('button', { name: 'Obariyon details' }).click();
+  await page.fill('input[placeholder*="Search"]', '');
+  await expect(page.locator('#pd-Ars_ne')).toBeVisible();
+  await expect(page.locator('#pd-Obariyon')).toBeVisible();
 });

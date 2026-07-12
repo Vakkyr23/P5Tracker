@@ -1,5 +1,26 @@
 export const RELEASE_NOTES = [
   {
+    version: "4.1.1",
+    date: "2026-07-11",
+    title: "Sharper Analysis",
+    description: "The compendium panel got louder ink and side-by-side power \u2014 straight from field feedback.",
+    sections: [
+      {
+        title: "\ud83d\udd0d Easier on the eyes",
+        items: [
+          "**Bigger, brighter panel text** \u2014 labels, skills, and chips all gained a step, and section labels ride a lighter red that reads cleanly on Royal's dark ground.",
+          "**Chips that pop:** every affinity token now carries a hard offset shadow and the panel sits in a darker well, so warm chips no longer melt into Royal's warm background."
+        ]
+      },
+      {
+        title: "\u2696\ufe0f Compare specimens",
+        items: [
+          "**Open up to six detail panels at once** \u2014 expand a second (or fifth) persona without losing the first. Past six, the oldest closes on its own."
+        ]
+      }
+    ]
+  },
+  {
     version: "4.1.0",
     date: "2026-07-11",
     title: "Full Analysis",

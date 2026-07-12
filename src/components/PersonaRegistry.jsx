@@ -52,36 +52,44 @@ const DEMON_MODE_HINT = {
 };
 
 
-/* D10 — Compendium detail card (v4.1.0, mockup-approved). UNGATED by design:
-   stats/affinities/skills are mechanics, not story, and the registry already
-   lists every name and level. Token colors per the signed-off mockup:
-   WEAK scarlet (white ink + edge-ink rim), RESIST slate, NULL dark-outline,
-   REPEL inverted, DRAIN green. INNATE badge when a skill sits at base level. */
+/* D10 — Compendium detail card (v4.1.0, mockup-approved; D10.1 legibility pass
+   v4.1.1 from field feedback). UNGATED by design: stats/affinities/skills are
+   mechanics, not story, and the registry already lists every name and level.
+   Token colors per the signed-off mockup: WEAK on the pinned danger token
+   (white ink + edge-ink rim), RESIST slate, NULL dark-outline, REPEL inverted,
+   DRAIN green. INNATE badge when a skill sits at base level.
+   D10.1: hard 1px offset shadows lift chips off Royal's warm-dark field (the
+   "bleed" fix), the panel sits in a darker neutral well, labels ride the
+   lighter red-400 step (rose/light-cobalt), and all micro-type gained 1–2px. */
 const AFF_CHIP = {
   // wk uses the PINNED danger token (--c-weak): danger stays warm under any
   // accent — bg-red-600 would remap to cobalt in Clinic. edge-ink rides along
   // on Royal; Clinic drops the rim by design (softer red, no vibration).
-  wk: 'bg-[rgb(var(--c-weak))] text-white edge-ink ring-1 ring-inset ring-black/40',
-  rs: 'bg-slate-500 text-black ring-1 ring-inset ring-black/30',
-  nu: 'bg-transparent text-neutral-200 ring-1 ring-inset ring-neutral-400',
-  rp: 'bg-neutral-100 text-black ring-1 ring-inset ring-black/40',
-  dr: 'bg-green-500 text-black ring-1 ring-inset ring-black/30'
+  wk: 'bg-[rgb(var(--c-weak))] text-white edge-ink ring-1 ring-inset ring-black/40 shadow-[1px_1px_0_rgba(0,0,0,0.45)]',
+  rs: 'bg-slate-500 text-black ring-1 ring-inset ring-black/30 shadow-[1px_1px_0_rgba(0,0,0,0.45)]',
+  nu: 'bg-neutral-950/60 text-neutral-200 ring-1 ring-inset ring-neutral-400 shadow-[1px_1px_0_rgba(0,0,0,0.45)]',
+  rp: 'bg-neutral-100 text-black ring-1 ring-inset ring-black/40 shadow-[1px_1px_0_rgba(0,0,0,0.45)]',
+  dr: 'bg-green-500 text-black ring-1 ring-inset ring-black/30 shadow-[1px_1px_0_rgba(0,0,0,0.45)]'
 };
+
+// Multi-open comparison (v4.1.1, owner request): up to 6 panels at once,
+// oldest closes first past the cap (FIFO). Tune here if 6 feels cluttered.
+const MAX_OPEN_PANELS = 6;
 
 function DetailPanel({ detail, baseLevel, panelId }) {
   if (!detail) {
     return (
-      <div id={panelId} className="mt-3 pt-3 border-t border-neutral-800 text-[10px] italic text-neutral-600" onClick={(e) => e.stopPropagation()}>
+      <div id={panelId} className="mt-3 pt-3 border-t border-neutral-700 text-[11px] italic text-neutral-500" onClick={(e) => e.stopPropagation()}>
         No compendium data for this specimen.
       </div>
     );
   }
   return (
-    <div id={panelId} className="mt-3 pt-3 border-t border-neutral-800 space-y-3 cursor-default text-left" onClick={(e) => e.stopPropagation()}>
+    <div id={panelId} className="mt-3 -mx-1 px-2 pt-3 pb-2 border-t border-neutral-700 bg-neutral-950/40 space-y-3 cursor-default text-left" onClick={(e) => e.stopPropagation()}>
       <div className="grid grid-cols-5 gap-1.5">
         {[['St', 'st'], ['Ma', 'ma'], ['En', 'en'], ['Ag', 'ag'], ['Lu', 'lu']].map(([lb, k]) => (
           <div key={k} className="bg-neutral-950/60 border border-neutral-800 px-1 py-1 text-center">
-            <div className="text-[8px] font-black uppercase tracking-widest text-neutral-500">{lb}</div>
+            <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400">{lb}</div>
             <div className="text-sm font-black italic text-white leading-none">{detail.stats[k]}</div>
           </div>
         ))}
@@ -90,26 +98,26 @@ function DetailPanel({ detail, baseLevel, panelId }) {
         {AFFINITY_ORDER.map((el) => {
           const t = detail.affinities[el];
           return t === '-'
-            ? <span key={el} className="text-[8px] font-black uppercase px-1.5 py-0.5 text-neutral-600">{AFFINITY_LABELS[el]}</span>
-            : <span key={el} className={`text-[8px] font-black uppercase px-1.5 py-0.5 ${AFF_CHIP[t]}`}>{AFFINITY_LABELS[el]} · {AFFINITY_TOKENS[t]}</span>;
+            ? <span key={el} className="text-[10px] font-black uppercase px-1.5 py-0.5 text-neutral-500">{AFFINITY_LABELS[el]}</span>
+            : <span key={el} className={`text-[10px] font-black uppercase px-1.5 py-0.5 ${AFF_CHIP[t]}`}>{AFFINITY_LABELS[el]} · {AFFINITY_TOKENS[t]}</span>;
         })}
       </div>
       <div>
-        <div className="text-[8px] font-black uppercase tracking-[0.3em] text-red-500 mb-1">Skills</div>
+        <div className="text-[10px] font-black uppercase tracking-[0.3em] text-red-400 mb-1">Skills</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-0.5">
           {detail.skills.map((s) => (
-            <div key={s.name} className="flex items-center justify-between text-[11px] text-neutral-300 border-b border-neutral-800/60 py-0.5">
+            <div key={s.name} className="flex items-center justify-between text-xs text-neutral-200 border-b border-neutral-800/60 py-0.5">
               <span className="truncate">{s.name}</span>
               {s.lvl === baseLevel
-                ? <span className="text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-neutral-800 ring-1 ring-inset ring-neutral-600 text-neutral-300 shrink-0 ml-2">Innate</span>
-                : <span className="text-[10px] font-black text-neutral-500 shrink-0 ml-2">Lv {s.lvl}</span>}
+                ? <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-neutral-800 ring-1 ring-inset ring-neutral-600 text-neutral-200 shrink-0 ml-2">Innate</span>
+                : <span className="text-[11px] font-black text-neutral-400 shrink-0 ml-2">Lv {s.lvl}</span>}
             </div>
           ))}
         </div>
       </div>
-      <div className="text-[11px]">
-        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-red-500 mr-2">Trait</span>
-        <span className="font-bold italic text-neutral-200">{detail.trait}</span>
+      <div className="text-xs">
+        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-red-400 mr-2">Trait</span>
+        <span className="font-bold italic text-neutral-100">{detail.trait}</span>
       </div>
     </div>
   );
@@ -120,9 +128,12 @@ export default function PersonaRegistry({ checkedItems, toggleItem, onBack }) {
   const [registrySearch, setRegistrySearch] = useState('');
   const [registryFilter, setRegistryFilter] = useState('All');
   const [demonPeek, setDemonPeek] = useState({});
-  // D10: which persona card's detail panel is open (single-open; transient,
-  // resets on tab leave like search/filter — the views unmount on switch).
-  const [expandedCard, setExpandedCard] = useState(null);
+  // D10.1: which persona detail panels are open — multi-open for comparison,
+  // capped at MAX_OPEN_PANELS with oldest-first eviction. Transient, resets on
+  // tab leave like search/filter — the views unmount on switch.
+  const [expandedCards, setExpandedCards] = useState([]);
+  const togglePanel = (name) => setExpandedCards((prev) =>
+    prev.includes(name) ? prev.filter((n) => n !== name) : [...prev.slice(-(MAX_OPEN_PANELS - 1)), name]);
   // Persisted sub-tab + spoiler mode (raw-string keys, unchanged encoding).
   const [registrySubtab, setRegistrySubtab] = usePersistentState('p5r_reg_subtab', (s) => s || 'personas', { raw: true });
   const [demonMode, setDemonMode] = usePersistentState('p5r_td_mode', (m) => (DEMON_MODES.includes(m) ? m : 'safe'), { raw: true });
@@ -302,7 +313,7 @@ export default function PersonaRegistry({ checkedItems, toggleItem, onBack }) {
                           {personas.map(p => {
                             const isChecked = checkedItems[`p_${p.name}`];
                             const detail = PERSONA_DETAILS[p.name];
-                            const open = expandedCard === p.name;
+                            const open = expandedCards.includes(p.name);
                             const panelId = `pd-${p.name.replace(/[^\w-]/g, '_')}`;
                             return (
                               <div 
@@ -335,7 +346,7 @@ export default function PersonaRegistry({ checkedItems, toggleItem, onBack }) {
                                 </div>
                                 <div className="flex items-center gap-1 shrink-0">
                                   <button
-                                    onClick={(e) => { e.stopPropagation(); setExpandedCard(open ? null : p.name); }}
+                                    onClick={(e) => { e.stopPropagation(); togglePanel(p.name); }}
                                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation(); }}
                                     aria-expanded={open}
                                     aria-controls={panelId}

@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.1] - 2026-07-11
+### Changed — D10.1: legibility + comparison (same-day field feedback)
+- **Legibility pass on the detail panel:** all micro-type up 1–2px (section labels 10px, skills 12px, affinity chips 10px, INNATE 9px, stat labels 9px); section labels moved to the lighter `red-400` step (rose under Royal, light cobalt under Clinic); the panel now sits in a darker neutral well; **token chips carry a hard 1px offset shadow** so warm chips lift off Royal's warm-dark field (the reported "bleed"). Measured contrast after the pass: labels ≈6.7–7.5:1, skill text ≈13–14.7:1, in both themes.
+- **Detail panels are multi-open for comparison** (owner request): up to **6** at once, oldest closes first past the cap (`MAX_OPEN_PANELS`, one constant to tune). Smoke #5 extended: a second expand must not close the first.
+
 ## [4.1.0] - 2026-07-11
 ### Added — Persona Compendium detail cards (Batch F complete, mockup D10)
 - **All 232 personas carry full compendium details:** base stats (St/Ma/En/Ag/Lu), the 10-element affinity row, the learned-skill list with levels, and the Royal trait — expandable in place on every Registry card via a chevron. **Body click stays registration-only**; the chevron never touches the `p_` key (smoke-guarded).
